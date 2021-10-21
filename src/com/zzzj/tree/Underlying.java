@@ -10,11 +10,17 @@ public class Underlying {
 
     private String code;
 
+    private String nameEn;
+
+    private String nameCh;
+
     private String market;
 
-    public Underlying(Integer id, String code, String market) {
+    public Underlying(Integer id, String code, String nameEn, String nameCh, String market) {
         this.id = id;
         this.code = code;
+        this.nameEn = nameEn;
+        this.nameCh = nameCh;
         this.market = market;
     }
 
@@ -40,5 +46,32 @@ public class Underlying {
 
     public void setMarket(String market) {
         this.market = market;
+    }
+
+    public String getNameEn() {
+        return nameEn;
+    }
+
+    public void setNameEn(String nameEn) {
+        this.nameEn = nameEn;
+    }
+
+    public String getNameCh() {
+        return nameCh;
+    }
+
+    public void setNameCh(String nameCh) {
+        this.nameCh = nameCh;
+    }
+
+    @Override
+    public String toString() {
+        return "Underlying{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", nameEn='" + nameEn + '\'' +
+                ", nameCh='" + nameCh + '\'' +
+                ", market='" + market + '\'' +
+                '}';
     }
 }
