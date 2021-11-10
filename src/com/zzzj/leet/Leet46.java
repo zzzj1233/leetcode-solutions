@@ -1,7 +1,9 @@
 package com.zzzj.leet;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author zzzj
@@ -10,12 +12,14 @@ import java.util.List;
 public class Leet46 {
 
     public static void main(String[] args) {
-        System.out.println(permute(new int[]{1, 1, 2}));
+        List<List<Integer>> res = permute(new int[]{1, 1, 2});
+
+        System.out.println(res);
     }
 
     private static List<List<Integer>> res;
 
-    private static void dfs(List<Integer> list, boolean[] used, int[] nums) {
+    private static void dfs(List<Integer> list, boolean[] used, Set<String> path, int[] nums) {
         if (list.size() == nums.length) {
             res.add(new ArrayList<>(list));
             return;
@@ -25,7 +29,8 @@ public class Leet46 {
             if (!used[i]) {
                 used[i] = true;
                 list.add(nums[i]);
-                dfs(list, used, nums);
+                System.out.println(i + " - " + nums[i]);
+                dfs(list, used, path, nums);
                 list.remove((Object) nums[i]);
                 used[i] = false;
             }
@@ -46,7 +51,7 @@ public class Leet46 {
 
         boolean[] used = new boolean[nums.length];
 
-        dfs(new ArrayList<>(nums.length), used, nums);
+        dfs(new ArrayList<>(nums.length), used, new HashSet(nums.length), nums);
 
         return res;
     }

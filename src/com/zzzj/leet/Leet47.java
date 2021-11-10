@@ -14,6 +14,8 @@ public class Leet47 {
      * [[1,1,2],
      * [1,2,1],
      * [2,1,1]]
+     *
+     * [[1, 1, 2], [1, 2, 1], [1, 1, 2], [1, 2, 1], [2, 1, 1], [2, 1, 1]]
      */
     public static List<List<Integer>> permuteUnique(int[] nums) {
 

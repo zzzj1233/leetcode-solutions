@@ -4,18 +4,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TreeNode {
-    int val;
-    TreeNode left;
-    TreeNode right;
+    public int val;
+    public TreeNode left;
+    public TreeNode right;
 
-    TreeNode() {
+    public TreeNode() {
     }
 
-    TreeNode(int val) {
+    public TreeNode(int val) {
         this.val = val;
     }
 
-    TreeNode(int val, TreeNode left, TreeNode right) {
+    public TreeNode(int val, TreeNode left, TreeNode right) {
         this.val = val;
         this.left = left;
         this.right = right;
@@ -34,6 +34,27 @@ public class TreeNode {
                 .stream()
                 .map(s -> s.substring(1, s.length() - 1))
                 .collect(Collectors.toList());
+    }
+
+    public String serialize() {
+        // 中序序列化
+        LinkedList<TreeNode> queue = new LinkedList<>();
+        queue.add(this);
+
+        LinkedList<String> path = new LinkedList<>();
+
+        while (!queue.isEmpty()) {
+            TreeNode first = queue.removeFirst();
+            if (first != null) {
+                path.add(String.valueOf(first.val));
+                queue.add(first.left);
+                queue.add(first.right);
+            } else {
+                path.add("null");
+            }
+        }
+
+        return String.join(",", path);
     }
 
     public static TreeNode buildTree(String src) {
