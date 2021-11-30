@@ -1,10 +1,7 @@
 package com.zzzj.tree;
 
-import com.zzzj.leet.LeetUtils;
 import com.zzzj.leet.TreeNode;
 import com.zzzj.link.ListNode;
-
-import java.util.Arrays;
 
 /**
  * @author zzzj
@@ -13,73 +10,49 @@ import java.util.Arrays;
 public class Leet109 {
 
     public static void main(String[] args) {
-        int[] ints = LeetUtils.newArray(10, 100);
-        Arrays.sort(ints);
-        System.out.println(Arrays.toString(ints));
-        TreeNode treeNode = sortedListToBST(ListNode.build(ints));
-        System.out.println("~");
+        final TreeNode tree = sortedListToBST(ListNode.build(1, 2, 3, 4, 5), null);
+        System.out.println(tree.serialize());
     }
 
-    private static TreeNode leftRotate(TreeNode root) {
-        TreeNode right = root.right;
-        root.right = null;
-        right.left = root;
-        return right;
-    }
+    public static TreeNode sortedListToBST(ListNode head, ListNode end) {
 
-    private static TreeNode rightRotate(TreeNode root) {
-        TreeNode left = root.left;
-        left.right = root;
-        root.left = null;
-        return left;
-    }
-
-    public static TreeNode sortedListToBST(ListNode head) {
-        if (head == null) {
+        if (head == null){
             return null;
         }
 
-        TreeNode root = new TreeNode(head.val);
-
-        TreeNode answer = null;
-
-        ListNode node = head.next;
-
-        int leftHeight = 0;
-
-        int rightHeight = 0;
-
-        boolean appendRight = false;
-
-        while (node != null) {
-            TreeNode newNode = new TreeNode(node.val);
-
-            if (appendRight) {
-                root.right = newNode;
-                root = newNode;
-                rightHeight++;
-            } else {
-                newNode.left = root;
-                root = newNode;
-                leftHeight++;
-            }
-
-            // 右旋
-            if (leftHeight - rightHeight > 1) {
-                root = rightRotate(root);
-                leftHeight = rightHeight = 1;
-                appendRight = true;
-                answer = root;
-                root = root.right;
-            } else if (rightHeight - leftHeight > 1) {
-                answer = leftRotate(answer);
-                leftHeight = rightHeight = 1;
-            }
-
-            node = node.next;
+        if (head == end){
+            return null;
         }
 
-        return answer == null ? root : answer;
+        ListNode slow = head;
+        ListNode fast = head.next;
+
+        System.out.println("head = " + (head == null ? "null" : head.val));
+        System.out.println("end = " + (end == null ? "null" : end.val));
+
+        while (fast != end && fast != null) {
+            slow = slow.next;
+            fast = fast.next;
+            if (fast == null || fast == end) {
+                break;
+            }
+            fast = fast.next;
+        }
+
+        if (slow == null) {
+            return null;
+        }
+
+        TreeNode node = new TreeNode(slow.val);
+
+        if (slow == head){
+            return node;
+        }
+
+        node.left = sortedListToBST(head, slow);
+        node.right = sortedListToBST(slow.next, end);
+
+        return node;
     }
 
 }

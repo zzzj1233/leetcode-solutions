@@ -1,7 +1,6 @@
 package com.zzzj.leet;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Random;
 
 /**
@@ -63,6 +62,20 @@ public class LeetUtils {
         String str = String.join(",", list);
 
         return TreeNode.buildTree("[" + str + "]");
+    }
+
+    public static String randomFullTree() {
+        ArrayList<String> list = new ArrayList<>();
+
+        int N = random.nextInt(100);
+
+        for (int i = 0; i < N; i++) {
+            list.add(String.valueOf(random.nextInt(100)));
+        }
+
+        String str = String.join(",", list);
+
+        return "[" + str + "]";
     }
 
 

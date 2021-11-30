@@ -88,4 +88,36 @@ public class TreeNode {
         return result;
     }
 
+    public List<Integer> preOrder() {
+        List<Integer> list = new LinkedList<>();
+        preOrder(this, list);
+        return list;
+    }
+
+    public List<Integer> inOrder() {
+        List<Integer> list = new LinkedList<>();
+        inOrder(this, list);
+        return list;
+    }
+
+    private static void inOrder(TreeNode node, List<Integer> list) {
+        if (node.left != null) {
+            inOrder(node.left, list);
+        }
+        list.add(node.val);
+        if (node.right != null) {
+            inOrder(node.right, list);
+        }
+    }
+
+    private static void preOrder(TreeNode node, List<Integer> list) {
+        list.add(node.val);
+        if (node.left != null) {
+            preOrder(node.left, list);
+        }
+        if (node.right != null) {
+            preOrder(node.right, list);
+        }
+    }
+
 }
