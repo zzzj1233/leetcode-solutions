@@ -2,7 +2,7 @@ package com.zzzj.graph.other;
 
 import com.zzzj.graph.Graph;
 import com.zzzj.graph.dfs.CcCount;
-import javafx.util.Pair;
+import com.zzzj.leet.Leet102;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,7 +16,7 @@ public class EulerLoop {
 
     private final Graph graph;
 
-    private final HashSet<Pair<Integer, Integer>> visited;
+    private final HashSet<Leet102.Pair<Integer, Integer>> visited;
 
     public EulerLoop(Graph graph) {
         this.graph = graph;
@@ -52,7 +52,7 @@ public class EulerLoop {
 
             for (int adj : graph.adj(pop)) {
                 // visited
-                if (!visited.contains(new Pair<>(pop, adj))) {
+                if (!visited.contains(new Leet102.Pair<>(pop, adj))) {
                     remain = true;
                     stack.push(adj);
                 }

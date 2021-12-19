@@ -8,19 +8,67 @@ public class UnionFind {
 
     private int[] parent;
 
-    private int size;
+    private int[] height;
 
-    public UnionFind(int n) {
-        parent = new int[n];
+    private int sets;
+
+    public UnionFind(int size) {
+        parent = new int[size];
+        height = new int[size];
+
+        for (int i = 0; i < size; i++) {
+            parent[i] = i;
+            height[i] = 1;
+        }
+        sets = size;
     }
 
-    public boolean isConnected() {
-        return false;
+    public UnionFind(int size, int dummy) {
+        parent = new int[size];
+        height = new int[size];
+
+        for (int i = 0; i < size; i++) {
+            parent[i] = dummy;
+        }
+        height[dummy] = size;
     }
 
-    // 将q和p放入同一个集合中
-    public void union(int q, int p) {
+    public boolean inSameSet(int p, int q) {
+        return findParent(p) == findParent(q);
+    }
 
+    public void union(int p, int q) {
+        int pParent = findParent(p);
+        int qParent = findParent(q);
+
+        if (pParent == qParent) {
+            return;
+        }
+
+        sets--;
+
+        int pHeight = height[p];
+        int qHeight = height[q];
+
+        if (pHeight > qHeight) {
+            parent[qParent] = pParent;
+        } else if (qHeight > pHeight) {
+            parent[pParent] = qParent;
+        } else {
+            parent[qParent] = pParent;
+            height[qHeight] += 1;
+        }
+    }
+
+    private int findParent(int p) {
+        while (parent[p] != p) {
+            p = parent[parent[p]];
+        }
+        return p;
+    }
+
+    public int getSets() {
+        return sets;
     }
 
 }

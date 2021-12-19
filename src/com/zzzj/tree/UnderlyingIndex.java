@@ -1,6 +1,5 @@
 package com.zzzj.tree;
 
-import com.sun.istack.internal.Nullable;
 
 /**
  * @author zzzj
@@ -10,7 +9,6 @@ public class UnderlyingIndex {
 
     private Integer id;
 
-    @Nullable
     private Character nextC;
 
     public UnderlyingIndex(Integer id, Character nextC) {

@@ -9,6 +9,8 @@ import java.util.function.Consumer;
  */
 public class ArrayUtil {
 
+    // eg: [["0","0","1","0"],["0","0","1","0"],["0","0","1","0"],["0","0","1","1"],["0","1","1","1"],["0","1","1","1"],["1","1","1","1"]]
+
     public static int[] copy(int[] arr) {
         return copy(arr, 0, arr.length - 1);
     }

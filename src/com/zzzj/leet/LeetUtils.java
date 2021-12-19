@@ -79,4 +79,41 @@ public class LeetUtils {
     }
 
 
+    // 是否包含大写字母
+    public static String randomString(int length, boolean containsUpper) {
+        String str;
+
+        if (containsUpper) {
+            str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        } else {
+            str = "abcdefghijklmnopqrstuvwxyz";
+        }
+
+        StringBuffer sb = new StringBuffer(length);
+
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(containsUpper ? 52 : 26);
+
+            sb.append(str.charAt(number));
+        }
+
+        return sb.toString();
+    }
+
+    public static String randomString(int length) {
+        String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        Random random = new Random();
+
+        StringBuffer sb = new StringBuffer(length);
+
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(52);
+
+            sb.append(str.charAt(number));
+        }
+
+        return sb.toString();
+    }
+
 }

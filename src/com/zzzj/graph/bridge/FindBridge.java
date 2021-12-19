@@ -1,7 +1,7 @@
 package com.zzzj.graph.bridge;
 
 import com.zzzj.graph.Graph;
-import javafx.util.Pair;
+import com.zzzj.leet.Leet102;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class FindBridge {
 
     private int[] low;
 
-    private List<Pair<Integer, Integer>> bridge;
+    private List<Leet102.Pair<Integer, Integer>> bridge;
 
     private boolean isBinaryGraph = true;
 
@@ -58,7 +58,7 @@ public class FindBridge {
                 int dfsLow = dfs(adj, e);
                 // 桥
                 if (dfsLow > curOrder) {
-                    bridge.add(new Pair<>(e, adj));
+                    bridge.add(new Leet102.Pair<>(e, adj));
                 }
                 low[e] = Math.min(low[e], dfsLow);
             }

@@ -1,6 +1,5 @@
 package com.zzzj.tree;
 
-import com.sun.istack.internal.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -122,7 +121,6 @@ public class UnderlyingStock {
         return indices.stream().map(underlyingIndex -> this.stock[underlyingIndex.getId()]).collect(Collectors.toSet());
     }
 
-    @Nullable
     public Collection<Underlying> search(String keyword) {
         if (keyword == null || keyword.isEmpty()) {
             return Collections.emptyList();
