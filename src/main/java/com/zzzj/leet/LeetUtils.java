@@ -124,4 +124,18 @@ public class LeetUtils {
         return sb.toString();
     }
 
+
+    public static int[] randomBinaryArr(int n) {
+
+        int[] result = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            if (random.nextInt() % 2 != 0) {
+                result[i] = 1;
+            }
+        }
+
+        return result;
+    }
+
 }
