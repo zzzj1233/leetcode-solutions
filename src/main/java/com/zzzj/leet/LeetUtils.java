@@ -1,6 +1,7 @@
 package com.zzzj.leet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -87,6 +88,11 @@ public class LeetUtils {
     }
 
 
+    public static String randomNumberString(int length) {
+        String str = "0123456789";
+        return randomString0(str, length);
+    }
+
     // 是否包含大写字母
     public static String randomString(int length, boolean containsUpper) {
         String str;
@@ -97,33 +103,29 @@ public class LeetUtils {
             str = "abcdefghijklmnopqrstuvwxyz";
         }
 
-        StringBuffer sb = new StringBuffer(length);
 
-        for (int i = 0; i < length; i++) {
-            int number = random.nextInt(containsUpper ? 52 : 26);
-
-            sb.append(str.charAt(number));
-        }
-
-        return sb.toString();
+        return randomString0(str, length);
     }
 
     public static String randomString(int length) {
         String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+        return randomString0(str, length);
+    }
+
+    private static String randomString0(String candidate, int length) {
         Random random = new Random();
 
         StringBuffer sb = new StringBuffer(length);
 
         for (int i = 0; i < length; i++) {
-            int number = random.nextInt(52);
+            int number = random.nextInt(candidate.length());
 
-            sb.append(str.charAt(number));
+            sb.append(candidate.charAt(number));
         }
 
         return sb.toString();
     }
-
 
     public static int[] randomBinaryArr(int n) {
 
@@ -133,6 +135,53 @@ public class LeetUtils {
             if (random.nextInt() % 2 != 0) {
                 result[i] = 1;
             }
+        }
+
+        return result;
+    }
+
+    public static char[][] random2DChars(int M, int N, boolean containsUpper) {
+        char[][] result = new char[M][N];
+
+        String candidate;
+
+        if (containsUpper) {
+            candidate = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        } else {
+            candidate = "abcdefghijklmnopqrstuvwxyz";
+        }
+
+        for (int i = 0; i < result.length; i++) {
+
+            for (int j = 0; j < result[i].length; j++) {
+                result[i][j] = candidate.charAt(random.nextInt(candidate.length()));
+            }
+
+        }
+
+        return result;
+    }
+
+    // source e.g : [["o","a","a","n"],["e","t","a","e"],["i","h","k","r"],["i","f","l","v"]]
+    public static char[][] convertChars(String source) {
+
+        source = source.substring(1, source.length() - 1);
+
+        String[] split = source.split("],?");
+
+        char[][] result = new char[split.length][];
+
+        for (int i = 0; i < split.length; i++) {
+            String oneD = split[i].substring(1);
+            String[] chars = oneD.split(",");
+            // 去除双引号
+            result[i] = new char[chars.length];
+
+            for (int j = 0; j < chars.length; j++) {
+                String singleChar = chars[j].replaceAll("\"", "");
+                result[i][j] = singleChar.charAt(0);
+            }
+
         }
 
         return result;
