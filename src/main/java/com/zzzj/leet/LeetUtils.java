@@ -113,7 +113,7 @@ public class LeetUtils {
         return randomString0(str, length);
     }
 
-    private static String randomString0(String candidate, int length) {
+    public static String randomString0(String candidate, int length) {
         Random random = new Random();
 
         StringBuffer sb = new StringBuffer(length);
