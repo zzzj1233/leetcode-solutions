@@ -127,12 +127,26 @@ public class LeetUtils {
         return sb.toString();
     }
 
-    public static int[] randomBinaryArr(int n) {
+    public static String randomString(int length, String candidate) {
+        Random random = new Random();
 
+        StringBuffer sb = new StringBuffer(length);
+
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(candidate.length());
+
+            sb.append(candidate.charAt(number));
+        }
+
+        return sb.toString();
+    }
+
+
+    public static int[] randomBinaryArr(int n) {
         int[] result = new int[n];
 
         for (int i = 0; i < n; i++) {
-            if (random.nextInt() % 2 != 0) {
+            if (random.nextInt() % 2 == 0) {
                 result[i] = 1;
             }
         }

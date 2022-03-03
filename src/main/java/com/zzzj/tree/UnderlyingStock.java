@@ -1,8 +1,5 @@
 package com.zzzj.tree;
 
-import com.sun.istack.internal.Nullable;
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -30,8 +27,6 @@ public class UnderlyingStock {
     private ReentrantReadWriteLock.ReadLock readLock;
 
     private ReentrantReadWriteLock.WriteLock writeLock;
-
-    private static final Logger log = LoggerFactory.getLogger(UnderlyingStock.class);
 
     public UnderlyingStock(List<Product> underlyings) {
         // 1. 实例化锁
@@ -126,7 +121,6 @@ public class UnderlyingStock {
         }
     }
 
-    @Nullable
     public Collection<Product> search(String keyword) {
         if (keyword == null || keyword.isEmpty()) {
             return Collections.emptyList();
