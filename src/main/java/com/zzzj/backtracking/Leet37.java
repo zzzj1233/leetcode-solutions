@@ -12,6 +12,7 @@ public class Leet37 {
 
     public static void main(String[] args) {
         final char[][] chars = LeetUtils.convertChars("[[\"5\",\"3\",\".\",\".\",\"7\",\".\",\".\",\".\",\".\"],[\"6\",\".\",\".\",\"1\",\"9\",\"5\",\".\",\".\",\".\"],[\".\",\"9\",\"8\",\".\",\".\",\".\",\".\",\"6\",\".\"],[\"8\",\".\",\".\",\".\",\"6\",\".\",\".\",\".\",\"3\"],[\"4\",\".\",\".\",\"8\",\".\",\"3\",\".\",\".\",\"1\"],[\"7\",\".\",\".\",\".\",\"2\",\".\",\".\",\".\",\"6\"],[\".\",\"6\",\".\",\".\",\".\",\".\",\"2\",\"8\",\".\"],[\".\",\".\",\".\",\"4\",\"1\",\"9\",\".\",\".\",\"5\"],[\".\",\".\",\".\",\".\",\"8\",\".\",\".\",\"7\",\"9\"]]");
+
         solveSudoku(chars);
 
         System.out.println(Arrays.deepToString(chars));
@@ -67,45 +68,63 @@ public class Leet37 {
             }
         }
 
-        process(board, 0, 0, 0, true, true, true);
-
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j] == '.') {
+                    process(board, i, j);
+                    return;
+                }
+            }
+        }
     }
 
-    public static void process(char[][] board, int i, int j, int block,
-                               boolean checkRow, boolean checkCol, boolean checkBlock) {
+    public static boolean process(char[][] board, int i, int j) {
+
         char c = board[i][j];
 
-        if (c != '.') {
-            return;
-        }
+        int bi = blockIndex(i, j);
 
         Set<Integer> rowAllow = ROW.get(i);
         Set<Integer> colAllow = COL.get(j);
-        Set<Integer> blockAllow = BLOCK.get(blockIndex(i, j));
+        Set<Integer> blockAllow = BLOCK.get(bi);
 
         boolean into = false;
 
-        for (int k = 0; k < 9; k++) {
-            block[i][k] == ''
+        OUTER:
+        for (int k = 1; k < 10; k++) {
+            into = false;
+
+            board[i][j] = Character.forDigit(k, 10);
+
+            if (!rowAllow.contains(k) || !colAllow.contains(k) || !blockAllow.contains(k)) {
+                continue;
+            }
+
+            rowAllow.remove(k);
+            colAllow.remove(k);
+            blockAllow.remove(k);
+
+            for (int l = 0; l < board.length; l++) {
+
+                for (int m = 0; m < board[l].length; m++) {
+                    if (board[l][m] == '.') {
+                        if (!process(board, l, m)) {
+                            board[l][m] = '.';
+                            rowAllow.add(k);
+                            colAllow.add(k);
+                            blockAllow.add(k);
+                            continue OUTER;
+                        }
+                    }
+                }
+
+            }
+
+            into = true;
         }
 
-        for (int k = 1; k < 10; k++) {
-            if (rowAllow.contains(k) && colAllow.contains(k) && blockAllow.contains(k)) {
-                into = true;
-                board[i][j] = Character.forDigit(k, 10);
-                rowAllow.remove(k);
-                colAllow.remove(k);
-                blockAllow.remove(k);
-                if (process(board)) {
-                    return true;
-                }
-                board[i][j] = c;
-                rowAllow.add(k);
-                colAllow.add(k);
-                blockAllow.add(k);
-            }
-        }
-        return true;
+        return into;
     }
+
 
 }
