@@ -36,91 +36,13 @@ public class Leet698 {
     public static boolean canPartitionKSubsets(int[] nums, int k) {
         ans = false;
 
-        boolean[] used = new boolean[nums.length];
-
-        LinkedList<Integer> path = new LinkedList<>();
-
-        for (int i = 0; i < nums.length && !ans; i++) {
-
-            int sum = nums[i];
-
-            used[i] = true;
-
-            for (int j = 0; j < nums.length && !ans; j++) {
-                if (used[j]) {
-                    continue;
-                }
-                path.add(i);
-                dfs(nums, k - 1, sum, used, path);
-                used[j] = true;
-                sum += nums[j];
-                path.add(j);
-            }
-
-            Arrays.fill(used, false);
-            path.clear();
-        }
 
         return ans;
     }
 
     public static void dfs(int[] nums, int k, int sum, boolean[] used, LinkedList<Integer> path) {
-        // 寻找和 == sum的数组
-        if (k == 0) {
-            // System.out.println(path);
-            ans = true;
-            return;
-        }
 
-        for (int i = 0; i < nums.length && !ans; i++) {
-            if (used[i]) {
-                continue;
-            }
-
-            int curSum = nums[i];
-
-            if (curSum == sum) {
-                path.add(i);
-                used[i] = true;
-                dfs(nums, k - 1, sum, used, path);
-                used[i] = false;
-                path.removeLast();
-                break;
-            }
-
-            if (curSum > sum) {
-                continue;
-            }
-
-
-            used[i] = true;
-            path.add(i);
-
-            for (int j = 0; j < nums.length && !ans; j++) {
-                if (used[j]) {
-                    continue;
-                }
-
-                curSum += nums[j];
-
-                if (curSum > sum) {
-                    break;
-                }
-
-                if (curSum == sum) {
-                    path.add(j);
-                    used[j] = true;
-                    dfs(nums, k - 1, sum, used, path);
-                    used[j] = false;
-                    path.removeLast();
-                }
-            }
-
-            used[i] = false;
-            path.removeLast();
-        }
-
-
+        
     }
 
     public static boolean right(int[] nums, int k) {
