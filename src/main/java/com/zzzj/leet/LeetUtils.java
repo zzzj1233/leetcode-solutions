@@ -93,6 +93,10 @@ public class LeetUtils {
         return randomString0(str, length);
     }
 
+    public static String randomUpperString(int length) {
+        return randomString0("ABCDEFGHIJKLMNOPQRSTUVWXYZ", length);
+    }
+
     // 是否包含大写字母
     public static String randomString(int length, boolean containsUpper) {
         String str;
@@ -201,8 +205,46 @@ public class LeetUtils {
         return result;
     }
 
+    // e.g : [[4, 2, 4], [2, 3, 5], [4, 4, 6]]
     public static int[][] convertInts(String source) {
-        return null;
+        source = source.substring(1, source.length() - 1);
+
+        String[] split = source.split("]\\s*,?");
+
+        int[][] result = new int[split.length][];
+
+        for (int i = 0; i < split.length; i++) {
+            String oneD = split[i].replaceAll("\\s*", "").replaceAll("\\[", "");
+            String[] chars = oneD.split(",\\s*");
+            // 去除双引号
+            result[i] = new int[chars.length];
+
+            for (int j = 0; j < chars.length; j++) {
+                result[i][j] = Integer.parseInt(chars[j].trim());
+            }
+
+        }
+
+        return result;
+    }
+
+    public static String charsToLeetCode(char[] chars) {
+        StringBuilder builder = new StringBuilder((chars.length << 2) + 1);
+
+        builder.append("[");
+
+        for (char aChar : chars) {
+            builder.append("\"");
+            builder.append(aChar);
+            builder.append("\"");
+            builder.append(",");
+        }
+
+        builder.setLength(builder.length() - 1);
+
+        builder.append("]");
+
+        return builder.toString();
     }
 
 }
