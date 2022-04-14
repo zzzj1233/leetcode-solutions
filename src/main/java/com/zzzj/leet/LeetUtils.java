@@ -2,6 +2,7 @@ package com.zzzj.leet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -200,6 +201,28 @@ public class LeetUtils {
                 result[i][j] = singleChar.charAt(0);
             }
 
+        }
+
+        return result;
+    }
+
+    public static List<List<Integer>> convertLists(String source) {
+        source = source.substring(1, source.length() - 1);
+
+        String[] split = source.split("]\\s*,?");
+
+        List<List<Integer>> result = new ArrayList<>(split.length);
+
+        for (int i = 0; i < split.length; i++) {
+            String oneD = split[i].replaceAll("\\s*", "").replaceAll("\\[", "");
+            String[] chars = oneD.split(",\\s*");
+            // 去除双引号
+            ArrayList<Integer> list = new ArrayList<>(chars.length);
+            result.add(list);
+
+            for (int j = 0; j < chars.length; j++) {
+                list.add(Integer.parseInt(chars[j].trim()));
+            }
         }
 
         return result;
