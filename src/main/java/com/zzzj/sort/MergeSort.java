@@ -2,6 +2,8 @@ package com.zzzj.sort;
 
 import com.zzzj.util.ArrayUtil;
 
+import java.util.Arrays;
+
 /**
  * @author Zzzj
  * @create 2021-04-11 19:23
@@ -9,7 +11,7 @@ import com.zzzj.util.ArrayUtil;
 public class MergeSort {
 
     public static void sort(int[] arr) {
-        merge(arr, 0, arr.length - 1);
+        practise(arr, 0, arr.length - 1);
     }
 
     // 自顶向下进行归并
@@ -57,6 +59,42 @@ public class MergeSort {
     }
 
 
+    public static int[] practise(int[] arr, int i, int j) {
+        if (i == j) {
+            return new int[]{arr[i]};
+        }
+
+        if (i + 1 == j) {
+            if (arr[i] > arr[j]) {
+                return new int[]{arr[j], arr[i]};
+            } else {
+                return new int[]{arr[i], arr[j]};
+            }
+        }
+
+        int mid = (j + i) / 2;
+
+        int[] left = practise(arr, i, mid);
+        int[] right = practise(arr, mid + 1, j);
+
+        int leftIdx = 0;
+        int rightIdx = 0;
+        int index = i;
+
+        while (leftIdx < left.length || rightIdx < right.length) {
+            if (leftIdx >= left.length) {
+                arr[index++] = right[rightIdx++];
+            } else if (rightIdx >= right.length) {
+                arr[index++] = left[leftIdx++];
+            } else if (left[leftIdx] < right[rightIdx]) {
+                arr[index++] = left[leftIdx++];
+            } else {
+                arr[index++] = right[rightIdx++];
+            }
+        }
+
+        return Arrays.copyOfRange(arr, i, j + 1);
+    }
 
 
     public static void main(String[] args) {

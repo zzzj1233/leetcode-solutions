@@ -86,7 +86,7 @@ public class FarmerAndSheep {
         }
     }
 
-    public Collection<Integer> getPre() {
+    public Collection<String> getPre() {
         List<Integer> list = new LinkedList<>();
         int cur = END;
         while (cur != START) {
@@ -95,7 +95,11 @@ public class FarmerAndSheep {
         }
         list.add((int) START);
         Collections.reverse(list);
-        return list;
+
+        return list
+                .stream()
+                .map(Integer::toBinaryString)
+                .collect(Collectors.toList());
     }
 
     public static void main(String[] args) {
