@@ -159,6 +159,18 @@ public class LeetUtils {
         return result;
     }
 
+    public static int[][] random2DInts(int M, int N, int rangeL, int rangeR) {
+        int[][] result = new int[M][N];
+
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result[i].length; j++) {
+                result[i][j] = random.nextInt(rangeR) + rangeL;
+            }
+        }
+
+        return result;
+    }
+
     public static char[][] random2DChars(int M, int N, boolean containsUpper) {
         char[][] result = new char[M][N];
 
