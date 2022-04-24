@@ -21,13 +21,13 @@ public class Leet54 {
         System.exit(0);
 
         for (int i = 0; i < 1000; i++) {
-            int[][] matrix = LeetUtils.randomMatrix(20, 20, 0, 100);
-            if (!spiralOrder(matrix).equals(right(matrix))) {
-                System.out.println("Error");
-                System.out.println(Arrays.deepToString(matrix));
-                System.out.println(spiralOrder(matrix));
-                return;
-            }
+//            int[][] matrix = LeetUtils.randomMatrix(20, 20, 0, 100);
+//            if (!spiralOrder(matrix).equals(right(matrix))) {
+//                System.out.println("Error");
+//                System.out.println(Arrays.deepToString(matrix));
+//                System.out.println(spiralOrder(matrix));
+//                return;
+//            }
         }
     }
 
