@@ -16,18 +16,14 @@ public class Leet54 {
 
     public static void main(String[] args) {
 
-        System.out.println(spiralOrder(LeetUtils.convertInts("[[7],[9],[6]]")));
-
-        System.exit(0);
-
-        for (int i = 0; i < 1000; i++) {
-//            int[][] matrix = LeetUtils.randomMatrix(20, 20, 0, 100);
-//            if (!spiralOrder(matrix).equals(right(matrix))) {
-//                System.out.println("Error");
-//                System.out.println(Arrays.deepToString(matrix));
-//                System.out.println(spiralOrder(matrix));
-//                return;
-//            }
+        for (int i = 0; i < 10000; i++) {
+            int[][] matrix = LeetUtils.randomMatrix(3, 1, 0, 100);
+            if (!spiralOrder(matrix).equals(right(matrix))) {
+                System.out.println("Error");
+                System.out.println(Arrays.deepToString(matrix));
+                System.out.println(spiralOrder(matrix));
+                return;
+            }
         }
     }
 
@@ -52,13 +48,18 @@ public class Leet54 {
                 ans.add(matrix[tr + i][bc]);
             }
 
-            for (int i = col - 1; row > 0 && i >= 0; i--) {
-                ans.add(matrix[br][tc + i]);
+            if (row > 0) {
+                for (int i = col - 1; i >= 0; i--) {
+                    ans.add(matrix[br][tc + i]);
+                }
             }
 
-            for (int i = row - 1; i > 0; i--) {
-                ans.add(matrix[tr + i][tc]);
+            if (col > 0) {
+                for (int i = row - 1; i > 0; i--) {
+                    ans.add(matrix[tr + i][tc]);
+                }
             }
+
 
             tr++;
             br--;

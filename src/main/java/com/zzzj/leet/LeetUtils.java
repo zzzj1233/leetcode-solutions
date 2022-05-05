@@ -282,4 +282,18 @@ public class LeetUtils {
         return builder.toString();
     }
 
+    public static int[][] randomMatrix(int M, int N, int rangL, int rangR) {
+        int[][] result = new int[M][N];
+
+        for (int i = 0; i < M; i++) {
+
+            for (int j = 0; j < N; j++) {
+                result[i][j] = random.nextInt(rangR) + rangL;
+            }
+
+        }
+
+        return result;
+    }
+
 }
