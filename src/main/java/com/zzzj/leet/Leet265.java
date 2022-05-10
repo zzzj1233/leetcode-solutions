@@ -20,7 +20,7 @@ public class Leet265 {
 
             // int cost = costs[i][j];
             for (int j = 0; j < dp.length; j++) {
-                dp[j] = Math.min()
+                // dp[j] = Math.min()
             }
 
         }
