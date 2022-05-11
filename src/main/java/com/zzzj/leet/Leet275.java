@@ -13,7 +13,7 @@ public class Leet275 {
 
         int N = citations.length;
 
-        return null;
+        return -1;
     }
 
 }
