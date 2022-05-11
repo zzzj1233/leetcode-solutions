@@ -30,30 +30,33 @@ public class Leet351 {
         boolean[][] visited = new boolean[3][3];
 
         for (int i = m; i <= n; i++) {
-            dfs(i, 0, 0, visited);
+            for (int j = 0; j < 3; j++) {
+                for (int k = 0; k < 3; k++) {
+                    dfs(i, j, k, visited);
+                }
+            }
         }
 
         return ans;
     }
 
     public static void dfs(int n, int i, int j, boolean[][] visited) {
-        for (int[] dir : DIRS) {
-            int r = dir[0];
-            int c = dir[1];
+        visited[i][j] = true;
+        ans++;
+        if (n - 1 > 0) {
+            for (int[] dir : DIRS) {
+                int r = dir[0];
+                int c = dir[1];
+                if (i + r >= 0 && i + r < 3 && !visited[i + r][j]) {
+                    dfs(n - 1, i + r, j, visited);
+                }
 
-            visited[i][j] = true;
-
-            if (i + r >= 0 && i + r < 3 && !visited[i + r][j]) {
-
+                if (j + c >= 0 && j + c < 3 && !visited[i][j + c]) {
+                    dfs(n - 1, i, j + c, visited);
+                }
             }
-
-            if (j + c >= 0 && j + c < 3 && !visited[i][j + c]) {
-
-            }
-
-            visited[i][j] = false;
         }
-
+        visited[i][j] = false;
     }
 
 }
