@@ -1,5 +1,6 @@
 package com.zzzj.sort;
 
+import cn.hutool.core.util.NumberUtil;
 import com.zzzj.util.ArrayUtil;
 
 import java.util.Arrays;
@@ -11,7 +12,7 @@ import java.util.Arrays;
 public class MergeSort {
 
     public static void sort(int[] arr) {
-        practise(arr, 0, arr.length - 1);
+        merge2(arr, 0, arr.length - 1);
     }
 
     // 自顶向下进行归并
@@ -59,6 +60,62 @@ public class MergeSort {
     }
 
 
+    // 非递归版本
+    public static int[] merge2(int[] arr, int start, int end) {
+        int step = 1;
+
+        // 每次合并一个step的小数组
+        int N = end - start + 1;
+
+        while (step <= N) {
+            int i = start;
+
+            while (i < N) {
+                // 左开右闭区间
+                int leftStart = i;
+                int leftEnd = Math.min(leftStart + step, N);
+
+                int rightStart = leftEnd;
+                int rightEnd = Math.min(rightStart + step, N);
+
+                int[] help = new int[step << 1];
+
+                int helpIndex = 0;
+
+                while (leftStart < leftEnd && rightStart < rightEnd) {
+                    if (arr[leftStart] < arr[rightStart]) {
+                        help[helpIndex] = arr[leftStart];
+                        leftStart++;
+                    } else {
+                        help[helpIndex] = arr[rightStart];
+                        rightStart++;
+                    }
+                    helpIndex++;
+                }
+
+                while (leftStart < leftEnd) {
+                    help[helpIndex++] = arr[leftStart++];
+                }
+
+                while (rightStart < rightEnd) {
+                    help[helpIndex++] = arr[rightStart++];
+                }
+
+                // 赋值给nums数组
+                for (int j = i; j < rightEnd; j++) {
+                    arr[j] = help[j - i];
+                }
+
+                i = rightEnd;
+            }
+
+
+            step <<= 1;
+        }
+
+        return arr;
+    }
+
     public static int[] practise(int[] arr, int i, int j) {
         if (i == j) {
             return new int[]{arr[i]};
@@ -101,11 +158,8 @@ public class MergeSort {
         int[] array1 = ArrayUtil.generateArray(1000000);
         int[] array2 = ArrayUtil.generateNearlyOrderedArray(1000000, 100);
 
-        // 158
         ArrayUtil.testSort(array1, MergeSort::sort);
 
-        // 一个完全有序的数组
-        // 48ms
         ArrayUtil.testSort(array2, MergeSort::sort);
     }
 
