@@ -13,56 +13,83 @@ public class QuickSort {
     public static Random random = new Random();
 
     public static void sort(int[] arr) {
-        partition(arr, 0, arr.length - 1);
+        // partitionTwoWays(arr, 0, arr.length - 1);
+        partitionThreeWays(arr, 0, arr.length - 1);
     }
 
-    public static void partition(int[] arr, int left, int right) {
-        // 递归终止
-        int originLeft = left;
-        int originRight = right;
+    public static void partitionTwoWays(int[] arr, int left, int right) {
+        if (left >= right) {
+            return;
+        }
+        // <= | >
+        int randomIdx = random.nextInt(right - left) + left;
 
-        // 优化整个数组是有序的情况下,算法退化成O(n²)的复杂度
-        int idx = left + (random.nextInt(right) % (right - left + 1));
-        ArrayUtil.swap(arr, idx, originLeft);
+        ArrayUtil.swap(arr, right, randomIdx);
 
-        int k = arr[originLeft];
+        int num = arr[right];
 
-        int j = right;
-        int i = originLeft + 1;
+        int l = left - 1;
+        // 如果当时数小于= num,则和l+1位置的元素互换
+        // l++,i++
+        //
 
+        int r = left;
+        while (r <= right - 1) {
+            if (arr[r] <= num) {
+                ArrayUtil.swap(arr, l + 1, r);
+                l++;
+            }
+            r++;
+        }
 
-        while (i < j) {
-            if (arr[j] > k) {
-                j--;
-            } else if (arr[i] < k) {
+        ArrayUtil.swap(arr, right, l + 1);
+
+        partitionTwoWays(arr, left, l);
+
+        partitionTwoWays(arr, l + 2, right);
+
+    }
+
+    public static void partitionThreeWays(int[] arr, int left, int right) {
+        if (left >= right) {
+            return;
+        }
+
+        // < = >
+
+        // left - l  <
+        // l - i     =
+        // i - right >
+        int randomIdx = random.nextInt(right - left) + left;
+
+        ArrayUtil.swap(arr, right, randomIdx);
+
+        int num = arr[right];
+
+        int l = left - 1;
+        int i = left;
+        int r = right - 1;
+
+        while (i < r) {
+            if (arr[i] < num) {
+                ArrayUtil.swap(arr, i, ++l);
+                i++;
+            } else if (arr[i] == num) {
                 i++;
             } else {
-                // arr[j] == k || arr[i] == k || arr[j] < k && arr[i] > [k]
-                ArrayUtil.swap(arr, i, j);
-                i++;
-                j--;
+                ArrayUtil.swap(arr, i, r--);
             }
         }
 
-        if (arr[j] < k) {
-            ArrayUtil.swap(arr, originLeft, j);
-        } else {
-            j -= 1;
-            ArrayUtil.swap(arr, originLeft, j);
-        }
+        ArrayUtil.swap(arr, right, i + 1);
 
-        if (j - 1 > originLeft) {
-            partition(arr, originLeft, j - 1);
-        }
+        partitionThreeWays(arr, left, i);
 
-        if (right > j + 1) {
-            partition(arr, j + 1, right);
-        }
-
+        partitionThreeWays(arr, i + 2, right);
     }
 
     public static void main(String[] args) {
-        int[] array1 = ArrayUtil.generateArray(1000000);
+        int[] array1 = ArrayUtil.generateArray(10, 0, 5);
 
         int[] array2 = ArrayUtil.generateNearlyOrderedArray(1000000, 100);
 

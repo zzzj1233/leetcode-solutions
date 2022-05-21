@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Leet341 {
 
-    public interface NestedInteger {
+    private interface NestedInteger {
 
         // @return true if this NestedInteger holds a single integer, rather than a nested list.
         boolean isInteger();
