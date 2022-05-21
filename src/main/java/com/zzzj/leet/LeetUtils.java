@@ -296,4 +296,19 @@ public class LeetUtils {
         return result;
     }
 
+    public static void shuffle(int[] nums) {
+        for (int i = 0; i < nums.length / 2; i++) {
+            // 每次只需拿第一个元素进行交换即可
+            swap(nums, 0, random.nextInt(nums.length));
+        }
+    }
+
+
+    public static void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+
+
 }
