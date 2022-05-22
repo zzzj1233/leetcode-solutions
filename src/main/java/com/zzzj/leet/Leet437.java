@@ -9,60 +9,51 @@ import java.util.Map;
  */
 public class Leet437 {
 
-    public static Map<Integer, Integer> map = new HashMap<>();
+    public static Map<Integer, Integer> map;
 
     public static int ans;
 
+    public static int sum;
+
     public static void main(String[] args) {
-        System.out.println(pathSum(TreeNode.buildTree("[1,-2,-3,1,3,-2,null,-1]"), 2));
+        System.out.println(pathSum(TreeNode.buildTree("[10,5,-3,3,2,null,11,3,-2,null,1]"), 8));
     }
 
-    // [1,null,2,null,3,null,4,null,5]
-    // 3
+
     public static int pathSum(TreeNode root, int targetSum) {
+
         if (root == null) {
             return 0;
         }
-        map.clear();
-        map.put(0, 1);
-        ans = 0;
 
-        preOrder(root, targetSum, 0);
+        map = new HashMap<>();
+        ans = 0;
+        sum = 0;
+
+        preOrder(root, targetSum);
 
         return ans;
     }
 
-    // [1,-2,-3,1,3,-2,null,-1]
-    // 2
-    public static void preOrder(TreeNode root, int target, int path) {
-        int val = root.val;
+    public static void preOrder(TreeNode root, int targetSum) {
+        sum += root.val;
 
-        path += val;
+        ans += map.getOrDefault(sum - targetSum, 0);
 
-        int propose = path - target;
-
-        if (map.containsKey(propose)) {
-            ans += map.get(propose);
-        } else if (val == target) {
-            ans++;
-        }
-
-        map.put(path, map.getOrDefault(val, 0) + 1);
+        map.put(sum, map.getOrDefault(sum, 0) + 1);
 
         if (root.left != null) {
-            preOrder(root.left, target, path);
+            preOrder(root.left, targetSum);
         }
 
         if (root.right != null) {
-            preOrder(root.right, target, path);
+            preOrder(root.right, targetSum);
         }
 
-        int sub = map.get(path) - 1;
-        if (sub == 0) {
-            map.remove(path);
-        } else {
-            map.put(path, sub);
-        }
+        map.put(sum, map.get(sum) - 1);
+
+        sum -= root.val;
     }
+
 
 }

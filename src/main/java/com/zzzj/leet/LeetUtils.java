@@ -193,6 +193,11 @@ public class LeetUtils {
         return result;
     }
 
+    public static char[] convertChars1(String source) {
+        return convertChars("[" + source + "]")[0];
+    }
+
+
     // source e.g : [["o","a","a","n"],["e","t","a","e"],["i","h","k","r"],["i","f","l","v"]]
     public static char[][] convertChars(String source) {
 
