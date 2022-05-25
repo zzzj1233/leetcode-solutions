@@ -1,5 +1,7 @@
 package com.zzzj.dpoint;
 
+import com.zzzj.util.ArrayUtil;
+
 import java.util.Arrays;
 
 /**
@@ -9,56 +11,70 @@ import java.util.Arrays;
 public class Leet31 {
 
     public static void main(String[] args) {
-        printNextPermutation(new int[]{1, 2, 3});
-        printNextPermutation(new int[]{3, 2, 1});
-        printNextPermutation(new int[]{1, 1, 5});
-        printNextPermutation(new int[]{1, 3, 4, 3, 2, 0});
-        printNextPermutation(new int[]{1, 3, 2, 2, 2});
+        for (int i = 0; i < 10000; i++) {
+            int[] arr = ArrayUtil.generateArray(100, 0, 100);
+            printNextPermutation(arr);
+        }
     }
 
     public static void printNextPermutation(int[] nums) {
-        nextPermutation(nums);
-        System.out.println(Arrays.toString(nums));
+        int[] copy = Arrays.copyOfRange(nums, 0, nums.length);
+        int[] copy2 = Arrays.copyOfRange(nums, 0, nums.length);
+        right(nums);
+        nextPermutation(copy);
+
+        if (!Arrays.equals(nums, copy)) {
+            System.out.println("Error");
+            System.out.println(Arrays.toString(copy2));
+            System.out.println(Arrays.toString(nums));
+            System.out.println(Arrays.toString(copy));
+            System.out.println("==================== \n");
+            return;
+        }
     }
 
+
     public static void nextPermutation(int[] nums) {
-
-        // 3 2 1 确保 i == 0
-        // 1 2 3 4 确保 i == 3
-        // 1 3 2 确保 i == 0
-
+        // 1. 找到最后一个比当前数大的元素
         int L = -1;
-        int R = -1;
 
-        OUTER:
-        for (int i = nums.length - 1; i > 0; i--) {
-
-            if (nums[i] == 0) {
-                continue;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] > nums[i - 1]) {
+                L = i - 1;
             }
-
-            for (int j = i - 1; j >= 0; j--) {
-                if (nums[j] < nums[i]) {
-                    L = j;
-                    R = i;
-                    break OUTER;
-                }
-            }
-
         }
 
         if (L == -1) {
             reverse(nums);
-        } else {
-            swap(nums, L, R);
-            Arrays.sort(nums, L + 1, nums.length);
+            return;
         }
+
+        // 下一个数比当前元素大
+
+        // 2. 找到后面的最小的一个元素
+        int min = L + 1;
+
+        for (int i = L + 2; i < nums.length; i++) {
+            if (nums[i] <= nums[min] && nums[i] > nums[L]) {
+                min = i;
+            }
+        }
+
+
+        // 3. swap
+        swap(nums, L, min);
+
+        Arrays.sort(nums, L + 1, nums.length);
     }
 
-    public static void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
+
+    public static void reverse(int[] nums, int start) {
+        int left = start, right = nums.length - 1;
+        while (left < right) {
+            swap(nums, left, right);
+            left++;
+            right--;
+        }
     }
 
     public static void reverse(int[] nums) {
@@ -70,6 +86,27 @@ public class Leet31 {
             L++;
             R--;
         }
+    }
+
+    public static void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+
+    public static void right(int[] nums) {
+        int i = nums.length - 2;
+        while (i >= 0 && nums[i] >= nums[i + 1]) {
+            i--;
+        }
+        if (i >= 0) {
+            int j = nums.length - 1;
+            while (j >= 0 && nums[i] >= nums[j]) {
+                j--;
+            }
+            swap(nums, i, j);
+        }
+        reverse(nums, i + 1);
     }
 
 }
