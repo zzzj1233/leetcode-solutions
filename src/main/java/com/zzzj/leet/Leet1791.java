@@ -1,4 +1,4 @@
-package com.zzzj.graph;
+package com.zzzj.leet;
 
 /**
  * @author zzzj

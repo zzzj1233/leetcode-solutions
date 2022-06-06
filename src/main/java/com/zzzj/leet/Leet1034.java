@@ -1,4 +1,4 @@
-package com.zzzj.graph;
+package com.zzzj.leet;
 
 import java.util.Arrays;
 

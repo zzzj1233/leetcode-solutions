@@ -1,14 +1,13 @@
 package com.zzzj.mst;
 
-import com.zzzj.graph.WeightedGraph;
-import com.zzzj.graph.WeightedGraph.WeightedEdge;
+import com.zzzj.graph.weighted.WeightedGraph;
+import com.zzzj.graph.weighted.WeightedGraph.WeightedEdge;
 import com.zzzj.uf.IUf;
 import com.zzzj.uf.UnionFind5;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map.Entry;
 
 /**
  * @author Zzzj

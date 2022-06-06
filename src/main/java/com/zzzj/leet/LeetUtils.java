@@ -1,5 +1,8 @@
 package com.zzzj.leet;
 
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -315,5 +318,15 @@ public class LeetUtils {
         nums[j] = temp;
     }
 
+
+    public static TreeNode randomTree(int N, int rangeL, int rangeR) {
+        String[] arr = new String[N];
+
+        for (int i = 0; i < N; i++) {
+            arr[i] = String.valueOf(random.nextInt(rangeR) + rangeL);
+        }
+
+        return TreeNode.buildTree(ArrayUtil.join(arr, StrUtil.COMMA));
+    }
 
 }

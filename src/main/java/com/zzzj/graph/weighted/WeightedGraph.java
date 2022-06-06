@@ -1,7 +1,9 @@
-package com.zzzj.graph;
+package com.zzzj.graph.weighted;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.*;
 
 /**
@@ -28,6 +30,14 @@ public class WeightedGraph {
         } catch (FileNotFoundException e) {
             throw new RuntimeException("file not found : " + filename);
         }
+    }
+
+    public WeightedGraph(InputStream inputStream) {
+        readFile(new Scanner(inputStream));
+    }
+
+    public WeightedGraph(Reader reader) {
+        readFile(new Scanner(reader));
     }
 
     public boolean isConnected(int i, int j) {
