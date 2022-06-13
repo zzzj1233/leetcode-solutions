@@ -36,13 +36,21 @@ public class Leet698 {
     public static boolean canPartitionKSubsets(int[] nums, int k) {
         ans = false;
 
+        int N = nums.length;
+
+        int end = N - k - 1;
+
+        boolean[] visited = new boolean[N];
+
+        for (int i = 0; i < nums.length; i++) {
+
+        }
 
         return ans;
     }
 
-    public static void dfs(int[] nums, int k, int sum, boolean[] used, LinkedList<Integer> path) {
+    public static void dfs(int[] nums, int k, int sum, boolean[] used) {
 
-        
     }
 
     public static boolean right(int[] nums, int k) {

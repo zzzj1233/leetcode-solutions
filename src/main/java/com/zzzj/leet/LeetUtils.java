@@ -212,12 +212,14 @@ public class LeetUtils {
 
         for (int i = 0; i < split.length; i++) {
             String oneD = split[i].substring(1);
+
             String[] chars = oneD.split(",");
+
             // 去除双引号
             result[i] = new char[chars.length];
 
             for (int j = 0; j < chars.length; j++) {
-                String singleChar = chars[j].replaceAll("\"", "");
+                String singleChar = chars[j].trim().replaceAll("\"", "");
                 result[i][j] = singleChar.charAt(0);
             }
 
@@ -302,6 +304,23 @@ public class LeetUtils {
         }
 
         return result;
+    }
+
+    public static char[][] intsToChars(int[][] ints) {
+        int N = ints.length;
+        int M = ints[0].length;
+
+        char[][] res = new char[N][M];
+
+        for (int i = 0; i < N; i++) {
+
+            for (int j = 0; j < M; j++) {
+                res[i][j] = Character.forDigit(ints[i][j], 10);
+            }
+
+        }
+
+        return res;
     }
 
     public static void shuffle(int[] nums) {

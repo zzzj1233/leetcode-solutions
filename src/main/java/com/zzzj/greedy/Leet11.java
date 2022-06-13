@@ -14,13 +14,12 @@ public class Leet11 {
         int ans = 0;
 
         while (l < r) {
-            int right = height[r];
-            int left = height[l];
-            ans = Math.max(ans, Math.min(right, left) * (r - l + 1));
-            if (left < right) {
+            if (height[l] < height[r]) {
+                ans = Math.max(ans, height[l] * (r - l + 1));
                 l++;
-            } else {
-                r++;
+            } else { // 可以结算右边的结果
+                ans = Math.max(ans, height[r] * (r - l + 1));
+                r--;
             }
         }
 
