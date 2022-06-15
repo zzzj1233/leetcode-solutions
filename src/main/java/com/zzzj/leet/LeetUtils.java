@@ -174,16 +174,8 @@ public class LeetUtils {
         return result;
     }
 
-    public static char[][] random2DChars(int M, int N, boolean containsUpper) {
+    public static char[][] random2DChars(int M, int N, String candidate) {
         char[][] result = new char[M][N];
-
-        String candidate;
-
-        if (containsUpper) {
-            candidate = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        } else {
-            candidate = "abcdefghijklmnopqrstuvwxyz";
-        }
 
         for (int i = 0; i < result.length; i++) {
 
@@ -195,6 +187,11 @@ public class LeetUtils {
 
         return result;
     }
+
+    public static char[][] random2DChars(int M, int N, boolean containsUpper) {
+        return random2DChars(M, N, containsUpper ? "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" : "abcdefghijklmnopqrstuvwxyz");
+    }
+
 
     public static char[] convertChars1(String source) {
         return convertChars("[" + source + "]")[0];
@@ -271,6 +268,23 @@ public class LeetUtils {
         }
 
         return result;
+    }
+
+    public static String charsToLeetCode(char[][] chars) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+
+        for (int i = 0; i < chars.length; i++) {
+            String str = charsToLeetCode(chars[i]);
+            builder.append(str);
+            if (i < chars.length - 1) {
+                builder.append(",");
+            }
+        }
+
+        builder.append("]");
+
+        return builder.toString();
     }
 
     public static String charsToLeetCode(char[] chars) {

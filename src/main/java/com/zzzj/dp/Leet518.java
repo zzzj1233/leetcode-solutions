@@ -7,7 +7,7 @@ package com.zzzj.dp;
 public class Leet518 {
 
     public static void main(String[] args) {
-        System.out.println(change(5, new int[]{1, 2, 5}));
+        System.out.println(change(125, new int[]{1, 2, 5}));
     }
 
     public static int change(int amount, int[] coins) {
@@ -23,7 +23,7 @@ public class Leet518 {
             dp[i][amount] = 1;
         }
 
-        for (int i = 0; i < N; i++) {
+        for (int i = N - 1; i >= 0; i--) {
 
             for (int j = amount; j >= 0; j--) {
 
