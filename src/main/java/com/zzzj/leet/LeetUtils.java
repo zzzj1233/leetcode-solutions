@@ -1,12 +1,13 @@
 package com.zzzj.leet;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author zzzj
@@ -362,4 +363,62 @@ public class LeetUtils {
         return TreeNode.buildTree(ArrayUtil.join(arr, StrUtil.COMMA));
     }
 
+    public static LinkedList<Object> executeExpression(String expression, String arguments, Object instance) {
+        if (expression.startsWith("[")) {
+            expression = expression.substring(1, expression.length() - 1);
+        }
+
+        if (arguments.startsWith("[")) {
+            arguments = arguments.substring(1, arguments.length() - 1);
+        }
+
+        List<String> items = StrUtil.split(expression, ",")
+                .stream().map(s -> StrUtil.removeAll(s, '"', ' '))
+                .collect(Collectors.toList());
+
+        List<String> args = StrUtil.split(arguments, "],")
+                .stream().map(s -> StrUtil.removeAll(s, '"', ' ', '[', ']'))
+                .collect(Collectors.toList());
+
+        LinkedList<Object> resultList = new LinkedList<>();
+
+        for (int i = 0; i < items.size(); i++) {
+            String item = items.get(i);
+
+            if (item.equals(instance.getClass().getSimpleName())) {
+                continue;
+            }
+
+//            if (item.equals("reset")) {
+//                continue;
+//            }
+
+            Method method = ReflectUtil.getMethodByName(instance.getClass(), item);
+
+            Class<?>[] types = method.getParameterTypes();
+
+            if (types.length == 0) {
+                ReflectUtil.invoke(instance, method);
+            } else {
+
+                String methodArgs = args.get(i);
+
+                String[] split = methodArgs.split(",");
+
+                Object[] invokeArgs = new Object[split.length];
+
+                for (int j = 0; j < invokeArgs.length; j++) {
+                    invokeArgs[j] = Convert.convert(types[j], split[j]);
+                }
+
+                Object result = ReflectUtil.invoke(instance, method, invokeArgs);
+
+                if (result != null) {
+                    resultList.add(result);
+                }
+            }
+        }
+
+        return resultList;
+    }
 }
