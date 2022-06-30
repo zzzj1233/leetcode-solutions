@@ -1,4 +1,4 @@
-package com.zzzj.singlestack;
+package com.zzzj.stack;
 
 import java.util.LinkedList;
 

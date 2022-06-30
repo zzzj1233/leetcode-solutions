@@ -1,8 +1,8 @@
 package com.zzzj.leet;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * @author zzzj
@@ -25,7 +25,7 @@ public class Leet150 {
      * <p>
      */
     public static void main(String[] args) {
-        System.out.println(evalRPN(new String[]{"10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"}));
+        System.out.println(evalRPN(new String[]{"4", "13", "5", "/", "+"}));
     }
 
     private static String ADD = "+";
@@ -36,29 +36,29 @@ public class Leet150 {
     private static final List<String> operators = Arrays.asList(ADD, SUB, MUL, DIV);
 
     public static int evalRPN(String[] tokens) {
-        Stack<Integer> stack = new Stack<>();
 
-        for (String token : tokens) {
-            if (!operators.contains(token)) {
-                stack.push(Integer.parseInt(token));
-            } else {
-                // 取出两个数
-                Integer num2 = stack.pop();
-                Integer num1 = stack.pop();
+        LinkedList<Integer> stack = new LinkedList<>();
 
-                if (ADD.equals(token)) {
-                    stack.push(num1 + num2);
-                } else if (SUB.equals(token)) {
-                    stack.push(num1 - num2);
-                } else if (MUL.equals(token)) {
-                    stack.push(num1 * num2);
+        for (int i = 0; i < tokens.length; i++) {
+            if (operators.contains(tokens[i])) {
+                Integer y = stack.removeLast();
+                Integer x = stack.removeLast();
+
+                if (ADD.equals(tokens[i])) {
+                    stack.addLast(x + y);
+                } else if (SUB.equals(tokens[i])) {
+                    stack.addLast(x - y);
+                } else if (MUL.equals(tokens[i])) {
+                    stack.addLast(x * y);
                 } else {
-                    stack.push(num1 / num2);
+                    stack.addLast(x / y);
                 }
+            } else {
+                stack.addLast(Integer.parseInt(tokens[i]));
             }
         }
 
-        return stack.pop();
+        return stack.removeLast();
     }
 
 }

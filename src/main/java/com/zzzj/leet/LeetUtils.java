@@ -389,10 +389,6 @@ public class LeetUtils {
                 continue;
             }
 
-//            if (item.equals("reset")) {
-//                continue;
-//            }
-
             Method method = ReflectUtil.getMethodByName(instance.getClass(), item);
 
             Class<?>[] types = method.getParameterTypes();
