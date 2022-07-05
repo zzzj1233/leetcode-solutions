@@ -7,71 +7,28 @@ package com.zzzj.dp;
 public class Leet152 {
 
     public static void main(String[] args) {
-        System.out.println(maxProduct(new int[]{2, 3, -2, 4}));
-        // System.out.println(dynamicPlanning(new int[]{}));
+        System.out.println(maxProduct(new int[]{-2, 4, 4, -8}));
     }
 
-    private static int dynamicPlanning(int[] nums) {
-        int n = nums.length;
-
-        if (n == 0) {
-            return 0;
-        }
-
-        if (n == 1) {
-            return nums[0];
-        }
-
-        if (n == 2) {
-            return Math.max(nums[0], Math.max(nums[1], nums[0] * nums[1]));
-        }
-
-        int[][] dp = new int[n + 1][n + 1];
-
-        for (int i = 0; i <= n; i++) {
-            dp[n][i] = 1;
-            dp[i][n] = 1;
-        }
-
-        for (int i = n - 2; i >= 0; i--) {
-
-            for (int j = i - 1; j >= 0; j--) {
-                int val1 = nums[i] * nums[j];
-                int val2 = dp[i + 1][j + 1];
-                int val3 = val1 * dp[i + 1][j + 1];
-                dp[i][j] = Math.max(val1, Math.max(val2, val3));
-            }
-
-        }
-
-        return dp[0][1];
-    }
-
+    // [-2,3,-4]
     public static int maxProduct(int[] nums) {
-        return dfs(nums, 0, 1);
-    }
+        int N = nums.length;
 
-    private static int dfs(int[] nums, int i, int j) {
-        if (i >= nums.length) {
-            return 1;
+        int[][] dp = new int[N][2];
+        dp[0][0] = nums[0];
+        dp[0][1] = nums[0];
+
+        int ans = nums[0];
+
+        for (int i = 1; i < N; i++) {
+            dp[i][0] = Math.max(nums[i], Math.max(nums[i] * dp[i - 1][0], nums[i] * dp[i - 1][1]));
+
+            dp[i][1] = Math.min(nums[i], Math.min(nums[i] * dp[i - 1][0], nums[i] * dp[i - 1][1]));
+
+            ans = Math.max(ans, dp[i][0]);
         }
 
-        int val1 = nums[i] * nums[j];
-
-        int val2 = j + 1 >= nums.length ? Math.max(nums[i + 1], 0) : dfs(nums, i + 1, j + 1);
-
-        int val3 = nums[i] * nums[j];
-
-        if (i + 2 < nums.length) {
-            if (j + 2 < nums.length) {
-                val3 *= dfs(nums, i + 2, j + 2);
-            } else {
-                val3 *= nums[i + 2];
-            }
-        }
-
-
-        return Math.max(val1, Math.max(val2, val3));
+        return ans;
     }
 
 }
