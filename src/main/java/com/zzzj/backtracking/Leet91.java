@@ -1,5 +1,6 @@
 package com.zzzj.backtracking;
 
+
 /**
  * @author zzzj
  * @create 2022-04-08 11:00
@@ -8,7 +9,7 @@ public class Leet91 {
 
     public static void main(String[] args) {
         System.out.println(numDecodings("12"));
-        System.out.println(numDecodings("226"));
+        System.out.println(numDecodings("22601"));
         System.out.println(numDecodings("0"));
     }
 
@@ -17,44 +18,53 @@ public class Leet91 {
     }
 
     public static int dp(String s) {
-        char[] chars = s.toCharArray();
-        int[] dp = new int[s.length() + 1];
-        dp[s.length()] = 1;
+        int N = s.length();
 
-        for (int i = s.length() - 1; i >= 0; i--) {
-            if (chars[i] == '0') {
-                continue;
-            }
-            int ways = dp[i + 1];
-            if (i + 1 < chars.length) {
-                if ((chars[i] - '0') * 10 + chars[i + 1] - '0' <= 26) {
-                    ways += dp[i + 2];
+        char[] chars = s.toCharArray();
+
+        int[] dp = new int[N + 1];
+
+        dp[N] = 1;
+
+        for (int i = N - 1; i >= 0; i--) {
+            final char c = chars[i];
+            if (c == '0') {
+                dp[i] = 0;
+            } else {
+                int ways1 = 0;
+                if (i + 1 < chars.length) {
+                    if ((((int) c - '0') * 10) + ((int) chars[i + 1] - '0') <= 26) {
+                        ways1 = dp[i + 2];
+                    }
                 }
+                dp[i] = dp[i + 1] + ways1;
             }
-            dp[i] = ways;
         }
 
         return dp[0];
     }
 
-    public static int dfs(char[] chars, int i) {
-        if (i == chars.length) {
+    public static int dfs(char[] chars, int index) {
+        if (index == chars.length) {
             return 1;
         }
 
-        if (chars[i] == '0') {
+        if (chars[index] == '0') {
             return 0;
         }
 
-        int ways = dfs(chars, i + 1);
+        char c = chars[index];
 
-        if (i + 1 < chars.length) {
-            if ((chars[i] - '0') * 10 + chars[i + 1] - '0' <= 26) {
-                return ways + dfs(chars, i + 2);
+        int ways1 = 0;
+
+        if (index + 1 < chars.length) {
+            if ((((int) c - '0') * 10) + ((int) chars[index + 1] - '0') <= 26) {
+                ways1 = dfs(chars, index + 2);
             }
         }
 
-        return ways;
+        return dfs(chars, index + 1) + ways1;
     }
+
 
 }

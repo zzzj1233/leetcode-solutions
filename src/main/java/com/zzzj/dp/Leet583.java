@@ -17,80 +17,58 @@ public class Leet583 {
      */
     public static void main(String[] args) {
         System.out.println(minDistance("sea", "eat"));
-        System.out.println(dynamicPlanning("sea", "eat"));
+        System.out.println(minDistance("leetcode", "etco"));
     }
 
-    private static int dynamicPlanning(String word1, String word2) {
-        final char[] str1 = word1.toCharArray();
-        final char[] str2 = word2.toCharArray();
+    public static int minDistance(String word1, String word2) {
+//        return dfs(word1.toCharArray(), word2.toCharArray(), 0, 0);
+        return dp(word1.toCharArray(), word2.toCharArray());
+    }
 
-        int n1 = str1.length;
-        int n2 = str2.length;
+    public static int dp(char[] word1, char[] word2) {
+        int N = word1.length;
+        int M = word2.length;
 
-        int[][] dp = new int[n1 + 1][n2 + 1];
+        int[][] dp = new int[N + 1][M + 1];
 
-        for (int i = n1; i >= 0; i--) {
+        for (int i = 0; i <= M; i++) {
+            dp[N][i] = M - i;
+        }
 
-            for (int j = n2; j >= 0; j--) {
-                if (i >= n1 && j >= n2) {
-                    continue;
-                }
-                if (i >= str1.length) {
-                    dp[i][j] = dp[i][j + 1] + 1;
-                    continue;
-                }
-                if (j >= str2.length) {
-                    dp[i][j] = dp[i + 1][j] + 1;
-                    continue;
-                }
+        for (int i = 0; i <= N; i++) {
+            dp[i][M] = N - i;
+        }
 
-                if (str1[i] == str2[j]) {
+        for (int i = N - 1; i >= 0; i--) {
+            for (int j = M - 1; j >= 0; j--) {
+                if (word1[i] == word2[j]) {
                     dp[i][j] = dp[i + 1][j + 1];
                 } else {
-                    int val1 = dp[i + 1][j + 1] + 2;
-                    int val2 = dp[i + 1][j] + 1;
-                    int val3 = dp[i][j + 1] + 1;
-                    dp[i][j] = Math.min(val1, Math.min(val2, val3));
+                    dp[i][j] = Math.min(dp[i + 1][j], dp[i][j + 1]) + 1;
                 }
             }
-
         }
         return dp[0][0];
     }
 
-    private static int access(int[][] dp, int i, int j) {
-        if (i <= 0 && j <= 0) {
-            return 0;
+    public static int dfs(char[] word1, char[] word2, int i, int j) {
+        if (i >= word1.length) {
+            return word2.length - j;
         }
-        if (i <= 0) {
-            return dp[dp.length - 1][j - 1] + 1;
+        if (j >= word2.length) {
+            return word1.length - i;
         }
-        return dp[i][dp[i].length - 1] + 1;
+
+        // 没有必要删
+        if (word1[i] == word2[j]) {
+            return dfs(word1, word2, i + 1, j + 1);
+        }
+
+        int ways1 = dfs(word1, word2, i + 1, j);
+        int ways2 = dfs(word1, word2, i, j + 1);
+
+        return 1 + Math.min(ways1, ways2);
     }
 
-    public static int minDistance(String word1, String word2) {
-        // 如果这个字母不相同
-        return process(word1.toCharArray(), word2.toCharArray(), 0, 0);
-    }
-
-    private static int process(char[] str1, char[] str2, int i, int j) {
-        if (i >= str1.length && j >= str2.length) {
-            return 0;
-        }
-
-        if (i >= str1.length) {
-            return process(str1, str2, i, j + 1) + 1;
-        }
-
-        if (j >= str2.length) {
-            return process(str1, str2, i + 1, j) + 1;
-        }
-
-        if (str1[i] == str2[j]) {
-            return process(str1, str2, i + 1, j + 1);
-        } else {
-            return Math.min(process(str1, str2, i + 1, j + 1) + 2, 1 + Math.min(process(str1, str2, i + 1, j), process(str1, str2, i, j + 1) + 1));
-        }
-    }
 
 }

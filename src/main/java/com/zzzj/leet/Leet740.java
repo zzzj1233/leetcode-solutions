@@ -1,6 +1,11 @@
 package com.zzzj.leet;
 
+import com.zzzj.util.ArrayUtil;
+
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author zzzj
@@ -23,7 +28,7 @@ public class Leet740 {
      * 输出：6
      * 解释：
      * 删除 4 获得 4 个点数，因此 3 也被删除。
-     * 之后，删除 2 获得 2 个点数。总共获得 6 个点数。
+     * 之后，删除 2 获得 2 个点数。总共获得 6 个点数 。
      * <p>
      * 示例2：
      * <p>
@@ -35,61 +40,79 @@ public class Leet740 {
      * 总共获得 9 个点数。
      */
     public static void main(String[] args) {
-//        for (int i = 0; i < 5; i++) {
-//            int[] arr = LeetUtils.newArray(50);
-//            System.out.println(deleteAndEarn(arr));
-//        }
-//        System.out.println("--------------- \n");
-        System.out.println(deleteAndEarn(new int[]{1, 6, 3, 3, 8, 4, 8, 10, 1, 3}));
+
+        for (int i = 0; i < 1000; i++) {
+            final int[] arr = ArrayUtil.generateArray(5, 0, 10);
+            if (deleteAndEarn(arr) != right(arr)) {
+                System.out.println("Error");
+                System.out.println(Arrays.toString(arr));
+                System.out.println(deleteAndEarn(arr));
+                System.out.println(right(arr));
+                return;
+            }
+        }
+        System.out.println("Ok");
     }
 
     public static int deleteAndEarn(int[] nums) {
-        int n = nums.length;
+        TreeMap<Integer, Integer> map = new TreeMap<>();
 
-        if (n == 0) {
-            return 0;
-        }
-
-        Arrays.sort(nums);
-
-        int[] dp = new int[n + 1];
-        dp[n] = 0;
-
-        int cur = nums[n - 1];
-        int prevSum = 0;
-        int curSum = 0;
-        int discard = 0;
-        int prevNum = 0;
-
-        for (int i = n - 1; i >= 0; i--) {
-            // 最后一个元素
-            dp[i] = curSum + cur;
-            curSum += cur;
-            if (i - 1 < 0 || nums[i - 1] != cur) {
-                if (prevNum - cur == 1) {
-                    // prevSum > dp[i] + discard
-                    if (prevSum > dp[i] + discard) {
-                        discard = prevSum;
-                        dp[i] = prevSum;
-                    } else {
-                        dp[i] += discard;
-                        discard = prevSum;
-                    }
-                } else {
-                    discard = prevSum;
-                    dp[i] += prevSum;
-                }
-                prevSum = dp[i];
-                if (i - 1 >= 0) {
-                    prevNum = cur;
-                    cur = nums[i - 1];
-                }
-                curSum = 0;
+        for (int i = 0; i < nums.length; i++) {
+            Integer value = map.get(nums[i]);
+            if (value == null) {
+                map.put(nums[i], nums[i]);
+            } else {
+                map.put(nums[i], value + nums[i]);
             }
         }
 
+        if (map.size() == 1) {
+            return map.firstEntry().getValue();
+        }
 
-        return dp[0];
+        int[] dp = new int[map.size()];
+
+        Iterator<Map.Entry<Integer, Integer>> iterator = map.entrySet().iterator();
+
+        Map.Entry<Integer, Integer> first = iterator.next();
+        Map.Entry<Integer, Integer> second = iterator.next();
+
+        dp[0] = first.getValue();
+        dp[1] = second.getKey() == first.getKey() + 1 ? Math.max(first.getValue(), second.getValue()) : first.getValue() + second.getValue();
+
+        Map.Entry<Integer, Integer> prev = second;
+
+        int i = 2;
+
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, Integer> next = iterator.next();
+            if (next.getKey() == prev.getKey() + 1) {
+                dp[i] = Math.max(dp[i - 1], dp[i - 2] + next.getValue());
+            } else {
+                dp[i] = next.getValue() + dp[i - 1];
+            }
+            i++;
+            prev = next;
+        }
+
+        return dp[dp.length - 1];
+    }
+
+    public static int right(int[] nums) {
+        int[] trans = new int[10001];
+        for (int i = 0; i < nums.length; i++) {
+            trans[nums[i]] += nums[i];
+        }
+
+        int[] dp = new int[10001];
+
+        dp[0] = 0;
+        dp[1] = trans[1];
+        for (int i = 2; i < trans.length; i++) {
+            dp[i] = Math.max(dp[i - 1], dp[i - 2] + trans[i]);
+        }
+
+        return dp[dp.length - 1];
     }
 
 }

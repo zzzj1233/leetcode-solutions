@@ -1,5 +1,6 @@
 package com.zzzj.util;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.function.Consumer;
 
@@ -90,6 +91,12 @@ public class ArrayUtil {
         }
 
         return arr;
+    }
+
+    public static int[] distinct(int[] arr) {
+        return Arrays.stream(arr)
+                .distinct()
+                .toArray();
     }
 
 }

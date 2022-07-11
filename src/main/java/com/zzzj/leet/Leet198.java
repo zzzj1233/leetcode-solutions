@@ -1,8 +1,5 @@
 package com.zzzj.leet;
 
-import javax.sound.midi.Soundbank;
-import java.util.Arrays;
-
 /**
  * @author zzzj
  * @create 2021-10-28 11:36
@@ -28,31 +25,28 @@ public class Leet198 {
      * 偷窃到的最高金额 = 2 + 9 + 1 = 12 。
      */
     public static void main(String[] args) {
-        int[] ints = LeetUtils.newArray(50);
-        System.out.println(Arrays.toString(ints));
-        System.out.println(rob(ints));
-        System.out.println(rob(new int[]{1,2}));
+        System.out.println(rob(new int[]{2, 1, 5, 2}));
     }
 
+    // [2,1,1,2]
     public static int rob(int[] nums) {
-        int n = nums.length;
+        int N = nums.length;
 
-        if (n == 0) {
-            return 0;
+        if (nums.length == 1) {
+            return nums[0];
         }
 
-        int[] memo = new int[n + 1];
+        int[] dp = new int[N];
 
-        // 7 9 3 1
-        memo[n] = 0;
-        memo[n - 1] = nums[n - 1];
+        dp[0] = nums[0];
 
-        for (int i = n - 2; i >= 0; i--) {
-            int sum = nums[i] + memo[i + 2];
-            memo[i] = Math.max(sum, memo[i + 1]);
+        dp[1] = Math.max(nums[1], nums[0]);
+
+        for (int i = 2; i < nums.length; i++) {
+            dp[i] = Math.max(dp[i - 1], nums[i] + dp[i - 2]);
         }
 
-        return memo[0];
+        return dp[N - 1];
     }
 
 }
