@@ -2,10 +2,7 @@ package com.zzzj.leet;
 
 import com.zzzj.util.ArrayUtil;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * @author zzzj
@@ -21,12 +18,61 @@ public class Leet128 {
 
         for (int i = 0; i < 10000; i++) {
             int[] arr = ArrayUtil.generateArray(10, 0, 10);
-            if (longestConsecutive(arr) != right(arr)) {
+            if (longestConsecutive(arr) != ufSolution(arr)) {
                 System.out.println(Arrays.toString(arr));
                 System.out.println("Error");
                 return;
             }
         }
+    }
+
+
+    private static class UF {
+        Map<Integer, Integer> parent = new HashMap<>();
+
+        void union(int p, int q) {
+            if (!parent.containsKey(p)) {
+                parent.put(p, p);
+            }
+            if (!parent.containsKey(q)) {
+                parent.put(q, q);
+            }
+
+            Integer pParent = find(p);
+            Integer qParent = find(q);
+
+            if (pParent.equals(qParent)) {
+                return;
+            }
+
+            parent.put(pParent, qParent);
+        }
+
+        Integer find(int p) {
+            while (parent.get(p) != p) {
+                p = parent.get(p);
+            }
+            return p;
+        }
+    }
+
+    // 使用并查集
+    public static int ufSolution(int[] nums) {
+
+        UF uf = new UF();
+
+        for (int i = 0; i < nums.length; i++) {
+            int num = nums[i];
+            uf.union(num, num + 1);
+        }
+
+        int ans = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+            ans = Math.max(ans, uf.find(nums[i]) - nums[i]);
+        }
+
+        return ans;
     }
 
     public static int longestConsecutive(int[] nums) {

@@ -1,5 +1,10 @@
 package com.zzzj.dp;
 
+
+import com.zzzj.leet.LeetUtils;
+
+import java.util.Arrays;
+
 /**
  * @author Zzzj
  * @create 2022-04-03 18:17
@@ -7,14 +12,102 @@ package com.zzzj.dp;
 public class Leet44 {
 
     public static void main(String[] args) {
-        System.out.println(isMatch("aa", "a"));
-        System.out.println(isMatch("aa", "*"));
-        System.out.println(isMatch("cb", "?a"));
-        System.out.println(isMatch("adceb", "*a*b"));
-        System.out.println(isMatch("acdcb", "a*c?b"));
+
+        // "b"
+        // "?*?"
+        System.out.println(isMatch("b", "?*?"));
+
+        for (int i = 0; i < 10000; i++) {
+            String s = LeetUtils.randomString(LeetUtils.random.nextInt(10) + 1, false);
+            String p = LeetUtils.randomString(LeetUtils.random.nextInt(10) + 1, "abcdefghijklmnopqrstuvwxyz??????******");
+
+            if (isMatch(s, p) != right(s, p)) {
+                System.out.println("Error");
+                return;
+            }
+        }
+
+        System.out.println("OK");
     }
 
-    public static boolean isMatch(String str, String pattern) {
+
+    public static boolean isAllWild(String p) {
+        int N = p.length();
+
+        for (int i = 0; i < N; i++) {
+            if (p.charAt(i) != '*') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean isMatch(String s, String pattern) {
+        if (s.isEmpty()) {
+            return isAllWild(pattern);
+        }
+
+        if (pattern.isEmpty()) {
+            return false;
+        }
+
+        int N = pattern.length();
+        int M = s.length();
+
+        boolean[][] dp = new boolean[N][M];
+
+        char firstChar = pattern.charAt(0);
+
+        if (firstChar == '?' || firstChar == s.charAt(0)) {
+            dp[0][0] = true;
+        } else if (firstChar == '*') {
+            Arrays.fill(dp[0], true);
+        }
+
+        boolean isAllStar = true;
+
+        firstChar = s.charAt(0);
+
+        for (int i = 0; i < N; i++) {
+            if (pattern.charAt(i) == '*') {
+                dp[i][0] = true;
+                continue;
+            }
+            if ((pattern.charAt(i) == '?' || pattern.charAt(i) == firstChar) && isAllStar) {
+                isAllStar = false;
+                dp[i][0] = true;
+            } else {
+                break;
+            }
+        }
+
+        for (int i = 1; i < N; i++) {
+
+            for (int j = 1; j < M; j++) {
+
+                char p = pattern.charAt(i);
+                char c = s.charAt(j);
+
+                if (p == '*') {
+                    for (int k = 0; k <= j; k++) {
+                        if (dp[i - 1][k]) {
+                            dp[i][j] = true;
+                            break;
+                        }
+                    }
+                } else if (p == '?' || p == c) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                }
+
+            }
+
+        }
+
+        return dp[N - 1][M - 1];
+    }
+
+    public static boolean right(String str, String pattern) {
         int N = str.length();
         int M = pattern.length();
 
@@ -49,31 +142,5 @@ public class Leet44 {
         return dp[0][0];
     }
 
-
-    public static boolean dfs(char[] s, char[] p, int si, int pi) {
-        if (si == s.length) {
-            if (pi == p.length) {
-                return true;
-            }
-            return p[pi] == '*' && dfs(s, p, si, pi + 1);
-        }
-
-        if (pi == p.length) {
-            return false;
-        }
-
-        if (p[pi] == '?') {
-            return dfs(s, p, si + 1, pi + 1);
-        } else if (p[pi] == '*') {
-            for (int i = 0; i <= s.length - si; i++) {
-                if (dfs(s, p, si + i, pi + 1)) {
-                    return true;
-                }
-            }
-            return false;
-        } else {
-            return p[pi] == s[si] && dfs(s, p, si + 1, pi + 1);
-        }
-    }
 
 }

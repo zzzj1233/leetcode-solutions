@@ -16,47 +16,49 @@ public class Leet718 {
      */
 
     public static void main(String[] args) {
-        System.out.println(dynamicPlanning(new int[]{1, 2, 3, 2, 1}, new int[]{3, 2, 1, 4, 7}));
+
+        System.out.println(findLength(new int[]{1, 2, 3, 2, 1}, new int[]{3, 6, 1, 4}));
+
     }
 
     public static int findLength(int[] nums1, int[] nums2) {
-        return findLength(nums1, nums2, 0, 0);
-    }
 
-    private static int dynamicPlanning(int[] nums1, int[] nums2) {
-        int n1 = nums1.length;
-        int n2 = nums2.length;
+        int N = nums1.length;
 
-        int[][] dp = new int[n1][n2];
+        int M = nums2.length;
 
-        int max = 0;
+        int[][] dp = new int[N][M];
 
-        for (int i = 0; i < n1; i++) {
-            for (int j = 0; j < n2; j++) {
-                if (nums1[i] == nums2[j]) {
-                    dp[i][j] = 1;
-                    if (i - 1 >= 0 && j - 1 >= 0 && dp[i - 1][j - 1] > 0) {
-                        dp[i][j] = dp[i - 1][j - 1] + 1;
-                    }
-                    max = Math.max(max, dp[i][j]);
-                }
+        dp[0][0] = nums1[0] == nums2[0] ? 1 : 0;
+
+        int ans = dp[0][0];
+
+        for (int i = 1; i < M; i++) {
+            if (nums1[0] == nums2[i]) {
+                dp[0][i] = 1;
+                ans = 1;
             }
         }
 
-
-        return max;
-    }
-
-    private static int findLength(int[] nums1, int[] nums2, int i, int j) {
-        if (i >= nums1.length || j >= nums2.length) {
-            return 0;
+        for (int i = 1; i < N; i++) {
+            if (nums1[i] == nums2[0]) {
+                dp[i][0] = 1;
+                ans = 1;
+            }
         }
 
-        if (nums1[i] == nums2[j]) {
-            return 1 + findLength(nums1, nums2, i + 1, j + 1);
+        for (int i = 1; i < N; i++) {
+
+            for (int j = 1; j < M; j++) {
+
+                dp[i][j] = (nums1[i] == nums2[j] ? 1 + dp[i - 1][j - 1] : 0);
+
+                ans = Math.max(ans, dp[i][j]);
+            }
+
         }
 
-        return Math.max(findLength(nums1, nums2, i + 1, j), findLength(nums1, nums2, i, j + 1));
+        return ans;
     }
 
 }
