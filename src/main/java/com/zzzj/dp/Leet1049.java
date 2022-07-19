@@ -9,62 +9,52 @@ import java.util.Arrays;
 public class Leet1049 {
 
     public static void main(String[] args) {
-//        System.out.println(lastStoneWeightII(new int[]{2, 7, 4, 1, 8, 1}));
+        // 1 1 2 4 7 8
+        System.out.println(lastStoneWeightII(new int[]{1, 1, 2, 4, 7, 8}));
         System.out.println(lastStoneWeightII(new int[]{1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 14, 23, 37, 61, 98}));
+
+        // [53,54,3,61,67]
+        System.out.println(lastStoneWeightII(new int[]{53, 54, 3, 61, 67}));
     }
 
+    // 从stones中取一些石头，使得这些石头的总重量尽可能达到所有石头总重量sum的一半。这样就可以转化为0-1背包问题，背包最多能装下sum/2
     public static int lastStoneWeightII(int[] stones) {
         int sum = Arrays.stream(stones).sum();
 
-        int half = sum / 2;
+        int N = stones.length;
 
-        // 滑动窗口
-        Arrays.sort(stones);
+        int M = sum / 2 + 1;
 
-        int l = 0;
-        int r = 0;
-        int curSum = 0;
-        int min = Integer.MAX_VALUE;
+        boolean[][] dp = new boolean[N][M];
 
-        OUTER:
-        while (r < stones.length) {
-            curSum += stones[r];
+        dp[0][stones[0]] = true;
 
-            while (curSum > half) {
-                curSum -= stones[l];
-                l++;
-                if (l >= r) {
-                    break OUTER;
+        for (int i = 1; i < N; i++) {
+            int stone = stones[i];
+
+            for (int j = 0; j < M; j++) {
+                if (dp[i - 1][j] && stone + j < M) {
+                    dp[i][stone + j] = true;
                 }
             }
 
-            if (curSum == half) {
-                min = 0;
+            for (int j = 0; j < M; j++) {
+                if (dp[i - 1][j]) {
+                    dp[i][j] = true;
+                }
+            }
+        }
+
+        int max = 0;
+
+        for (int i = M - 1; i >= 0; i--) {
+            if (dp[N - 1][i]) {
+                max = i;
                 break;
             }
-
-            min = Math.min(min, Math.min((sum - half) - curSum, sum - curSum));
-
-            r++;
         }
 
-        return -1;
-    }
-
-    public static int dfs(int[] stones, int i, int half, int cur) {
-        // 要i或者不要i
-        if (cur + stones[i] > half) {
-            return Integer.MAX_VALUE;
-        }
-        if (cur + stones[i] == half) {
-            return 0;
-        }
-        // 要i
-        int ways1 = dfs(stones, i + 1, half, cur + stones[i]);
-
-        int ways2 = dfs(stones, i + 1, half, cur);
-
-        return Math.min(ways1, Math.min(half - cur, ways2));
+        return sum - (max << 1);
     }
 
 }

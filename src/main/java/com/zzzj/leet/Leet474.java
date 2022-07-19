@@ -8,64 +8,56 @@ package com.zzzj.leet;
 public class Leet474 {
 
     public static void main(String[] args) {
+        // ["10","0001","111001","1","0"]
+        // 3
+        // 4
         System.out.println(findMaxForm(new String[]{"10", "0001", "111001", "1", "0"}, 5, 3));
         System.out.println(findMaxForm(new String[]{"10", "0", "1"}, 1, 1));
+        System.out.println(findMaxForm(new String[]{"10", "0001", "111001", "1", "0"}, 3, 4));
     }
 
     public static int findMaxForm(String[] strs, int m, int n) {
         int[][] counts = zeroCount(strs);
-        return dp(counts, m, n);
-    }
 
-    public static int dp(int[][] counts, int M, int N) {
-        int len = counts.length;
+        // 最大子集
+        int N = strs.length;
 
-        int[][][] dp = new int[len + 1][M + 1][N + 1];
+        int[][][] dp = new int[N][m + 1][n + 1];
 
-        for (int i = len - 1; i >= 0; i--) {
+        int ans = 0;
 
+        if (counts[0][0] <= m && counts[0][1] <= n) {
+            dp[0][counts[0][0]][counts[0][1]] = 1;
+            ans = 1;
+        }
+
+        for (int i = 1; i < N; i++) {
             int[] count = counts[i];
+            int zero = count[0];
+            int one = count[1];
 
-            for (int m = M; m >= 0; m--) {
+            dp[i] = dp[i - 1];
 
-                for (int n = N; n >= 0; n--) {
-
-                    int ways1 = 0;
-                    if (m + count[0] <= M && n + count[1] <= N) {
-                        ways1 = 1 + dp[i + 1][m + count[0]][n + count[1]];
-                    }
-
-                    int ways2 = dp[i + 1][m][n];
-
-                    dp[i][m][n] = Math.max(ways1, ways2);
-                }
-
+            if (zero > m || one > n) {
+                continue;
             }
+
+            int zeroSub = m - zero;
+            int oneSub = n - one;
+
+            for (int j = zeroSub; j >= 0; j--) {
+                for (int k = oneSub; k >= 0; k--) {
+                    dp[i][j + zero][k + one] = Math.max(dp[i - 1][j][k] + 1, dp[i][j + zero][k + one]);
+                    ans = Math.max(ans, dp[i][j + zero][k + one]);
+                }
+            }
+
+
         }
 
-        return dp[0][0][0];
+        return ans;
     }
 
-    public static int dfs(int[][] counts, int M, int N, int m, int n, int i) {
-        if (i >= counts.length) {
-            return 0;
-        }
-        if (m > M || n > N) {
-            return -1;
-        }
-        // 当前在i位置做决定,可以要i,也可以不要i
-        int[] count = counts[i];
-
-        int ways1 = dfs(counts, M, N, m + count[0], n + count[1], i + 1);
-
-        int ways2 = dfs(counts, M, N, m, n, i + 1);
-
-        if (ways1 >= 0) {
-            ways1 += 1;
-        }
-
-        return Math.max(ways1, ways2);
-    }
 
     public static int[][] zeroCount(String[] strs) {
         int[][] result = new int[strs.length][2];

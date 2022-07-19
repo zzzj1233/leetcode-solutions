@@ -14,65 +14,33 @@ public class Leet64 {
     }
 
     public static int minPathSum(int[][] grid) {
-        // return dfs(grid, grid.length, grid[0].length, 0, 0);
-        return dp(grid);
-    }
+        // 只能往下或者往右走,求最短路径
 
-    public static int dp(int[][] grid) {
         int N = grid.length;
         int M = grid[0].length;
 
         int[][] dp = new int[N][M];
 
-        dp[N - 1][M - 1] = grid[N - 1][M - 1];
+        dp[0][0] = grid[0][0];
 
-        for (int i = N - 1; i >= 0; i--) {
+        for (int i = 1; i < M; i++) {
+            dp[0][i] = dp[0][i - 1] + grid[0][i];
+        }
 
-            for (int j = M - 1; j >= 0; j--) {
+        for (int i = 1; i < N; i++) {
+            dp[i][0] = dp[i - 1][0] + grid[i][0];
+        }
 
-                if (i + 1 >= N && j + 1 >= M) {
-                    dp[i][j] = grid[i][j];
-                    continue;
-                }
+        for (int i = 1; i < N; i++) {
 
-                int bottomResult = Integer.MAX_VALUE;
-                int rightResult = Integer.MAX_VALUE;
-
-                if (i + 1 < N) {
-                    bottomResult = dp[i + 1][j];
-                }
-
-                if (j + 1 < M) {
-                    rightResult = dp[i][j + 1];
-                }
-
-                dp[i][j] = Math.min(bottomResult, rightResult) + grid[i][j];
+            for (int j = 1; j < M; j++) {
+                dp[i][j] = grid[i][j] + Math.min(dp[i - 1][j], dp[i][j - 1]);
             }
 
         }
 
-        return dp[0][0];
+        return dp[N - 1][M - 1];
     }
 
-    public static int dfs(int[][] grid, int N, int M, int i, int j) {
-        // 只可以往右或者往下走
-        int bottomResult = Integer.MAX_VALUE;
-        int rightResult = Integer.MAX_VALUE;
-
-        // 终点
-        if (i + 1 >= N && j + 1 >= M) {
-            return grid[i][j];
-        }
-
-        if (i + 1 < N) {
-            bottomResult = dfs(grid, N, M, i + 1, j);
-        }
-
-        if (j + 1 < M) {
-            rightResult = dfs(grid, N, M, i, j + 1);
-        }
-
-        return Math.min(bottomResult, rightResult) + grid[i][j];
-    }
 
 }

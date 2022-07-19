@@ -26,58 +26,50 @@ public class Leet115 {
      */
     public static void main(String[] args) {
         System.out.println(numDistinct("rabbbit", "rabbit"));
-        System.out.println(dynamicPlanning("rabbbit", "rabbit"));
-
         System.out.println(numDistinct("babgbag", "bag"));
-        System.out.println(dynamicPlanning("babgbag", "bag"));
     }
 
-    private static int dynamicPlanning(String s, String t) {
-        char[] str1 = s.toCharArray();
-        char[] str2 = t.toCharArray();
+    public static int numDistinct(String s, String t) {
+        int N = s.length();
+        int M = t.length();
 
-        int n1 = str1.length;
-        int n2 = str2.length;
+        int[][] dp = new int[N + 1][M + 1];
 
-        int[][] dp = new int[n1 + 1][n2 + 1];
-
-        for (int i = 0; i <= n1; i++) {
-            dp[i][n2] = 1;
+        for (int i = 0; i <= N; i++) {
+            dp[i][M] = 1;
         }
 
-        for (int j = n2 - 1; j >= 0; j--) {
-            for (int i = n1 - 1; i >= 0; i--) {
-                if (str1[i] == str2[j]) {
+        for (int i = N - 1; i >= 0; i--) {
+
+            for (int j = M - 1; j >= 0; j--) {
+
+                if (s.charAt(i) == t.charAt(j)) {
                     dp[i][j] = dp[i + 1][j + 1] + dp[i + 1][j];
                 } else {
                     dp[i][j] = dp[i + 1][j];
                 }
             }
+
         }
 
         return dp[0][0];
     }
 
-    public static int numDistinct(String s, String t) {
-        return process(t.toCharArray(), s.toCharArray(), 0, 0);
-    }
-
-    private static int process(char[] str1, char[] str2, int i, int j) {
-        if (i >= str1.length) {
+    public static int dfs(String s, String t, int i, int j) {
+        if (j >= t.length()) {
             return 1;
         }
-
-        if (j >= str2.length) {
+        if (i >= s.length()) {
             return 0;
         }
 
-        int val1 = 0;
+        int ways1 = dfs(s, t, i + 1, j);
 
-        if (str1[i] == str2[j]) {
-            val1 = process(str1, str2, i + 1, j + 1);
+        if (s.charAt(i) == t.charAt(j)) {
+            return dfs(s, t, i + 1, j + 1) + ways1;
         }
 
-        return process(str1, str2, i, j + 1) + val1;
+        return ways1;
     }
 
 }
