@@ -34,6 +34,8 @@ public class UfTest {
         test(new UnionFind2(size), m);
         // 18ms
         test(new UnionFind3(size), m);
+
+//        test(new Leet827.UnionFind(size), m);
     }
 
     public static void test1000w() {
@@ -48,10 +50,12 @@ public class UfTest {
 
         // 3656ms
         test(new UnionFind5(size), m);
+
+//        test(new Leet827.UnionFind(size), m);
     }
 
     public static void main(String[] args) {
-        // test10w();
+//        test10w();
         test1000w();
     }
 

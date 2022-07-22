@@ -2,198 +2,95 @@ package com.zzzj.backtracking;
 
 import com.zzzj.leet.LeetUtils;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author zzzj
- * @create 2022-02-25 17:55
+ * @create 2022-07-21 15:20
  */
 public class Leet212 {
 
     public static void main(String[] args) {
-
-        for (int i = 0; i < 10; i++) {
-            char[][] board = LeetUtils.random2DChars(5, 5, false);
-
-            int wordLength = LeetUtils.random.nextInt(100) + 1;
-
-            String[] wordsArr = new String[wordLength];
-
-            for (int j = 0; j < wordLength; j++) {
-                wordsArr[j] = LeetUtils.randomString(LeetUtils.random.nextInt(10) + 1, false);
-            }
-
-            Set<String> ans = new HashSet<>(findWords(board, wordsArr));
-
-            if (!ans.equals(new HashSet<>(right(board, wordsArr)))) {
-                System.out.println(Arrays.deepToString(board));
-                System.out.println(Arrays.toString(wordsArr));
-                System.out.println(ans);
-                return;
-            }
-
-        }
-
-
+        System.out.println(findWords(LeetUtils.convertChars("[[\"o\",\"a\",\"a\",\"n\"],[\"e\",\"t\",\"a\",\"e\"],[\"i\",\"h\",\"k\",\"r\"],[\"i\",\"f\",\"l\",\"v\"]]"), new String[]{"oath", "pea", "eat", "rain"}));
     }
 
-    public static List<String> findWords(char[][] board, String[] wordsArr) {
+    public static List<String> findWords(char[][] board, String[] words) {
+        int N = board.length;
+        int M = board[0].length;
 
-        Set<String> words = new HashSet<>(Arrays.asList(wordsArr));
+        ArrayList<String> ans = new ArrayList<>();
 
-        boolean[][] used = new boolean[board.length][board[0].length];
+        boolean[][] visited = new boolean[N][M];
 
-        List<String> ans = new ArrayList<>();
-
-        Set<Integer> length = words.stream().map(String::length).collect(Collectors.toSet());
-
-        int max = length.stream().mapToInt(value -> value).max().getAsInt();
-
-        StringBuilder builder = new StringBuilder(max);
-
-        for (int i = 0; i < board.length; i++) {
-
-            for (int j = 0; j < board[i].length; j++) {
-                dfs(ans, board, used, words, length, i, j, max, builder);
+        OUTER:
+        for (String word : words) {
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < M; j++) {
+                    if (dfs(board, visited, word, 0, i, j)) {
+                        ans.add(word);
+                        continue OUTER;
+                    }
+                }
             }
 
         }
-
 
         return ans;
     }
 
-    public static void dfs(List<String> ans,
-                           char[][] board,
-                           boolean[][] used,
-                           Set<String> words,
-                           Set<Integer> length,
-                           int i,
-                           int j,
-                           int maxLength,
-                           StringBuilder path
-    ) {
-        if (used[i][j]) {
-            return;
+    public static final int[][] DIRS = {
+            {0, 1},
+            {0, -1},
+            {1, 0},
+            {-1, 0},
+    };
+
+    // 回溯,超时
+    public static boolean dfs(char[][] board, boolean[][] visited, String word, int index, int i, int j) {
+        if (index == word.length()) {
+            return true;
         }
 
-        String str;
-
-        int len = path.length();
-
-        if (len == maxLength) {
-            return;
+        if (visited[i][j]) {
+            return false;
         }
 
-        boolean match = false;
-
-        path.append(board[i][j]);
-        used[i][j] = true;
-
-        if (length.contains(len + 1) && words.contains((str = path.toString()))) {
-            ans.add(str);
-            path.setLength(len);
-            match = true;
-        }
-        if (i - 1 >= 0) {
-            dfs(ans, board, used, words, length, i - 1, j, maxLength, path);
-        }
-        if (i + 1 < board.length) {
-            dfs(ans, board, used, words, length, i + 1, j, maxLength, path);
-        }
-        if (j - 1 >= 0) {
-            dfs(ans, board, used, words, length, i, j - 1, maxLength, path);
-        }
-        if (j + 1 < board[i].length) {
-            dfs(ans, board, used, words, length, i, j + 1, maxLength, path);
-        }
-        used[i][j] = false;
-        if (!match) {
-            path.setLength(len);
-        }
-    }
-
-
-    // 上下左右移动的方向
-    static int[][] dirs = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-
-    public static List<String> right(char[][] board, String[] words) {
-        // 结果集，去重
-        Set<String> resultSet = new HashSet<>();
-
-        // 构建字典树
-        TrieNode root = buildTrie(words);
-
-        int m = board.length;
-        int n = board[0].length;
-        // 记录某个下标是否访问过
-        boolean[][] visited = new boolean[m][n];
-        // 记录沿途遍历到的元素
-        StringBuilder result = new StringBuilder();
-
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                // 从每个元素开始遍历
-                dfs(resultSet, result, board, i, j, root, visited);
-            }
+        if (word.charAt(index) != board[i][j]) {
+            return false;
         }
 
-        // 题目要求返回List
-        return new ArrayList<>(resultSet);
-    }
-
-    private static void dfs(Set<String> resultSet, StringBuilder result, char[][] board,
-                            int i, int j, TrieNode node, boolean[][] visited) {
-        // 判断越界，或者访问过，或者不在字典树中，直接返回
-        if (i < 0 || j < 0 || i >= board.length || j >= board[0].length || visited[i][j]
-                || node.children[board[i][j] - 'a'] == null) {
-            return;
+        if (index + 1 == word.length()) {
+            return true;
         }
 
-        // 记录当前字符
-        result.append(board[i][j]);
-
-        // 如果有结束字符，加入结果集中
-        if (node.children[board[i][j] - 'a'].isEnd) {
-            resultSet.add(result.toString());
-        }
-
-        // 记录当前元素已访问
         visited[i][j] = true;
 
-        // 按四个方向去遍历
-        for (int[] dir : dirs) {
-            dfs(resultSet, result, board, i + dir[0], j + dir[1], node.children[board[i][j] - 'a'], visited);
-        }
-
-        // 还原状态
-        visited[i][j] = false;
-        result.deleteCharAt(result.length() - 1);
-    }
-
-    private static TrieNode buildTrie(String[] words) {
-        TrieNode root = new TrieNode();
-        for (String word : words) {
-            char[] arr = word.toCharArray();
-            TrieNode curr = root;
-            for (char c : arr) {
-                if (curr.children[c - 'a'] == null) {
-                    curr.children[c - 'a'] = new TrieNode();
+        // 上下左右
+        boolean result = false;
+        for (int[] dir : DIRS) {
+            int row = dir[0];
+            int col = dir[1];
+            if (i + row >= 0 && i + row < board.length && j + col >= 0 && j + col < board[i].length && !visited[i + row][j + col]) {
+                result = dfs(board, visited, word, index + 1, i + row, j + col);
+                if (result) {
+                    break;
                 }
-                curr = curr.children[c - 'a'];
             }
-            curr.isEnd = true;
         }
-        return root;
+
+        visited[i][j] = false;
+
+        return result;
     }
 
-    static class TrieNode {
-        // 记录到这个节点是否是一个完整的单词
-        boolean isEnd = false;
-        // 孩子节点，题目说了都是小写字母，所以用数组，否则可以用HashMap替换
-        TrieNode[] children = new TrieNode[26];
-    }
+    private static class Trie {
+        Trie[] next;
 
+        public Trie() {
+            next = new Trie[26];
+        }
+
+    }
 
 }

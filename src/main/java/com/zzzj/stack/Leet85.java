@@ -19,7 +19,6 @@ public class Leet85 {
     // 1 1 1 1 1    3 1 3 2 2
     // 1 0 0 1 0    4 0 0 3 0
     public static int maximalRectangle(int[][] matrix) {
-
         int[] height = new int[matrix[0].length];
 
         int answer = -1;
@@ -72,7 +71,6 @@ public class Leet85 {
         stack.add(0);
 
         int max = -1;
-
 
 
         return max;
