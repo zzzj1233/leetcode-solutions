@@ -417,4 +417,12 @@ public class LeetUtils {
 
         return resultList;
     }
+
+    public static String stringsToLeetCode(String[] arr) {
+        return "[" + Arrays.stream(arr).map(s -> "\"" + s + "\"").collect(Collectors.joining(",")) + "]";
+    }
+
+    public static String stringsToLeetCode(List<String> list) {
+        return "[" + list.stream().map(s -> "\"" + s + "\"").collect(Collectors.joining(",")) + "]";
+    }
 }
