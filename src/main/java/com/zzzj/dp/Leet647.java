@@ -34,24 +34,35 @@ public class Leet647 {
 
 
     public static int countSubstrings(String s) {
-        char[] chars = s.toCharArray();
+        int N = s.length();
 
-        int n = chars.length;
+        boolean[][] dp = new boolean[N][N];
 
-        int sum = 1;
-
-        boolean[][] dp = new boolean[n][n];
-
-        for (int i = 1; i < n; i++) {
-            for (int j = 0; j <= i; j++) {
-                if ((i - j < 2 || dp[i - 1][j + 1]) && chars[i] == chars[j]) {
-                    dp[i][j] = true;
-                    sum++;
-                }
-            }
+        for (int i = 0; i < N; i++) {
+            dp[i][i] = true;
         }
 
-        return sum;
+        int ans = N;
+
+        for (int i = N - 2; i >= 0; i--) {
+
+            for (int j = i + 1; j < N; j++) {
+
+
+                if (s.charAt(i) != s.charAt(j)) {
+                    continue;
+                }
+
+                if (j - i == 1 || dp[i + 1][j - 1]) {
+                    dp[i][j] = true;
+                    ans++;
+                }
+
+            }
+
+        }
+
+        return ans;
     }
 
 }

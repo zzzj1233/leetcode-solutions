@@ -4,7 +4,6 @@ import com.zzzj.leet.LeetUtils;
 import com.zzzj.util.ArrayUtil;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 
 /**
  * @author Zzzj
@@ -13,6 +12,11 @@ import java.util.LinkedList;
 public class Leet698 {
 
     public static void main(String[] args) {
+
+        System.out.println(canPartitionKSubsets(new int[]{4, 3, 2, 3, 5, 2, 1}, 4));
+
+        System.exit(0);
+
         for (int i = 0; i < 1000; i++) {
 
             int[] nums = ArrayUtil.generateArray(5, 1, 4);
@@ -32,26 +36,52 @@ public class Leet698 {
 
     public static boolean ans;
 
-    // k 个非空子集，其总和都相等
-    public static boolean canPartitionKSubsets(int[] nums, int k) {
-        ans = false;
+    // 把数组分割成k个非空子集，其总和都相等
 
+    // 数组长度最多16
+
+    // k <= 数组长度
+    public static boolean canPartitionKSubsets(int[] nums, int k) {
         int N = nums.length;
 
-        int end = N - k - 1;
+        int[] preSum = new int[N + 1];
 
-        boolean[] visited = new boolean[N];
-
-        for (int i = 0; i < nums.length; i++) {
-
+        for (int i = 1; i <= N; i++) {
+            preSum[i] = preSum[i - 1] + nums[i - 1];
         }
 
-        return ans;
+        int end = N - k + 1;
+
+        for (int i = 0; i < end; i++) {
+            if (dfs(nums, i + 1, k - 1, preSum[i + 1], preSum)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    public static void dfs(int[] nums, int k, int sum, boolean[] used) {
+    public static boolean dfs(int[] nums, int index, int k, int sum, int[] preSum) {
+        int N = nums.length;
 
+        if (k == 1) {
+            // index ~ N
+            return preSum[N] - preSum[index] == sum;
+        }
+
+        int end = N - index - k + 1;
+
+        for (int i = 0; i < end; i++) {
+            if (preSum[index + i + 1] - preSum[index] == sum) {
+                if (dfs(nums, index + i, k - 1, sum, preSum)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
+
 
     public static boolean right(int[] nums, int k) {
         if (k == 1) {
