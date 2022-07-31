@@ -2,6 +2,8 @@ package com.zzzj.leet;
 
 import com.zzzj.util.Unresolved;
 
+import java.util.Arrays;
+
 /**
  * @author zzzj
  * @create 2022-05-11 11:52
@@ -9,29 +11,43 @@ import com.zzzj.util.Unresolved;
 @Unresolved
 public class Leet260 {
 
-    // 取异或值最后一个二进制位为 1 的数字作为 mask，如果是 1 则表示两个数字在这一位上不同。
-    // int mask = xor & (-xor);
-    // 第三步：
-    // 通过与这个 mask 进行与操作，如果为 0 的分为一个数组，为 1 的分为另一个数组。这样就把问题降低成了：“有一个数组每个数字都出现两次，有一个数字只出现了一次，求出该数字”。对这两个子问题分别进行全异或就可以得到两个解。也就是最终的数组了。
     public static void main(String[] args) {
-        int[] nums = new int[]{1, 1, 2, 2, 3, 3, 4, 5, 6, 6};
-
-        int xor = nums[0];
-
-        for (int i = 1; i < nums.length; i++) {
-            xor ^= nums[i];
-        }
-
-        //
-
-        System.out.println(Integer.toBinaryString(7));
-        System.out.println(Integer.toBinaryString(-7));
+        System.out.println(Arrays.toString(singleNumber(new int[]{1, 2, 1, 3, 2, 5})));
     }
 
     public static int[] singleNumber(int[] nums) {
 
+        int xor = 0;
 
-        return new int[]{};
+        for (int num : nums) {
+            xor ^= num;
+        }
+
+        // 第一次出现1的位数
+        int firstOneBit = -1;
+
+        for (int i = 0; i < 31; i++) {
+            if (((xor >> i) & 1) == 1) {
+                firstOneBit = i;
+                break;
+            }
+        }
+
+        // 如果这个位是1, 那么说明这个位1 一定出现了[奇数次]
+
+        int group1 = 0;
+
+        for (int num : nums) {
+            // 视该位上全部为1的为一组
+
+            // 已知这个位上的1出现了奇数次,其余所有数都为偶数次,那么这一定是那个只出现了一次的数
+            if (((num >> firstOneBit) & 1) == 1) {
+                group1 ^= num;
+            }
+        }
+
+
+        return new int[]{group1, xor ^ group1};
     }
 
 }

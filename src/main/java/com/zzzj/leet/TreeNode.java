@@ -66,7 +66,7 @@ public class TreeNode {
         Queue<TreeNode> queue = new LinkedList<>();
         for (int i = 0; i < strList.length; i++) {
             if (i == 0) {
-                root = new TreeNode(Integer.parseInt(strList[i]));
+                root = new TreeNode(Integer.parseInt(strList[0]));
                 result = root;
                 queue.add(root);
             }

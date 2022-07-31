@@ -9,8 +9,7 @@ import java.util.Arrays;
 public class Leet280 {
 
     public static void main(String[] args) {
-        final int[] arr = {3, 5, 2, 1, 6, 4};
-
+        int[] arr = {1, 2, 3, 4, 5};
         wiggleSort(arr);
 
         System.out.println(Arrays.toString(arr));
@@ -19,28 +18,33 @@ public class Leet280 {
     public static void wiggleSort(int[] nums) {
         Arrays.sort(nums);
 
-        // 摆动排序
-        int r = nums.length - 1;
+        int left = 0;
+        int right = nums.length - 1;
 
-        int l = 1;
 
-        // [3,5,2,1,6,4]
+        int temp = nums[0];
 
-        // [1,6,2,5,3,4]
+        // temp = nums + 1
+        // nums + 1 = arr[right - 1]
 
-        int temp = 0;
-        while (l < nums.length) {
-            if (l % 2 != 0) {
-                temp = nums[l];
-                nums[l] = nums[r--];
-            } else {
-                int temp2 = nums[l];
-                nums[l] = temp;
-                temp = temp2;
-            }
-            l++;
+        // left +=2
+
+        int mid = nums[nums.length / 2];
+
+        while (left <= right) {
+            int rightValue = nums[right];
+            nums[left] = temp;
+            temp = nums[left + 1];
+            nums[left + 1] = rightValue;
+            left += 2;
+            right -= 1;
+        }
+
+        if (nums.length % 2 != 0) {
+            nums[left] = mid;
         }
 
     }
+
 
 }

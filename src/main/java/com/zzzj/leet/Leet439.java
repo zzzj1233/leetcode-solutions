@@ -8,32 +8,48 @@ public class Leet439 {
 
     public static void main(String[] args) {
         System.out.println(parseTernary("T?T?F:5:3"));
+        System.out.println(parseTernary("T?2:3"));
+        System.out.println(parseTernary("F?1:T?4:5"));
+        System.out.println(parseTernary("F?T:F?T?1:2:F?3:4"));
     }
 
     public static String parseTernary(String expression) {
-        return dfs(expression.toCharArray(), 0);
+        return String.valueOf(dfs(expression, 0, expression.length() - 1));
     }
 
-    public static String dfs(char[] chars, int index) {
-        // F return ans2
-        if (chars[index] == 'F') {
-            // find next :
-            while (chars[index] != ':') {
-                index++;
+    public static char dfs(String exp, int left, int right) {
+        char c = exp.charAt(left);
+
+        boolean hasQuestion = left + 1 < exp.length() && exp.charAt(left + 1) == '?';
+
+        if (hasQuestion) {
+            int index = findNextColon(exp, left + 1);
+            if (c == 'T') {
+                return dfs(exp, left + 2, index - 1);
+            } else if (c == 'F') {    // 右边
+                return dfs(exp, index + 1, right);
             }
-            index++;
-            return dfs(chars, index);
-            // T return ans1
-        } else if (chars[index] == 'T') {
-            // skip ?
-            return dfs(chars, index + 2);
-        } else {
-            StringBuilder ans = new StringBuilder(chars.length - index);
-            while (index < chars.length && chars[index] != ':') {
-                ans.append(chars[index++]);
-            }
-            return ans.toString();
         }
+
+        return c;
     }
+
+    public static int findNextColon(String expression, int start) {
+        int colonCount = 0;
+
+        for (int i = start + 1; i < expression.length(); i++) {
+            if (expression.charAt(i) == ':') {
+                if (colonCount == 0) {
+                    return i;
+                }
+                colonCount--;
+            } else if (expression.charAt(i) == '?') {
+                colonCount++;
+            }
+        }
+
+        return -1;
+    }
+
 
 }
