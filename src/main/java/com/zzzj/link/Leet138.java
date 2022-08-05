@@ -6,6 +6,26 @@ package com.zzzj.link;
  */
 public class Leet138 {
 
+    public static void main(String[] args) {
+        Node node1 = new Node(1);
+        Node node10 = new Node(10);
+        Node node11 = new Node(11);
+        Node node13 = new Node(13);
+        Node node7 = new Node(7);
+
+        node7.next = node13;
+        node13.next = node11;
+        node11.next = node10;
+        node10.next = node1;
+
+        node13.random = node7;
+        node11.random = node1;
+        node10.random = node11;
+        node1.random = node7;
+
+        System.out.println(copyRandomList(node7));
+    }
+
     private static class Node {
         public int val;
         public Node next;
@@ -24,49 +44,42 @@ public class Leet138 {
             return null;
         }
 
-        Node cur = head;
+        Node node = head;
 
-        while (cur != null) {
-            Node next = cur.next;
-            Node copy = new Node(cur.val);
-            cur.next = copy;
-            copy.next = next;
-            cur = next;
+        while (node != null) {
+            Node next = node.next;
+
+            Node newNode = new Node(node.val);
+            newNode.next = next;
+            newNode.random = node.random;
+
+            node.next = newNode;
+            node = next;
         }
 
-        cur = head;
+        node = head;
 
-        while (cur != null) {
-            System.out.println(cur.val);
-            cur = cur.next;
-        }
+        Node ans = head.next;
 
-        // copy
-        cur = head;
-
-        while (cur != null) {
-            if (cur.next == null) {
-                break;
+        while (node != null) {
+            if (node.next.random != null) {
+                node.next.random = node.next.random.next;
             }
-            if (cur.random != null) {
-                cur.next.random = cur.random.next;
-            }
-            cur = cur.next.next;
+            node = node.next.next;
         }
 
-        // unlink
-        cur = head;
+        // 还原原链表
+        node = head;
 
-        while (cur != null) {
-            if (cur.next == null) {
-                break;
+        while (node != null) {
+            Node next = node.next;
+            if (next != null) {
+                node.next = next.next;
             }
-            Node next = cur.next;
-            cur.next = cur.next.next;
-            cur = next;
+            node = next;
         }
 
-        return head.next;
+        return ans;
     }
 
 }

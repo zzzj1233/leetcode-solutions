@@ -1,5 +1,7 @@
 package com.zzzj.link;
 
+import java.util.Arrays;
+
 /**
  * @author zzzj
  * @create 2021-11-30 14:09
@@ -7,60 +9,62 @@ package com.zzzj.link;
 public class Leet725 {
 
     public static void main(String[] args) {
-        splitListToParts(ListNode.build(1, 2, 3, 4, 5, 6, 7), 3);
+        System.out.println(Arrays.toString(splitListToParts(ListNode.build(1, 2, 3, 4, 5, 6, 7), 3)));
     }
 
     public static ListNode[] splitListToParts(ListNode head, int k) {
-        ListNode[] answer = new ListNode[k];
+        ListNode[] ans = new ListNode[k];
+        ListNode[] dummy = new ListNode[k];
 
-        ListNode cur = head;
-
-        int len = 0;
-
-        // 1. 求长度
-        while (cur != null) {
-            cur = cur.next;
-            len++;
-        }
-
-        // 2. 余数
-        int remainder = len > k ? len % k : 0;
-
-        // 3. 初始化answer
         for (int i = 0; i < k; i++) {
-            answer[i] = new ListNode();
+            ListNode dummyNode = new ListNode();
+            ans[i] = dummyNode;
+            dummy[i] = dummyNode;
         }
 
-        cur = head;
 
-        int index = 0;
+        int ansIndex = 0;
 
-        int basicEnd = len > k ? k : 1;
+        ListNode node = head;
 
-        while (cur != null) {
-            int end = index % k < remainder ? k + 1 : basicEnd;
-            for (int i = 0; i < end && cur != null; i++, cur = cur.next) {
-                appendEnd(answer[index % k], new ListNode(cur.val));
+        int size = 0;
+
+        while (node != null) {
+            size++;
+            node = node.next;
+        }
+
+        int perBucket = size / k;
+        int extraEnd = size % k;
+
+        node = head;
+
+        for (int i = 0; i < k && node != null; i++) {
+            int per = perBucket;
+            if (i < extraEnd) {
+                // 多一个
+                per++;
             }
-            index++;
+
+            ListNode prev = null;
+            for (int j = 0; j < per && node != null; j++) {
+                ans[i].next = node;
+                ans[i] = ans[i].next;
+                prev = node;
+                node = node.next;
+            }
+
+            if (prev != null) {
+                prev.next = null;
+            }
         }
 
         for (int i = 0; i < k; i++) {
-            answer[i] = answer[i].next;
+            ans[i] = dummy[i].next;
         }
 
-
-        return answer;
+        return ans;
     }
 
-    private static void appendEnd(ListNode node, ListNode newNode) {
-        ListNode cur = node;
-
-        while (cur.next != null) {
-            cur = cur.next;
-        }
-
-        cur.next = newNode;
-    }
 
 }

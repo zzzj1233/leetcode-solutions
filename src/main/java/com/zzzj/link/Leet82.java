@@ -1,6 +1,5 @@
 package com.zzzj.link;
 
-
 /**
  * @author zzzj
  * @create 2021-11-04 11:36
@@ -9,7 +8,8 @@ public class Leet82 {
 
     public static void main(String[] args) {
         System.out.println(deleteDuplicates(ListNode.build(1, 2, 3, 3, 4, 4, 5)).toString(true));
-//        System.out.println(deleteDuplicates(ListNode.build(1, 1, 1, 2, 3)).toString(true));
+        System.out.println(deleteDuplicates(ListNode.build(1, 1, 1, 2, 3)).toString(true));
+        System.out.println(deleteDuplicates(ListNode.build(1, 2)).toString(true));
     }
 
     public static ListNode deleteDuplicates(ListNode head) {
@@ -17,22 +17,20 @@ public class Leet82 {
             return null;
         }
 
-        ListNode pprev = new ListNode();
-        pprev.next = head;
+        ListNode dummy = new ListNode();
+        dummy.next = head;
 
-        ListNode dummy = pprev;
-
-        ListNode prev = head;
-
-        ListNode cur = head.next;
+        ListNode prev = dummy;
+        ListNode cur = head;
 
         while (cur != null) {
-            // 都要删除
-            if (cur.val == prev.val) {
-                pprev.next = cur.next;
-                prev = cur;
+            if (cur.next != null && cur.next.val == cur.val) {
+                while (cur.next != null && cur.next.val == cur.val) {
+                    cur = cur.next;
+                }
+                prev.next = cur.next;
             } else {
-                pprev = prev;
+                prev = cur;
             }
             cur = cur.next;
         }

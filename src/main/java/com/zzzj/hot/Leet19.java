@@ -18,27 +18,30 @@ public class Leet19 {
     }
 
     public static ListNode removeNthFromEnd(ListNode head, int n) {
-
-        ListNode fast = head;
+        if (head == null) {
+            return null;
+        }
         ListNode slow = head;
+        ListNode fast = head;
 
-        for (int i = 0; i <= n; i++) {
-            if (fast == null) {
-                return head.next;
-            }
+        for (int i = 0; i < n; i++) {
             fast = fast.next;
         }
+
+        ListNode dummy = new ListNode();
+        dummy.next = head;
+
+        ListNode prev = dummy;
 
         while (fast != null) {
             fast = fast.next;
+            prev = slow;
             slow = slow.next;
         }
 
-        if (slow.next != null) {
-            slow.next = slow.next.next;
-        }
+        prev.next = prev.next.next;
 
-        return head;
+        return dummy.next;
     }
 
 }

@@ -10,29 +10,38 @@ import java.util.Map;
 public class Leet1171 {
 
     public static void main(String[] args) {
-        System.out.println(removeZeroSumSublists(ListNode.build(1, 2, 3, -3, 3)).toString(true));
+
+        System.out.println(removeZeroSumSublists(ListNode.build("[0,0]")).toString(true));
+
     }
 
+    // [1,3,2,-3,-2,5,5,-5,1]
     public static ListNode removeZeroSumSublists(ListNode head) {
-        ListNode dummy = new ListNode(0);
+
+        Map<Integer, ListNode> preSum = new HashMap<>();
+
+        ListNode dummy = new ListNode();
         dummy.next = head;
 
-        Map<Integer, ListNode> map = new HashMap<>();
+        preSum.put(0, dummy);
 
-        // 首次遍历建立 节点处链表和<->节点 哈希表
-        // 若同一和出现多次会覆盖，即记录该sum出现的最后一次节点
         int sum = 0;
-        for (ListNode d = dummy; d != null; d = d.next) {
-            sum += d.val;
-            map.put(sum, d);
-        }
 
+        ListNode node = head;
 
-        // 第二遍遍历 若当前节点处sum在下一处出现了则表明两结点之间所有节点和为0 直接删除区间所有节点
-        sum = 0;
-        for (ListNode d = dummy; d != null; d = d.next) {
-            sum += d.val;
-            d.next = map.get(sum).next;
+        while (node != null) {
+            sum += node.val;
+            if (preSum.containsKey(sum)) {
+                ListNode preNode = preSum.get(sum);
+                if (preNode != null) {
+                    while (node != null && node.next.val == 0) {
+                        node = node.next;
+                    }
+                    preNode.next = node.next;
+                }
+            }
+            preSum.put(sum, node);
+            node = node.next;
         }
 
         return dummy.next;

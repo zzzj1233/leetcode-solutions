@@ -248,6 +248,10 @@ public class LeetUtils {
         return result;
     }
 
+    public static int[] convertInts1(String source) {
+        return convertInts("[" + source + "]")[0];
+    }
+
     // e.g : [[4, 2, 4], [2, 3, 5], [4, 4, 6]]
     public static int[][] convertInts(String source) {
         source = source.substring(1, source.length() - 1);

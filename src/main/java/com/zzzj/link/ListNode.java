@@ -1,6 +1,8 @@
 package com.zzzj.link;
 
 
+import com.zzzj.leet.LeetUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,10 @@ public class ListNode {
     public ListNode(int val, ListNode next) {
         this.val = val;
         this.next = next;
+    }
+
+    public static ListNode build(String source) {
+        return build(LeetUtils.convertInts1(source));
     }
 
     public static ListNode build(int... nums) {

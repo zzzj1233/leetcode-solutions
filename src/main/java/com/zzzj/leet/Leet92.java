@@ -9,36 +9,53 @@ import com.zzzj.leet.Leet206.ListNode;
 public class Leet92 {
 
     public static void main(String[] args) {
-        ListNode node = ListNode.build(1, 2, 3, 4, 5);
 
-        ListNode newNode = reverseBetween(node, 2, 4);
+//        System.out.println(reverseBetween(ListNode.build(1, 2, 3, 4, 5), 2, 4).toString(true));
+//        System.out.println(reverseBetween(ListNode.build(1, 2, 3, 4, 5), 4, 5).toString(true));
+        System.out.println(reverseBetween(ListNode.build(3, 5), 1, 2).toString(true));
 
-        System.out.println(newNode.toString(true));
     }
 
     public static ListNode reverseBetween(ListNode head, int left, int right) {
-        ListNode dummy = new ListNode(0);
-        dummy.next = head;
 
-        ListNode g = dummy;
-        ListNode p = g.next;
-
-        for (int i = 0; i < left; i++) {
-            g = g.next;
-            p = g.next;
+        if (left == right) {
+            return head;
         }
 
-        for (int i = 0; i < right - left; i++) {
-            ListNode next = p.next;
-            ListNode nextNext = null;
+        ListNode dummy = new ListNode();
+        dummy.next = head;
 
-            if (next != null) {
-                nextNext = next.next;
-                next.next = g;
+        ListNode prev = dummy;
+        ListNode cur = head;
+
+        int index = 1;
+
+        while (cur != null) {
+
+            if (index == left) {
+                ListNode pp = prev;
+                ListNode start = cur;
+                // 开始反转
+                prev = cur;
+                cur = cur.next;
+                index++;
+
+                while (index <= right) {
+                    ListNode next = cur.next;
+                    cur.next = prev;
+                    prev = cur;
+                    cur = next;
+                    index++;
+                }
+
+                pp.next = prev;
+                start.next = cur;
+
+                return dummy.next;
             }
-
-            p.next = nextNext;
-            g = next;
+            index++;
+            prev = cur;
+            cur = cur.next;
         }
 
         return dummy.next;

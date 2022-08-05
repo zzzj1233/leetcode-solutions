@@ -18,28 +18,29 @@ public class Leet430 {
         }
     }
 
-
     public static void main(String[] args) {
         Node node1 = new Node(1);
         Node node2 = new Node(2);
         Node node3 = new Node(3);
-        Node node4 = new Node(4);
-        Node node5 = new Node(5);
-        Node node6 = new Node(6);
-        Node node7 = new Node(7);
-        Node node8 = new Node(8);
-        Node node9 = new Node(9);
+//        Node node4 = new Node(4);
+//        Node node5 = new Node(5);
+//        Node node6 = new Node(6);
+//        Node node7 = new Node(7);
+//        Node node8 = new Node(8);
+//        Node node9 = new Node(9);
 
-        node1.next = node2;
-        node2.next = node3;
-        node3.child = node4;
-        node4.next = node5;
-        node4.child = node6;
-        node6.next = node7;
-        node7.next = node8;
-        node3.next = node9;
+        node1.child = node2;
+        node2.child = node3;
+//        node3.child = node4;
+//        node4.next = node5;
+//        node4.child = node6;
+//        node6.next = node7;
+//        node7.next = node8;
+//        node3.next = node9;
 
         Node node = flatten(node1);
+
+        Node cur = node;
 
         System.out.println("~");
     }
@@ -48,33 +49,42 @@ public class Leet430 {
         if (head == null) {
             return null;
         }
-        last = null;
-        last = head;
-        return flatten(head, null);
+        flatten0(head);
+        return head;
     }
 
-    private static Node last = null;
+    private static Node flatten0(Node node) {
+        Node cur = node;
+        Node prev = null;
 
-    public static Node flatten(Node head, Node next) {
-        Node answer = head;
+        Node last = null;
 
-        Node originNext = answer.next;
+        boolean hasNext = false;
 
-        if (answer.child != null) {
-            answer.next = flatten(answer.child, originNext);
+        while (cur != null) {
+            Node next = cur.next;
+            if (cur.child != null) {
+                cur.next = cur.child;
+                hasNext = next != null;
+                cur.child.prev = cur;
+                last = flatten0(cur.child);
+                cur.child = null;
+                last.next = next;
+                if (next != null) {
+                    next.prev = last;
+                }
+            }
+            prev = cur;
+            cur = next;
         }
-
-        if (originNext != null) {
-            last.next = flatten(originNext, next);
+        if (last != null) {
+            if (hasNext) {
+                return prev;
+            }
+            return last;
+        } else {
+            return prev;
         }
-
-        if (originNext == null && next != null) {
-            answer.next = next;
-        }
-
-        last = answer;
-
-        return answer;
     }
 
 }
