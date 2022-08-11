@@ -1,6 +1,5 @@
 package com.zzzj.tree;
 
-import com.zzzj.leet.TreeNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,41 +11,73 @@ import java.util.List;
 public class Leet99 {
 
     public static void main(String[] args) {
-        TreeNode tree = TreeNode.buildTree("[1,3,null,null,2]");
-
-        recoverTree(tree);
-
-        System.out.println(tree.serialize());
+        recoverTree(TreeNode.buildTree("[3,1,4,null,null,2]"));
+        recoverTree(TreeNode.buildTree("[1,3,null,null,2]"));
+        recoverTree(TreeNode.buildTree("[1,2]"));
+        recoverTree(TreeNode.buildTree("[2,null,1]"));
     }
 
-    private static List<TreeNode> values;
 
     public static void recoverTree(TreeNode root) {
-        if (root == null) {
+        List<Integer> list = new ArrayList<>();
+
+        inOrder(root, list);
+
+        int value = -1;
+
+        int N = list.size();
+        if (list.isEmpty() || N == 1) {
             return;
         }
 
-        values = new ArrayList<>();
+        System.out.println(list);
 
-        inOrder(root);
+        if (list.get(0) > list.get(1)) {
+            swap(root, root.left == null ? root.right : root.left);
+            return;
+        }
 
-        for (int i = 0; i < values.size() - 1; i++) {
-            TreeNode next = values.get(i + 1);
-            TreeNode cur = values.get(i);
-            if (cur.val > next.val) {
-
+        for (int i = 1; i < N - 1; i++) {
+            if (list.get(i - 1) > list.get(i) && list.get(i + 1) < list.get(i)) {
+                recover(root, list.get(i));
+                return;
             }
         }
 
     }
 
-    private static void inOrder(TreeNode root) {
-        if (root.left != null) {
-            inOrder(root.left);
+    public static void recover(TreeNode root, int value) {
+        if (root.val == value) {
+            swap(root.left, root.right);
+            return;
         }
-        values.add(root);
+        if (root.left != null) {
+            recover(root.left, value);
+        }
         if (root.right != null) {
-            inOrder(root.right);
+            recover(root.right, value);
+        }
+    }
+
+    public static void swap(TreeNode node1, TreeNode node2) {
+        int temp = node1.val;
+        node1.val = node2.val;
+        node2.val = temp;
+    }
+
+    public static void inOrder(TreeNode root, List<Integer> list) {
+        if (root == null) {
+            return;
+        }
+
+        if (root.left != null) {
+            inOrder(root.left, list);
+        }
+
+        list.add(root.val);
+
+        if (root.right != null) {
+            inOrder(root.right, list);
         }
     }
 

@@ -2,7 +2,7 @@ package com.zzzj.tree;
 
 import com.zzzj.leet.TreeNode;
 
-import java.util.Arrays;
+import java.util.PriorityQueue;
 
 /**
  * @author zzzj
@@ -16,28 +16,30 @@ public class Leet654 {
 
     // 给定一个数组,构造一个最大树
     public static TreeNode constructMaximumBinaryTree(int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return null;
-        }
-
-        Arrays.sort(nums);
-
-        System.out.println(Arrays.toString(nums));
-
         return dfs(nums, 0, nums.length - 1);
     }
 
-    private static TreeNode dfs(int[] nums, int i, int j) {
-        if (i >= j) {
+    public static int findMax(int[] nums, int left, int right) {
+        int maxIndex = left++;
+        while (left <= right) {
+            if (nums[left] > nums[maxIndex]) {
+                maxIndex = left;
+            }
+            left++;
+        }
+        return maxIndex;
+    }
+
+    public static TreeNode dfs(int[] nums, int left, int right) {
+        if (right > left) {
             return null;
         }
 
-        TreeNode node = new TreeNode(nums[j]);
+        int maxIndex = findMax(nums, left, right);
+        TreeNode node = new TreeNode(nums[maxIndex]);
 
-        int mid = (j + i) / 2 + 1;
-
-        node.left = dfs(nums, 0, mid);
-        node.right = dfs(nums, mid + 1, j - 1);
+        node.left = dfs(nums, left, maxIndex - 1);
+        node.right = dfs(nums, maxIndex + 1, right);
 
         return node;
     }

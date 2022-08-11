@@ -1,6 +1,8 @@
 package com.zzzj.leet;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author zzzj
@@ -12,41 +14,33 @@ public class Leet113 {
         System.out.println(pathSum(TreeNode.buildTree("[5,4,8,11,null,13,4,7,2,null,null,5,1]"), 22));
     }
 
-    private static List<List<Integer>> res;
+    private static List<List<Integer>> ans;
 
-    private static void dfs(TreeNode root, int cur, int tar, LinkedList<Integer> path) {
-        // leaf
+    public static List<List<Integer>> pathSum(TreeNode root, int target) {
+        ans = new ArrayList<>();
+
+        dfs(root, target, new LinkedList<>(), 0);
+
+        return ans;
+    }
+
+    public static void dfs(TreeNode root, int target, LinkedList<Integer> path, int cur) {
+        if (root == null) {
+            return;
+        }
+        path.add(root.val);
+
         if (root.left == null && root.right == null) {
-            if (root.val + cur == tar) {
-                path.add(root.val);
-                res.add(path);
+            if (cur + root.val == target) {
+                ans.add(new ArrayList<>(path));
             }
         }
 
-        if (root.left != null) {
-            path.add(root.val);
-            dfs(root.left, cur + root.val, tar, path);
-            path.remove(root.val);
-        }
+        dfs(root.left, target, path, cur + root.val);
+        dfs(root.right, target, path, cur + root.val);
 
-        if (root.right != null) {
-            path.add(root.val);
-            dfs(root.right, cur + root.val, tar, path);
-            path.remove(root.val);
-        }
-
+        path.removeLast();
     }
 
-    public static List<List<Integer>> pathSum(TreeNode root, int targetSum) {
-        if (root == null) {
-            return Collections.emptyList();
-        }
-
-        res = new ArrayList<>();
-
-        dfs(root, 0, targetSum, new LinkedList<>());
-
-        return res;
-    }
 
 }
