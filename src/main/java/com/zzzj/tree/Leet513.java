@@ -8,7 +8,7 @@ import com.zzzj.leet.TreeNode;
  */
 public class Leet513 {
 
-    private static int answer;
+    private static int ans;
 
     private static int curLevel;
 
@@ -17,8 +17,13 @@ public class Leet513 {
     }
 
     public static int findBottomLeftValue(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        curLevel = 0;
+        ans = 0;
         dfs(root, 1);
-        return answer;
+        return ans;
     }
 
     private static void dfs(TreeNode root, int level) {
@@ -26,13 +31,13 @@ public class Leet513 {
             dfs(root.left, level + 1);
         }
 
-        if (level > curLevel) {
-            curLevel = level;
-            answer = root.val;
-        }
-
         if (root.right != null) {
             dfs(root.right, level + 1);
+        }
+
+        if (level > curLevel) {
+            ans = root.val;
+            curLevel = level;
         }
     }
 

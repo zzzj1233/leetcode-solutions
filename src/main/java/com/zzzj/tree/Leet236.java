@@ -13,42 +13,32 @@ public class Leet236 {
             return null;
         }
 
-        return dfs(root, p, q).answer;
+        return dfs(root, p, q);
     }
 
-    private static class Info {
-        public boolean hasLeft;
-        public boolean hasRight;
-        public TreeNode answer;
-    }
-
-    private static Info dfs(TreeNode root, TreeNode p, TreeNode q) {
-        if (root == null) {
-            return new Info();
-        }
-        Info leftInfo = dfs(root.left, p, q);
-        Info rightInfo = dfs(root.right, p, q);
-
-        Info info = new Info();
-
-        if (leftInfo.answer != null) {
-            info.answer = leftInfo.answer;
-            return info;
+    public static TreeNode dfs(TreeNode node, TreeNode p, TreeNode q) {
+        if (node == null) {
+            return null;
         }
 
-        if (rightInfo.answer != null) {
-            info.answer = rightInfo.answer;
-            return info;
+        if (node.val == q.val || node.val == p.val) {
+            return node;
         }
 
-        info.hasLeft = leftInfo.hasLeft || rightInfo.hasLeft || root == p;
-        info.hasRight = leftInfo.hasRight || rightInfo.hasRight || root == q;
+        // 后序遍历
+        TreeNode left = dfs(node.left, p, q);
 
-        if (info.hasLeft && info.hasRight) {
-            info.answer = root;
+        TreeNode right = dfs(node.right, p, q);
+
+        if (left == null) {
+            return right;
         }
 
-        return info;
+        if (right == null) {
+            return left;
+        }
+
+        return node;
     }
 
 }

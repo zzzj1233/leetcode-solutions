@@ -397,8 +397,9 @@ public class LeetUtils {
 
             Class<?>[] types = method.getParameterTypes();
 
+            Object result;
             if (types.length == 0) {
-                ReflectUtil.invoke(instance, method);
+                result = ReflectUtil.invoke(instance, method);
             } else {
 
                 String methodArgs = args.get(i);
@@ -411,11 +412,10 @@ public class LeetUtils {
                     invokeArgs[j] = Convert.convert(types[j], split[j]);
                 }
 
-                Object result = ReflectUtil.invoke(instance, method, invokeArgs);
-
-                if (result != null) {
-                    resultList.add(result);
-                }
+                result = ReflectUtil.invoke(instance, method, invokeArgs);
+            }
+            if (result != null) {
+                resultList.add(result);
             }
         }
 
