@@ -1,39 +1,32 @@
 package com.zzzj.tree;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * @author Zzzj
- * @create 2022-08-07 23:29
+ * @author zzzj
+ * @create 2022-08-11 12:03
  */
 public class Leet652 {
 
+    static LinkedList<TreeNode> ans;
 
     public static List<TreeNode> findDuplicateSubtrees(TreeNode root) {
-        if (root == null) {
-            return Collections.emptyList();
-        }
-
-        List<TreeNode> ans = new ArrayList<>();
-
-        return null;
+        ans = new LinkedList<>();
+        dfs(root, new HashMap<>());
+        return ans;
     }
 
-    public static void dfs(TreeNode root, Map<Integer, TreeNode> map) {
-        if (root.left != null) {
-            dfs(root.left, map);
+    public static String dfs(TreeNode root, Map<String, Integer> map) {
+        if (root == null) {
+            return "";
         }
-
-        if (root.right != null) {
-            dfs(root.right, map);
+        String str = root.val + "#" + dfs(root.left, map) + "*" + dfs(root.right, map);
+        Integer count = map.getOrDefault(str, 0);
+        if (count == 1) {
+            ans.addFirst(root);
         }
-
-        
-
-        map.put(root.val, root);
+        map.put(str, count + 1);
+        return str;
     }
 
 }
