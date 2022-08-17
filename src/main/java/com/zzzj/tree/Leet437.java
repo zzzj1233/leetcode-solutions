@@ -15,56 +15,29 @@ public class Leet437 {
         System.out.println(pathSum(TreeNode.buildTree("[0,1,1]"), 1));
     }
 
-    private static Map<Integer, Integer> recorder;
-
-    private static int target;
-
-    private static int answer;
-
-    private static int curSum;
-
     public static int pathSum(TreeNode root, int targetSum) {
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+        return dfs(root, targetSum, map, 0);
+    }
+
+    public static int dfs(TreeNode root, int targetSum, Map<Integer, Integer> map, int path) {
         if (root == null) {
             return 0;
         }
 
-        recorder = new HashMap<>();
-        recorder.put(0, 1);
-        target = targetSum;
-        answer = 0;
-        curSum = 0;
-        dfs(root);
-        return answer;
-    }
+        int val = root.val;
 
-    private static void dfs(TreeNode root) {
-        if (root == null) {
-            return;
-        }
+        Integer ret = map.getOrDefault(path + val - targetSum, 0);
 
-        int value = root.val;
-        curSum += value;
+        map.put(path + root.val, map.getOrDefault(path + root.val, 0) + 1);
 
-        Integer count = recorder.get(curSum - target);
+        ret += dfs(root.left, targetSum, map, path + val);
+        ret += dfs(root.right, targetSum, map, path + val);
 
-        if (count != null && count != 0) {
-            answer += count;
-        }
+        map.put(path + root.val, map.getOrDefault(path + root.val, 0) - 1);
 
-        count = recorder.get(value - target);
-
-        if (count != null && count != 0) {
-            answer += count;
-        }
-
-        recorder.put(value, recorder.getOrDefault(value, 0) + 1);
-
-        dfs(root.left);
-        dfs(root.right);
-
-        recorder.put(value, recorder.getOrDefault(value, 1) - 1);
-
-        curSum -= value;
+        return ret;
     }
 
 }

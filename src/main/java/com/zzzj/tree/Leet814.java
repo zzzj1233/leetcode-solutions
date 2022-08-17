@@ -14,14 +14,12 @@ public class Leet814 {
         if (root == null) {
             return null;
         }
-        if (root.left == null && root.right == null) {
-            return root.val == 0 ? root : null;
-        }
-        TreeNode leftNode = dfs(root.left);
-        TreeNode rightNode = dfs(root.right);
 
-        if (leftNode == null && rightNode == null && root.val == 0){
-            return null;
+        root.left = dfs(root.left);
+        root.right = dfs(root.right);
+
+        if (root.val == 0){
+            return root.left == null && root.right == null ? null : root;
         }
 
         return root;

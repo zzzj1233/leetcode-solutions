@@ -10,39 +10,21 @@ public class Leet129 {
         System.out.println(sumNumbers(TreeNode.buildTree("[1,2,3]")));
     }
 
-    private static int result;
-
-    private static void dfs(TreeNode root, StringBuilder path) {
-        if (root.left == null && root.right == null) {
-            path.append(root.val);
-            result += Integer.parseInt(path.toString());
-            return;
-        }
-
-        if (root.left != null) {
-            StringBuilder copy = new StringBuilder(path);
-            copy.append(root.val);
-            dfs(root.left, copy);
-        }
-
-        if (root.right != null) {
-            StringBuilder copy = new StringBuilder(path);
-            copy.append(root.val);
-            dfs(root.right, copy);
-        }
-
-    }
-
     public static int sumNumbers(TreeNode root) {
         if (root == null) {
             return 0;
         }
+        return dfs(root, 0);
+    }
 
-        result = 0;
-
-        dfs(root, new StringBuilder());
-
-        return result;
+    public static int dfs(TreeNode root, int pathSum) {
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null && root.right == null) {
+            return pathSum * 10 + root.val;
+        }
+        return dfs(root.left, pathSum * 10 + root.val) + dfs(root.right, pathSum * 10 + root.val);
     }
 
 }

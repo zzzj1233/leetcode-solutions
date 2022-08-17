@@ -78,6 +78,22 @@ public class LeetUtils {
         return TreeNode.buildTree("[" + str + "]");
     }
 
+    public static com.zzzj.tree.TreeNode randomTree2(int n) {
+        ArrayList<String> list = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            if (i > 0 && random.nextInt(10) == 9) {
+                list.add("null");
+            } else {
+                list.add(String.valueOf(random.nextInt(100)));
+            }
+        }
+
+        String str = String.join(",", list);
+
+        return com.zzzj.tree.TreeNode.buildTree("[" + str + "]");
+    }
+
     public static String randomFullTree() {
         ArrayList<String> list = new ArrayList<>();
 
