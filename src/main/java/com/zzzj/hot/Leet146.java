@@ -11,139 +11,123 @@ public class Leet146 {
 
 
     public static void main(String[] args) {
-        LRUCache cache = new LRUCache(2);
-        cache.put(1, 1);
+        // ["LRUCache","put","get","put","get","get"]
+        //[[1],[2,1],[2],[3,2],[2],[3]]
+        LRUCache cache = new LRUCache(1);
         cache.put(2, 1);
-        System.out.println(cache.get(1));
-        cache.put(3, 3);
+        cache.get(2);
+        cache.put(3, 2);
         System.out.println(cache.get(2));
-        cache.put(4, 4);
-        System.out.println(cache.get(1));
         System.out.println(cache.get(3));
-        System.out.println(cache.get(4));
     }
 
-    static class Node {
-        int key;
-        int val;
-        Node prev;
-        Node next;
+    static class LRUCache {
 
-        public Node(int key, int val) {
-            this.key = key;
-            this.val = val;
-        }
-    }
+        private final int capacity;
 
-    static class LinkList {
-        Node head;
-        Node tail;
+        private static class Node {
+            int key;
+            int value;
+            Node prev;
+            Node next;
 
-        public Node removeHead() {
-            if (head == null) {
-                return null;
-            }
-            Node ret = head;
-            if (head == tail) {
-                head = null;
-                tail = null;
-            } else {
-                if (head.next != null) {
-                    head.next.prev = null;
-                }
-                head = head.next;
-            }
-            return ret;
-        }
-
-        public void moveNodeToTail(Node node) {
-            if (node == tail) {
-                return;
-            }
-            if (node == head) {
-                head = node.next;
-                head.prev = null;
-                node.next = null;
-                node.prev = tail;
-                tail.next = node;
-                tail = node;
-            } else {
-                node.prev.next = node.next;
-                if (node.next != null) {
-                    node.next.prev = node.prev;
-                }
-                node.prev = tail;
-                tail.next = node;
-                tail = node;
+            public Node(int key, int value) {
+                this.key = key;
+                this.value = value;
             }
         }
 
-        public void addLast(Node node) {
+        private void addToHead(Node node) {
             if (head == null) {
                 head = node;
                 tail = node;
                 return;
             }
-            node.prev = tail;
-            tail.next = node;
-            tail = node;
+            node.next = head;
+            head.prev = node;
+            head = node;
         }
 
-    }
+        private void moveToHead(Node node) {
+            if (head == null) {
+                head = node;
+                tail = node;
+                return;
+            }
+            if (node == head) {
+                return;
+            }
 
-    static class LRUCache {
+            // 上一个
+            Node prev = node.prev;
 
-        // HashMap + 双端链表
-        private final int capacity;
+            // 上.next = cur.next
 
-        private final Map<Integer, Node> map;
+            // cur.next.prev = prev
+            prev.next = node.next;
+            if (node.next != null) {
+                node.next.prev = prev;
+            } else {
+                // 当前节点是tail
+                tail = prev;
+            }
 
-        private final LinkList list;
+            node.prev = null;
+            node.next = head;
+            head.prev = node;
+            head = node;
+        }
+
+        private void removeTail() {
+            if (tail == null) {
+                return;
+            }
+            if (tail == head) {
+                tail = null;
+                head = null;
+                return;
+            }
+            Node prev = tail.prev;
+            tail = prev;
+            prev.next = null;
+        }
+
+        Node head;
+        Node tail;
+
+        private Map<Integer, Node> map = new HashMap<>();
+
+        private int size;
 
         public LRUCache(int capacity) {
             this.capacity = capacity;
-            map = new HashMap<>(capacity);
-            list = new LinkList();
         }
 
         public int get(int key) {
             Node node = map.get(key);
-
             if (node == null) {
                 return -1;
             }
-
-            // 将node放入队尾
-            this.list.moveNodeToTail(node);
-
-            return node.val;
+            moveToHead(node);
+            return node.value;
         }
 
         public void put(int key, int value) {
             Node node = map.get(key);
-
-            if (node != null) {
-                node.val = value;
-                list.moveNodeToTail(node);
-                return;
-            }
-
-            Node newNode = new Node(key, value);
-
-            list.addLast(newNode);
-
-            int size = map.size();
-
-            map.put(key, newNode);
-
-            // remove head
-            if (size == capacity) {
-                Node removed = list.removeHead();
-                if (removed != null) {
-                    map.remove(removed.key);
+            if (node == null) {
+                Node newNode = new Node(key, value);
+                addToHead(newNode);
+                size++;
+                if (size > capacity) {
+                    int delKey = tail.key;
+                    removeTail();
+                    map.remove(delKey);
                 }
+                map.put(key, newNode);
+            } else {
+                moveToHead(node);
+                node.value = value;
             }
-
         }
 
     }

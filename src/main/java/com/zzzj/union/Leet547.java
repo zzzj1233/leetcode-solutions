@@ -1,5 +1,9 @@
 package com.zzzj.union;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
+
 /**
  * @author Zzzj
  * @create 2021-11-14 14:29
@@ -12,21 +16,34 @@ public class Leet547 {
     }
 
     public static int findCircleNum(int[][] isConnected) {
-        int n = isConnected.length;
+        int N = isConnected.length;
 
-        UnionFind unionFind = new UnionFind(n);
+        TreeSet<Integer> visited = new TreeSet<>();
 
-        for (int i = 0; i < n; i++) {
-
-            for (int j = i + 1; j < n; j++) {
-                if (isConnected[i][j] == 1) {
-                    unionFind.union(i, j);
-                }
-            }
-
+        for (int i = 1; i <= N; i++) {
+            visited.add(i);
         }
 
-        return unionFind.getSets();
+        int ans = 0;
+
+        while (!visited.isEmpty()) {
+            dfs(visited, isConnected, visited.pollFirst());
+            ans++;
+        }
+
+        return ans;
+    }
+
+    public static void dfs(TreeSet<Integer> visited, int[][] isConnected, int start) {
+        int[] others = isConnected[start - 1];
+
+        visited.remove(start);
+
+        for (int i = 0; i < others.length; i++) {
+            if (others[i] == 1 && visited.contains(i + 1)) {
+                dfs(visited, isConnected, i + 1);
+            }
+        }
     }
 
 }

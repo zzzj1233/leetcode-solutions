@@ -11,50 +11,31 @@ public class Leet21 {
     }
 
     public static ListNode mergeTwoLists(ListNode list1, ListNode list2) {
-        if (list1 == null) {
-            return list2;
-        }
-        if (list2 == null) {
-            return list1;
-        }
+        ListNode dummy = new ListNode();
 
-        ListNode node1 = list1;
-        ListNode node2 = list2;
+        ListNode cur = dummy;
 
-        ListNode answer;
-
-        if (node1.val <= node2.val) {
-            answer = node1;
-            node1 = node1.next;
-        } else {
-            answer = node2;
-            node2 = node2.next;
-        }
-
-        ListNode answerC = answer;
-
-        while (true) {
-            if (node1 == null) {
-                answer.next = node2;
+        while (list1 != null || list2 != null) {
+            if (list1 == null) {
+                cur.next = list2;
                 break;
             }
-            if (node2 == null) {
-                answer.next = node1;
+            if (list2 == null) {
+                cur.next = list1;
                 break;
             }
-            if (node1.val <= node2.val) {
-                ListNode next = node1.next;
-                answer.next = node1;
-                node1 = next;
+            if (list1.val <= list2.val) {
+                cur.next = list1;
+                list1 = list1.next;
             } else {
-                ListNode next = node2.next;
-                answer.next = node2;
-                node2 = next;
+                cur.next = list2;
+                list2 = list2.next;
             }
-            answer = answer.next;
+
+            cur = cur.next;
         }
 
-        return answerC;
+        return dummy.next;
     }
 
 }

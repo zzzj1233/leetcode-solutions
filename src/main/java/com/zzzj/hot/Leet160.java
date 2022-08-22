@@ -14,44 +14,41 @@ public class Leet160 {
             return null;
         }
 
-        int n1 = 1;
-        int n2 = 1;
-
         ListNode node1 = headA;
         ListNode node2 = headB;
 
+        int count1 = 0;
+        int count2 = 0;
 
-        while (node1.next != null) {
-            n1++;
+        while (node1 != null) {
+            count1++;
             node1 = node1.next;
         }
 
-        while (node2.next != null) {
-            n2++;
+        while (node2 != null) {
+            count2++;
             node2 = node2.next;
         }
 
-        if (node1 != node2) {
-            return null;
+        node1 = headA;
+        node2 = headB;
+
+        while (count1 > count2) {
+            node1 = node1.next;
+            count1--;
         }
 
-        int sub = n1 > n2 ? n1 - n2 : n2 - n1;
-
-        ListNode fast = n1 > n2 ? headA : headB;
-
-        ListNode slow = n1 > n2 ? headB : headA;
-
-        for (int i = 0; i < sub; i++) {
-            fast = fast.next;
+        while (count2 > count1) {
+            node2 = node2.next;
+            count2--;
         }
 
-
-        while (fast != slow) {
-            fast = fast.next;
-            slow = slow.next;
+        while (node1 != node2 && node1 != null) {
+            node1 = node1.next;
+            node2 = node2.next;
         }
 
-        return fast;
+        return node1;
     }
 
 }
