@@ -1,6 +1,8 @@
 package com.zzzj.leet;
 
-import java.util.Arrays;
+import org.omg.CORBA.IRObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,62 +13,39 @@ public class Leet2100 {
 
     public static void main(String[] args) {
         System.out.println(goodDaysToRobBank(new int[]{5, 3, 3, 3, 5, 6, 2}, 2));
+        System.out.println(goodDaysToRobBank(new int[]{1, 2, 3, 4}, 1));
     }
 
     public static List<Integer> goodDaysToRobBank(int[] security, int time) {
         int N = security.length;
 
-        int[] dp = new int[N];
-        int[] dp2 = new int[N];
-
-        // dp[i] = 上一个比我小的数的index
-
-        dp[0] = -1;
-        int preIndex = 0;
-
-        for (int i = 1; i < N; i++) {
-            if (security[i] <= security[preIndex]) {
-                dp[i] = -1;
-                preIndex = i;
-            } else {
-                dp[i] = preIndex;
-            }
-        }
-
-        dp2[N - 1] = -1;
-
-        preIndex = N - 1;
+        int[] desc = new int[N];
+        int[] incr = new int[N];
 
         for (int i = N - 2; i >= 0; i--) {
-
             if (security[i] <= security[i + 1]) {
-                dp2[i] = preIndex;
-            } else {
-                preIndex = i;
-                dp2[i] = -1;
+                incr[i] = incr[i + 1] + 1;
             }
-
         }
 
+        for (int i = 1; i < N; i++) {
+            if (security[i] <= security[i - 1]) {
+                desc[i] = desc[i - 1] + 1;
+            }
+        }
 
-        System.out.println(Arrays.toString(dp));
-        System.out.println(Arrays.toString(dp2));
+        int end = N - time;
 
-        return null;
+        List<Integer> ans = new ArrayList<>();
+
+        for (int i = time; i < end; i++) {
+            if (desc[i] >= time && incr[i] >= time) {
+                ans.add(i);
+            }
+        }
+
+        return ans;
     }
 
-    public static void dfs(int[] security, int time, int i) {
-        if (i - time < 0) {
-            return;
-        }
-        if (i + time >= security.length) {
-            return;
-        }
-
-        // time ~ i 全部递减
-        // i + 1 ~ i + time 递增
-        // 那么是一个合适的答案
-
-    }
 
 }
