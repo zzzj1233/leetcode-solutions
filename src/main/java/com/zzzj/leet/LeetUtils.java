@@ -85,7 +85,7 @@ public class LeetUtils {
             if (i > 0 && random.nextInt(10) == 9) {
                 list.add("null");
             } else {
-                list.add(String.valueOf(random.nextInt(100)));
+                list.add("0");
             }
         }
 

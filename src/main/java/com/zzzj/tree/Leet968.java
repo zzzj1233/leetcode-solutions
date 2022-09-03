@@ -9,12 +9,14 @@ import com.zzzj.leet.LeetUtils;
 public class Leet968 {
 
     public static void main(String[] args) {
-        Solution solution = new Solution();
 
         for (int i = 0; i < 1000; i++) {
-            TreeNode tree = LeetUtils.randomTree2(100);
-            if (minCameraCover(tree) != solution.minCameraCover(tree)) {
+            TreeNode tree = LeetUtils.randomTree2(10);
+            if (minCameraCover(tree) != new Solution().minCameraCover(tree)) {
                 System.out.println("Error");
+                System.out.println("[" + tree.serialize() + "]");
+                System.out.println(minCameraCover(tree));
+                System.out.println(new Solution().minCameraCover(tree));
                 return;
             }
         }
@@ -25,17 +27,50 @@ public class Leet968 {
         return Math.min(dfs[0], dfs[1]);
     }
 
-    // // 0：该节点安装了监视器 1：该节点可观，但没有安装监视器 2：该节点不可观
+    // 0.该节点安装了监视器
+    // 1.该节点可观,但没有安装监视器
+    // 2.该节点不可观
     public static int[] dfs(TreeNode root) {
         if (root.left == null && root.right == null) {
-            return new int[]{1, -1, 0};
+            return new int[]{1, Integer.MAX_VALUE / 3, 0};
         }
+        if (root.left == null) {
+            int[] right = dfs(root.right);
 
-        if (root.left != null && root.right != null) {
+            int[] result = new int[3];
 
+            result[0] = Math.min(right[0], Math.min(right[1], right[2])) + 1;
+            result[1] = right[0];
+            result[2] = Math.min(right[0], right[1]);
+            return result;
+        } else if (root.right == null) {
+            int[] left = dfs(root.left);
+
+            int[] result = new int[3];
+
+            result[0] = Math.min(left[0], Math.min(left[1], left[2])) + 1;
+            result[1] = left[0];
+            result[2] = Math.min(left[0], left[1]);
+            return result;
+        } else {
+            int[] result = new int[3];
+
+            int[] left = dfs(root.left);
+            int[] right = dfs(root.right);
+
+            result[0] = Integer.MAX_VALUE;
+
+            for (int i : left) {
+                for (int j : right) {
+                    result[0] = Math.min(result[0], i + j + 1);
+                }
+            }
+
+            result[1] = Math.min(left[0] + right[0], Math.min(left[0] + right[1], left[1] + right[0]));
+            result[2] = Math.min(Math.min(left[0] + right[1], left[0] + right[0]), Math.min(left[1] + right[0], left[1] + right[1]));
+
+            return result;
         }
-
-        return null;
     }
 
     private static class Solution {
