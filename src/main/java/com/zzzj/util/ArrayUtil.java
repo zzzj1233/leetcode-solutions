@@ -1,5 +1,7 @@
 package com.zzzj.util;
 
+import com.zzzj.leet.LeetUtils;
+
 import java.util.Arrays;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -88,6 +90,19 @@ public class ArrayUtil {
 
         for (int i = 0; i < n; i++) {
             arr[i] = random.nextInt(rangR) + rangL;
+        }
+
+        return arr;
+    }
+
+    public static int[] stepUpArray(int n, int rangL, int randStep) {
+        int[] arr = new int[n];
+
+        int min = rangL;
+
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = LeetUtils.random.nextInt(randStep) + 1 + min;
+            min = arr[i];
         }
 
         return arr;

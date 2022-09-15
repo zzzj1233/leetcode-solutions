@@ -438,6 +438,18 @@ public class LeetUtils {
         return resultList;
     }
 
+    public static int[] listToArray(List<Integer> list) {
+        int N = list.size();
+
+        int[] result = new int[N];
+
+        for (int i = 0; i < N; i++) {
+            result[i] = list.get(i);
+        }
+
+        return result;
+    }
+
     public static String stringsToLeetCode(String[] arr) {
         return "[" + Arrays.stream(arr).map(s -> "\"" + s + "\"").collect(Collectors.joining(",")) + "]";
     }
