@@ -1,9 +1,12 @@
 package com.zzzj.window;
 
+import com.zzzj.util.Unresolved;
+
 /**
  * @author zzzj
  * @create 2021-12-31 14:07
  */
+@Unresolved
 public class Leet930 {
 
     public static void main(String[] args) {
@@ -12,35 +15,18 @@ public class Leet930 {
 
 
     public static int numSubarraysWithSum(int[] nums, int goal) {
-        int l = 0;
-        int r = 0;
-        int leastL = -1;
+        int N = nums.length;
 
-        int curSum = 0;
+        int[] counter = new int[N];
+
+        int sum = 0;
 
         int ans = 0;
 
-        while (r < nums.length) {
-
-            curSum += nums[r];
-
-            if (curSum > goal) {
-                while (l < r) {
-                    curSum -= nums[l];
-                    l++;
-                }
-            }
-
-            if (curSum == goal) {
-                // 看看右边有多少个0
-                int prevR = r;
-                while (r + 1 < nums.length && nums[r + 1] == 0) {
-                    r++;
-                }
-                ans += (l - leastL) * (r - prevR + 1);
-            }
-
-            r++;
+        for (int i = 0; i < N; i++) {
+            sum += nums[i];
+            counter[sum]++;
+            ans += counter[sum - goal];
         }
 
         return ans;
@@ -48,21 +34,6 @@ public class Leet930 {
 
 
     /**
-     * @param nums
-     * @param nums
-     * @param nums
-     * @param nums
-     * @param nums
-     * @param nums
-     * @param nums
-     * @param nums
-     * @param nums
-     * @param nums
-     * @param nums
-     * @param nums
-     * @param nums
-     * @param nums
-     * @param nums
      * @param nums
      * @param goal
      * @return

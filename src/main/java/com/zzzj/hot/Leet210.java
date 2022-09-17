@@ -1,7 +1,11 @@
 package com.zzzj.hot;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import com.zzzj.leet.LeetUtils;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author zzzj
@@ -9,74 +13,54 @@ import java.util.stream.Collectors;
  */
 public class Leet210 {
 
-    static class Node {
-        int in;
-        int val;
-        Set<Node> adj;
+    public static void main(String[] args) {
+        System.out.println(findOrder(4, LeetUtils.convertInts("[[1,0],[2,0],[3,1],[3,2]]")));
     }
 
     // 2
     // []
     public static int[] findOrder(int numCourses, int[][] prerequisites) {
-        // 0 -> 1
-        Map<Integer, Node> graph = new HashMap<>();
+        List<Integer>[] graph = new List[numCourses];
+
+        for (int i = 0; i < numCourses; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        int[] inDegree = new int[numCourses];
 
         for (int[] prerequisite : prerequisites) {
-            int from = prerequisite[1];
-            int to = prerequisite[0];
-
-            if (!graph.containsKey(from)) {
-                Node node = new Node();
-                node.adj = new HashSet<>();
-                node.val = from;
-                graph.put(from, node);
-            }
-
-            if (!graph.containsKey(to)) {
-                Node node = new Node();
-                node.val = to;
-                node.adj = new HashSet<>();
-                graph.put(to, node);
-            }
-
-            Node fromNode = graph.get(from);
-            Node toNode = graph.get(to);
-
-            fromNode.adj.add(toNode);
-            toNode.in++;
+            graph[prerequisite[1]].add(prerequisite[0]);
+            inDegree[prerequisite[0]]++;
         }
 
-        LinkedList<Node> queue = graph.values()
-                .stream()
-                .filter(node -> node.in == 0).collect(Collectors.toCollection(LinkedList::new));
+        LinkedList<Integer> queue = new LinkedList<>();
 
-        int size = 0;
+        for (int i = 0; i < inDegree.length; i++) {
+            if (inDegree[i] == 0) {
+                queue.add(i);
+            }
+        }
+
 
         int[] ans = new int[numCourses];
+        int ansIdx = 0;
 
         while (!queue.isEmpty()) {
-            Node last = queue.removeFirst();
-            ans[size] = last.val;
-            size++;
-            for (Node node : last.adj) {
-                if (--node.in == 0) {
-                    queue.add(node);
+            Integer first = queue.removeFirst();
+
+            List<Integer> adjs = graph[first];
+
+            for (Integer adj : adjs) {
+                inDegree[adj]--;
+                if (inDegree[adj] == 0) {
+                    queue.addLast(adj);
                 }
             }
+
+            ans[ansIdx++] = first;
         }
 
-        if (size != graph.size()){
-            return new int[0];
-        }
-
-        Set<Integer> keys = graph.keySet();
-        for (int i = 0; i < numCourses && size < numCourses; i++) {
-            if (!keys.contains(i)) {
-                ans[size++] = i;
-            }
-        }
-
-        return ans;
+        return ansIdx == numCourses ? ans : new int[0];
     }
 
 }
