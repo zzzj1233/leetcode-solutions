@@ -42,16 +42,16 @@ public class UfTest {
         int size = 10000000;
         int m = 10000000;
 
-        // 4309ms
-        test(new UnionFind3(size), m);
+//        // 4309ms
+//        test(new UnionFind3(size), m);
+//
+//        // 4172ms
+//        test(new UnionFind4(size), m);
+//
+//        // 3656ms
+//        test(new UnionFind5(size), m);
 
-        // 4172ms
-        test(new UnionFind4(size), m);
-
-        // 3656ms
-        test(new UnionFind5(size), m);
-
-//        test(new Leet827.UnionFind(size), m);
+        test(new Leet737.UF(size), m);
     }
 
     public static void main(String[] args) {

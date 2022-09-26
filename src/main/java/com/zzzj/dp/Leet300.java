@@ -7,11 +7,13 @@ package com.zzzj.dp;
 public class Leet300 {
 
     public static void main(String[] args) {
-        System.out.println(lengthOfLIS(new int[]{1, 3, 5, 4, 7}));
+        System.out.println(lengthOfLIS(new int[]{0, 1, 0, 3, 2, 3}));
+        System.out.println(lengthOfLIS(new int[]{10, 9, 2, 5, 3, 7, 101, 18}));
     }
 
     // [10,9,2,5,3,7,101,18]
     public static int lengthOfLIS(int[] nums) {
+
         int N = nums.length;
 
         int[] dp = new int[N];
@@ -20,25 +22,33 @@ public class Leet300 {
 
         for (int i = 0; i < N; i++) {
             dp[i] = 1;
+
             for (int j = 0; j < i; j++) {
-                if (nums[j] < nums[i]) {
-                    dp[i] = Math.max(dp[i], 1 + dp[j]);
+                if (nums[i] > nums[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1 );
                 }
             }
+
             ans = Math.max(ans, dp[i]);
         }
 
         return ans;
     }
 
-    public static int dfs(int[] nums, int index) {
-        int result = 1;
-        for (int i = index + 1; i < nums.length; i++) {
-            if (nums[i] > nums[index]) {
-                result = Math.max(result, 1 + dfs(nums, i));
-            }
+    public static int dfs(int[] nums, int maxIndex, int index) {
+        if (index >= nums.length) {
+            return 0;
         }
-        return result;
+
+        int ways1 = 0;
+
+        if (nums[index] > nums[maxIndex]) {
+            ways1 = 1 + dfs(nums, index, index + 1);
+        }
+
+        int ways2 = dfs(nums, index, index + 1);
+
+        return Math.max(ways1, ways2);
     }
 
     public static int[] dp(int[] nums) {
