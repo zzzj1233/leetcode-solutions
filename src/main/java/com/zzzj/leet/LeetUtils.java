@@ -153,14 +153,29 @@ public class LeetUtils {
     }
 
     public static String randomString(int length, String candidate) {
+        return randomString(length, candidate, true);
+    }
+
+    public static String randomString(int length, String candidate, boolean allowRepeat) {
+        if (!allowRepeat && candidate.length() < length) {
+            throw new IllegalArgumentException();
+        }
         Random random = new Random();
 
         StringBuffer sb = new StringBuffer(length);
 
-        for (int i = 0; i < length; i++) {
-            int number = random.nextInt(candidate.length());
+        boolean[] used = new boolean[26];
 
-            sb.append(candidate.charAt(number));
+        while (sb.length() < length) {
+            int number = random.nextInt(candidate.length());
+            char c = candidate.charAt(number);
+            if (!allowRepeat) {
+                if (used[c - 'a']) {
+                    continue;
+                }
+                used[c - 'a'] = true;
+            }
+            sb.append(c);
         }
 
         return sb.toString();

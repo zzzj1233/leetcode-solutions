@@ -3,6 +3,7 @@ package com.zzzj.util;
 import com.zzzj.leet.LeetUtils;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.function.Consumer;
 
@@ -11,8 +12,6 @@ import java.util.function.Consumer;
  * @create 2021-04-11 16:24
  */
 public class ArrayUtil {
-
-    // eg: [["0","0","1","0"],["0","0","1","0"],["0","0","1","0"],["0","0","1","1"],["0","1","1","1"],["0","1","1","1"],["1","1","1","1"]]
 
     public static int[] copy(int[] arr) {
         return copy(arr, 0, arr.length - 1);
@@ -113,5 +112,16 @@ public class ArrayUtil {
                 .distinct()
                 .toArray();
     }
+
+    public static int[][] copy(int[] arr, int count) {
+        int[][] ret = new int[count][];
+
+        for (int i = 0; i < count; i++) {
+            ret[i] = copy(arr);
+        }
+
+        return ret;
+    }
+
 
 }
