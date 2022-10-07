@@ -14,10 +14,6 @@ import java.util.PriorityQueue;
 public class Leet1705 {
 
     public static void main(String[] args) {
-//        System.out.println(eatenApples(new int[]{1, 2, 3, 5, 2}, new int[]{3, 2, 1, 4, 2}));
-//        System.out.println(eatenApples(new int[]{3, 0, 0, 0, 0, 2}, new int[]{3, 0, 0, 0, 0, 2}));
-//
-//        System.exit(0);
 
         for (int i = 0; i < 10000; i++) {
             int n = LeetUtils.random.nextInt(10) + 1;
@@ -38,40 +34,41 @@ public class Leet1705 {
     }
 
     public static int eatenApples(int[] apples, int[] days) {
-        int ans = 0;
-
+        // 每天最多吃一个苹果,N天后可以继续吃,最多可以吃多少个苹果
         int N = apples.length;
 
-        PriorityQueue<int[]> queue = new PriorityQueue<>(N, Comparator.comparingInt(o -> o[1]));
+        // 最先腐烂的苹果
+        PriorityQueue<int[]> queue = new PriorityQueue<>(Comparator.comparingInt(o -> o[0]));
 
-        for (int i = 0; i < N; i++) {
-            int apple = apples[i];
-            if (apple == 0) {
-                continue;
+        int ans = 0;
+
+        int day = 0;
+
+        for (; day < N; day++) {
+            if (days[day] != 0) {
+                queue.add(new int[]{days[day] + day - 1, apples[day]});
             }
-            int day = days[i] + i;
-            queue.add(new int[]{apple, day});
+            while (!queue.isEmpty()) {
+                int[] first = queue.peek();
+                if (first[0] < day || first[1] == 0) {
+                    queue.remove();
+                    continue;
+                }
+                first[1]--;
+                ans++;
+                break;
+            }
         }
 
         while (!queue.isEmpty()) {
-            int apple = queue.peek()[0];
-            int day = queue.peek()[1];
-
-            if (ans + 1 > day) {
+            int[] first = queue.peek();
+            if (first[0] < day || first[1] == 0) {
                 queue.remove();
                 continue;
             }
-
-            queue.peek()[0] = apple - 1;
-
-            // apple > 0
-            if (apple - 1 == 0) {
-                queue.remove();
-            }
-
-            // [1, 4, 1, 2, 1, 3]
-            // [5, 3, 2, 4, 5, 6]
+            first[1]--;
             ans++;
+            day++;
         }
 
         return ans;

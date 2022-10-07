@@ -17,7 +17,7 @@ public class Leet298 {
         return Math.max(info.val1, info.val2);
     }
 
-    static class Info {
+    private static class Info {
         // 包含此节点时的最大值
         int val1;
         // 不包含此节点时的最大值
