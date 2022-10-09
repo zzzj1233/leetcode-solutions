@@ -1,4 +1,4 @@
-package com.zzzj.prefxisum;
+package com.zzzj.leet;
 
 import java.util.Arrays;
 
