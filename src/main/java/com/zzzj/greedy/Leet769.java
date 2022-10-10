@@ -1,7 +1,7 @@
 package com.zzzj.greedy;
 
 import com.zzzj.leet.LeetUtils;
-import com.zzzj.util.CopyIterator;
+import com.zzzj.util.ArrayCopyIterator;
 
 import java.util.Arrays;
 
@@ -21,13 +21,13 @@ public class Leet769 {
             }
             LeetUtils.shuffle(arr);
 
-            CopyIterator copyIterator = CopyIterator.fromArray(arr);
+            ArrayCopyIterator arrayCopyIterator = ArrayCopyIterator.fromArray(arr);
 
-            if (maxChunksToSorted(copyIterator.next()) != right(copyIterator.next())) {
+            if (maxChunksToSorted(arrayCopyIterator.next()) != right(arrayCopyIterator.next())) {
                 System.out.println("Error");
-                System.out.println(Arrays.toString(copyIterator.next()));
-                System.out.println(maxChunksToSorted(copyIterator.next()));
-                System.out.println(right(copyIterator.next()));
+                System.out.println(Arrays.toString(arrayCopyIterator.next()));
+                System.out.println(maxChunksToSorted(arrayCopyIterator.next()));
+                System.out.println(right(arrayCopyIterator.next()));
                 return;
             }
         }

@@ -2,7 +2,7 @@ package com.zzzj.greedy;
 
 import com.zzzj.leet.LeetUtils;
 import com.zzzj.util.ArrayUtil;
-import com.zzzj.util.CopyIterator;
+import com.zzzj.util.ArrayCopyIterator;
 
 import java.util.PriorityQueue;
 
@@ -21,7 +21,7 @@ public class Leet1648 {
         for (int i = 0; i < 10000; i++) {
             int[] arr = ArrayUtil.generateArray(1000, 0, 1000);
             int k = LeetUtils.random.nextInt(10000) + 100;
-            CopyIterator it = CopyIterator.fromArray(arr);
+            ArrayCopyIterator it = ArrayCopyIterator.fromArray(arr);
 
             if (maxProfit(it.next(), k) != new Solution().maxProfit(it.next(), k)) {
                 System.out.println("Error");

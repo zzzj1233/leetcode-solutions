@@ -491,6 +491,10 @@ public class LeetUtils {
         return "[" + Arrays.stream(arr).map(s -> "\"" + s + "\"").collect(Collectors.joining(",")) + "]";
     }
 
+    public static String stringToLeetCode(String str) {
+        return "\"" + str + "\"";
+    }
+
     public static String stringsToLeetCode(List<String> list) {
         return "[" + list.stream().map(s -> "\"" + s + "\"").collect(Collectors.joining(",")) + "]";
     }

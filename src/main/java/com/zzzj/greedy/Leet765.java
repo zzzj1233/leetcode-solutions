@@ -1,7 +1,7 @@
 package com.zzzj.greedy;
 
 import com.zzzj.leet.LeetUtils;
-import com.zzzj.util.CopyIterator;
+import com.zzzj.util.ArrayCopyIterator;
 
 import java.util.Arrays;
 
@@ -20,7 +20,7 @@ public class Leet765 {
             }
             LeetUtils.shuffle(arr);
 
-            CopyIterator iterator = CopyIterator.fromArray(arr);
+            ArrayCopyIterator iterator = ArrayCopyIterator.fromArray(arr);
 
             if (minSwapsCouples(iterator.next()) != right(iterator.next())) {
                 System.out.println("Error");

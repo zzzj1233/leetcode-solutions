@@ -6,16 +6,16 @@ import java.util.Iterator;
  * @author zzzj
  * @create 2022-09-29 17:12
  */
-public class CopyIterator implements Iterator<int[]> {
+public class ArrayCopyIterator implements Iterator<int[]> {
 
     private final int[] origin;
 
-    public CopyIterator(int[] origin) {
+    public ArrayCopyIterator(int[] origin) {
         this.origin = origin;
     }
 
-    public static CopyIterator fromArray(int[] origin) {
-        return new CopyIterator(origin);
+    public static ArrayCopyIterator fromArray(int[] origin) {
+        return new ArrayCopyIterator(origin);
     }
 
     @Override
@@ -27,4 +27,5 @@ public class CopyIterator implements Iterator<int[]> {
     public int[] next() {
         return ArrayUtil.copy(origin);
     }
+
 }
