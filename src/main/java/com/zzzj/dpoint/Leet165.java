@@ -1,5 +1,7 @@
 package com.zzzj.dpoint;
 
+import java.time.temporal.ValueRange;
+
 /**
  * @author zzzj
  * @create 2021-12-21 18:47
@@ -11,34 +13,28 @@ public class Leet165 {
     }
 
     public static int compareVersion(String version1, String version2) {
-        int i = 0;
-        int j = 0;
+        String v1 = version1.replaceAll("[.0]", "");
+        String v2 = version2.replaceAll("[.0]", "");
 
-        while (i < version1.length() || j < version2.length()) {
-            char c1 = i < version1.length() ? version1.charAt(i++) : '0';
-            char c2 = j < version2.length() ? version2.charAt(j++) : '0';
+        int end = Math.min(v1.length(), v2.length());
 
-            while (i < version1.length() && version1.charAt(i) == '0') {
-                i++;
+        for (int i = 0; i < end; i++) {
+            int c1 = Character.digit(v1.charAt(i), 10);
+            int c2 = Character.digit(v2.charAt(i), 10);
+            if (c1 > c2) {
+                return 1;
+            } else if (c2 > c1) {
+                return -1;
             }
-
-            while (j < version2.length() && version2.charAt(j) == '0') {
-                j++;
-            }
-
-            if (c1 == '.' || c2 == '.') {
-                continue;
-            }
-
-            int compare = Character.compare(c1, c2);
-
-            if (compare != 0) {
-                return compare > 0 ? 1 : -1;
-            }
-
         }
 
-        return 0;
+        if (v1.length() == v2.length()) {
+            return 0;
+        }
+        if (v1.length() > v2.length()) {
+            return 1;
+        }
+        return -1;
     }
 
 }

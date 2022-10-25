@@ -3,7 +3,6 @@ package com.zzzj.heap;
 import com.zzzj.leet.LeetUtils;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.PriorityQueue;
 
 /**
@@ -13,9 +12,12 @@ import java.util.PriorityQueue;
 public class Leet1405 {
 
     public static void main(String[] args) {
+
         int n = 10;
 
-        System.out.println(longestDiverseString(2, 8, 2));
+        System.out.println(longestDiverseString(4, 4, 3));
+
+        System.exit(0);
 
         // bbabbabbaabb
         // bbaabbabbab
@@ -33,67 +35,68 @@ public class Leet1405 {
         }
     }
 
-    public static String longestDiverseString(int a, int b, int c) {
-        // 贪心
+    public static String longestDiverseString(int a1, int b1, int c1) {
+
+        Item a = new Item('a', a1);
+        Item b = new Item('b', b1);
+        Item c = new Item('c', c1);
+
+        PriorityQueue<Item> queue = new PriorityQueue<>(3, (o1, o2) -> o2.count - o1.count);
+
+        if (a1 > 0) {
+            queue.add(a);
+        }
+        if (b1 > 0) {
+            queue.add(b);
+        }
+        if (c1 > 0) {
+            queue.add(c);
+        }
+
         StringBuilder builder = new StringBuilder();
 
-        PriorityQueue<int[]> queue = new PriorityQueue<>(Comparator.comparingInt(o -> ((int[]) o)[1]).reversed());
-
-        if (a > 0) {
-            queue.add(new int[]{'a', a});
-        }
-        if (b > 0) {
-            queue.add(new int[]{'b', b});
-        }
-        if (c > 0) {
-            queue.add(new int[]{'c', c});
-        }
-
-        int[] item;
-
-        int[] oldItem = null;
-
         while (!queue.isEmpty()) {
-            item = queue.remove();
+            Item max = queue.remove();
 
-            if (oldItem != null) {
-                queue.add(oldItem);
+            int count = Math.min(2, max.count);
+
+            for (int i = 0; i < count; i++) {
+                builder.append(max.c);
             }
-
-            char alpha = (char) item[0];
-
-            int count = item[1];
-
-            int loop;
-            if (builder.length() >= 2 && !queue.isEmpty()) {
-                loop = count <= (queue.peek()[1] >> 1) ? 1 : Math.min(2, count);
-            } else {
-                loop = Math.min(2, count);
-            }
-
-            for (int i = 0; i < loop; i++) {
-                builder.append(alpha);
-            }
-
-            int remain = count - loop;
 
             if (queue.isEmpty()) {
                 return builder.toString();
             }
 
-            // 重新放回队列
-            if (remain > 0) {
-                oldItem = item;
-                oldItem[1] = remain;
-            } else {
-                oldItem = null;
+            builder.append(queue.peek().c);
+
+            queue.peek().count -= 1;
+
+            if (queue.peek().count <= 0) {
+                queue.remove();
+            }
+
+            max.count -= count;
+
+            if (max.count > 0) {
+                queue.add(max);
             }
 
         }
 
-
         return builder.toString();
     }
+
+    static class Item {
+        char c;
+        int count;
+
+        public Item(char c, int count) {
+            this.c = c;
+            this.count = count;
+        }
+    }
+
 
     public static String right(int a, int b, int c) {
         StringBuilder res = new StringBuilder();
