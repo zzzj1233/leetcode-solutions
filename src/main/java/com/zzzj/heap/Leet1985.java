@@ -1,13 +1,14 @@
 package com.zzzj.heap;
 
+import com.zzzj.leet.LeetUtils;
 import com.zzzj.util.ArrayUtil;
 
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.Arrays;
 
 public class Leet1985 {
 
     public static void main(String[] args) {
+
         for (int i = 0; i < 10000; i++) {
             int[] arr = ArrayUtil.generateArray(1000, 1, 10000);
             String[] origin = new String[arr.length];
@@ -15,50 +16,31 @@ public class Leet1985 {
                 origin[j] = String.valueOf(arr[j]);
             }
 
-        }
-    }
+            int k = LeetUtils.random.nextInt(arr.length) + 1;
 
-    public static String kthLargestNumber(String[] nums, int k) {
-
-        int N = nums.length;
-
-        PriorityQueue<Integer> queue;
-
-        boolean big = true;
-
-        if (k <= N / 2) {
-            queue = new PriorityQueue<>(Comparator.comparingInt(o -> o));
-        } else {
-            queue = new PriorityQueue<>((o1, o2) -> o2 - o1);
-            k = N - k + 1;
-            big = false;
-        }
-
-        for (int i = 0; i < N; i++) {
-            if (queue.size() < k) {
-                queue.add(Integer.parseInt(nums[i]));
-            } else {
-                int num = Integer.parseInt(nums[i]);
-
-                int compareResult = num - queue.peek();
-                if (big) {
-                    if (compareResult > 0) {
-                        queue.remove();
-                        queue.add(num);
-                    }
-                } else {
-                    if (compareResult <= 0) {
-                        queue.remove();
-                        queue.add(num);
-                    }
-                }
+            if (!kthLargestNumber(origin, k).equals(new Solution().kthLargestNumber(origin, k))) {
+                System.out.println(LeetUtils.stringsToLeetCode(origin));
+                System.out.println(k);
+                System.out.println(kthLargestNumber(origin, k));
+                System.out.println(new Solution().kthLargestNumber(origin, k));
+                return;
             }
         }
 
-        return String.valueOf(queue.peek());
+        System.out.println("Ok");
     }
 
-    class Solution {
+    public static String kthLargestNumber(String[] nums, int k) {
+        Arrays.sort(nums, (a, b) -> {
+            int la = a.length(), lb = b.length();
+            if (la > lb) return -1;
+            if (la < lb) return 1;
+            return b.compareTo(a);
+        });
+        return nums[k - 1];
+    }
+
+    private static class Solution {
         public String kthLargestNumber(String[] nums, int k) {
             return kthLargestNumber(nums, 0, nums.length - 1, k);
         }
