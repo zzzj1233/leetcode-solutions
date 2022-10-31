@@ -18,44 +18,50 @@ public class Leet99 {
     }
 
     public static void recoverTree(TreeNode root) {
-        solution1(root);
-    }
+        if (root == null) {
+            return;
+        }
 
-    public static void solution1(TreeNode root) {
-        list = new ArrayList<>();
-        inOrder(root);
+        ArrayList<TreeNode> list = new ArrayList<>();
 
-        int k = -1;
+        inOrder(root, list);
+
+        // 找到两个节点
+
+        TreeNode nodeA = null;
+        TreeNode nodeB = null;
 
         for (int i = 0; i < list.size(); i++) {
-            int curVal = list.get(i).val;
-
-            if ((i - 1 >= 0 && curVal < list.get(i - 1).val) || (i + 1 < list.size() && curVal > list.get(i + 1).val)) {
-                if (k == -1) {
-                    k = i;
+            TreeNode cur = list.get(i);
+            TreeNode prev = i - 1 >= 0 ? list.get(i - 1) : null;
+            TreeNode next = i + 1 < list.size() ? list.get(i + 1) : null;
+            if (prev != null && cur.val < prev.val) {
+                if (nodeA == null) {
+                    nodeA = cur;
                 } else {
-                    TreeNode temp = list.get(k);
-                    list.set(k, list.get(i));
-                    list.set(i, temp);
+                    nodeB = cur;
+                }
+            } else if (next != null && cur.val > next.val) {
+                if (nodeA == null) {
+                    nodeA = cur;
+                } else {
+                    nodeB = cur;
                 }
             }
-
         }
 
+        int temp = nodeA.val;
+        nodeA.val = nodeB.val;
+        nodeB.val = temp;
     }
 
-    private static void inOrder(TreeNode root) {
-        if (root.left != null) {
-            inOrder(root.left);
+    public static void inOrder(TreeNode root, ArrayList<TreeNode> list) {
+        if (root == null) {
+            return;
         }
-
+        inOrder(root.left, list);
         list.add(root);
-
-        if (root.right != null) {
-            inOrder(root.right);
-        }
-
+        inOrder(root.right, list);
     }
-
 
 }

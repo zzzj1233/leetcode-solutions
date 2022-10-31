@@ -9,46 +9,40 @@ public class Leet251 {
     static class Vector2D {
 
         private final int[][] vec;
+        private final int N;
 
         private int row;
         private int col;
 
-        private boolean hasNext;
 
-        // [[[[1,2],[3],[4,5,6]]],[],[],[],[],[],[],[],[],[],[],[],[],[]]
         public Vector2D(int[][] vec) {
             this.vec = vec;
-            // initHasNext
-        }
-
-        public void initHasNext() {
-            if (col >= vec[row].length) {
+            N = vec.length;
+            while (row < N && col >= vec[row].length) {
+                row++;
                 col = 0;
-                row++;
             }
-            while (row < vec.length && col >= vec[row].length) {
-                row++;
-            }
-            hasNext = row < vec.length;
         }
 
         public int next() {
+            while (row < N && col >= vec[row].length) {
+                row++;
+                col = 0;
+            }
+
             int result = vec[row][col];
             col++;
-            if (col >= vec[row].length) {
-                col = 0;
+            while (row < N && col >= vec[row].length) {
                 row++;
-                while (row < vec.length && col >= vec[row].length) {
-                    row++;
-                }
-                hasNext = row < vec.length;
+                col = 0;
             }
             return result;
         }
 
         public boolean hasNext() {
-            return hasNext;
+            return row < N;
         }
+
     }
 
 }

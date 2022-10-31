@@ -12,9 +12,12 @@ import java.util.PriorityQueue;
 public class Leet1405 {
 
     public static void main(String[] args) {
-        int n = 100;
 
-        System.out.println(longestDiverseString(2, 8, 2));
+        int n = 10;
+
+        System.out.println(longestDiverseString(4, 4, 3));
+
+        System.exit(0);
 
         // bbabbabbaabb
         // bbaabbabbab
@@ -27,80 +30,73 @@ public class Leet1405 {
                 System.out.println(b);
                 System.out.println(c);
                 System.out.println(longestDiverseString(a, b, c));
-                System.out.println(right(a, b, c));
                 return;
             }
         }
-        System.out.println("ok");
     }
 
-    public static String longestDiverseString(int a, int b, int c) {
-        StringBuilder builder = new StringBuilder(a + b + c);
+    public static String longestDiverseString(int a1, int b1, int c1) {
 
-        PriorityQueue<Pair> queue = new PriorityQueue<>((o1, o2) -> o2.freq - o1.freq);
+        Item a = new Item('a', a1);
+        Item b = new Item('b', b1);
+        Item c = new Item('c', c1);
 
-        if (a > 0)
-            queue.add(new Pair(a, 'a'));
-        if (b > 0)
-            queue.add(new Pair(b, 'b'));
-        if (c > 0)
-            queue.add(new Pair(c, 'c'));
+        PriorityQueue<Item> queue = new PriorityQueue<>(3, (o1, o2) -> o2.count - o1.count);
 
+        if (a1 > 0) {
+            queue.add(a);
+        }
+        if (b1 > 0) {
+            queue.add(b);
+        }
+        if (c1 > 0) {
+            queue.add(c);
+        }
 
-        int repeat = 0;
-        char lastChar = 'x';
+        StringBuilder builder = new StringBuilder();
 
         while (!queue.isEmpty()) {
+            Item max = queue.remove();
 
-            Pair max = queue.remove();
-            builder.append(max.ch);
-            max.freq--;
-            if (max.freq > 0) {
+            int count = Math.min(2, max.count);
+
+            for (int i = 0; i < count; i++) {
+                builder.append(max.c);
+            }
+
+            if (queue.isEmpty()) {
+                return builder.toString();
+            }
+
+            builder.append(queue.peek().c);
+
+            queue.peek().count -= 1;
+
+            if (queue.peek().count <= 0) {
+                queue.remove();
+            }
+
+            max.count -= count;
+
+            if (max.count > 0) {
                 queue.add(max);
             }
 
-            if (max.ch == lastChar) {
-                repeat++;
-            } else {
-                repeat = 1;
-                lastChar = max.ch;
-            }
-
-            if (repeat == 2) {
-                if (queue.isEmpty()) {
-                    break;
-                }
-                if (queue.peek().ch == lastChar) {
-                    Pair remove = queue.remove();
-                    if (queue.isEmpty()) {
-                        break;
-                    }
-                    lastChar = queue.peek().ch;
-                    repeat = 1;
-                    builder.append(lastChar);
-                    queue.peek().freq -= 1;
-                    if (queue.peek().freq == 0) {
-                        queue.remove();
-                    }
-                    queue.add(remove);
-                }
-            }
-
         }
-
 
         return builder.toString();
     }
 
-    static class Pair {
-        int freq;
-        char ch;
+    static class Item {
+        char c;
+        int count;
 
-        public Pair(int freq, char ch) {
-            this.freq = freq;
-            this.ch = ch;
+        public Item(char c, int count) {
+            this.c = c;
+            this.count = count;
         }
     }
+
 
     public static String right(int a, int b, int c) {
         StringBuilder res = new StringBuilder();
@@ -128,6 +124,16 @@ public class Leet1405 {
         }
 
         return res.toString();
+    }
+
+    static class Pair {
+        int freq;
+        char ch;
+
+        public Pair(int freq, char ch) {
+            this.freq = freq;
+            this.ch = ch;
+        }
     }
 
 

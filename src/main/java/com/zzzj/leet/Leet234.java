@@ -9,30 +9,59 @@ import com.zzzj.leet.Leet206.ListNode;
 public class Leet234 {
 
     public static void main(String[] args) {
-        System.out.println(isPalindrome(ListNode.build(1, 2)));
+        System.out.println(isPalindrome(ListNode.build(1, 2, 2, 1)));
     }
-
-    public static ListNode compareNode;
 
     public static boolean isPalindrome(ListNode head) {
-        if (head == null || head.next == null) {
+        if (head == null) {
             return false;
         }
 
-        compareNode = head;
-        return compare(head);
-    }
+        ListNode slow = head;
+        ListNode fast = head;
 
-    private static boolean compare(ListNode node) {
-        boolean result = true;
-        if (node.next != null) {
-            result = compare(node.next);
+        int size = 0;
+
+        while (fast != null) {
+            size++;
+            fast = fast.next;
+            if (fast == null) {
+                break;
+            }
+            size++;
+            fast = fast.next;
+            slow = slow.next;
         }
-        if (!result || node.val != compareNode.val) {
-            return false;
+
+        boolean even = size % 2 == 0;
+
+        ListNode reversed = reverse(even ? slow : slow.next);
+
+        ListNode cur = head;
+
+        while (cur != slow) {
+            if (cur.val != reversed.val) {
+                return false;
+            }
+            cur = cur.next;
+            reversed = reversed.next;
         }
-        compareNode = compareNode.next;
+
         return true;
     }
+
+    public static ListNode reverse(ListNode node) {
+        ListNode prev = null;
+        ListNode cur = node;
+
+        while (cur != null) {
+            ListNode next = cur.next;
+            cur.next = prev;
+            prev = cur;
+            cur = next;
+        }
+        return prev;
+    }
+
 
 }
