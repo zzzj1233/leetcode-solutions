@@ -3,7 +3,6 @@ package com.zzzj.heap;
 import com.zzzj.leet.LeetUtils;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.PriorityQueue;
 
 /**
@@ -13,7 +12,7 @@ import java.util.PriorityQueue;
 public class Leet1405 {
 
     public static void main(String[] args) {
-        int n = 10;
+        int n = 100;
 
         System.out.println(longestDiverseString(2, 8, 2));
 
@@ -28,71 +27,79 @@ public class Leet1405 {
                 System.out.println(b);
                 System.out.println(c);
                 System.out.println(longestDiverseString(a, b, c));
+                System.out.println(right(a, b, c));
                 return;
             }
         }
+        System.out.println("ok");
     }
 
     public static String longestDiverseString(int a, int b, int c) {
-        // 贪心
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder(a + b + c);
 
-        PriorityQueue<int[]> queue = new PriorityQueue<>(Comparator.comparingInt(o -> ((int[]) o)[1]).reversed());
+        PriorityQueue<Pair> queue = new PriorityQueue<>((o1, o2) -> o2.freq - o1.freq);
 
-        if (a > 0) {
-            queue.add(new int[]{'a', a});
-        }
-        if (b > 0) {
-            queue.add(new int[]{'b', b});
-        }
-        if (c > 0) {
-            queue.add(new int[]{'c', c});
-        }
+        if (a > 0)
+            queue.add(new Pair(a, 'a'));
+        if (b > 0)
+            queue.add(new Pair(b, 'b'));
+        if (c > 0)
+            queue.add(new Pair(c, 'c'));
 
-        int[] item;
 
-        int[] oldItem = null;
+        int repeat = 0;
+        char lastChar = 'x';
 
         while (!queue.isEmpty()) {
-            item = queue.remove();
 
-            if (oldItem != null) {
-                queue.add(oldItem);
+            Pair max = queue.remove();
+            builder.append(max.ch);
+            max.freq--;
+            if (max.freq > 0) {
+                queue.add(max);
             }
 
-            char alpha = (char) item[0];
-
-            int count = item[1];
-
-            int loop;
-            if (builder.length() >= 2 && !queue.isEmpty()) {
-                loop = count <= (queue.peek()[1] >> 1) ? 1 : Math.min(2, count);
+            if (max.ch == lastChar) {
+                repeat++;
             } else {
-                loop = Math.min(2, count);
+                repeat = 1;
+                lastChar = max.ch;
             }
 
-            for (int i = 0; i < loop; i++) {
-                builder.append(alpha);
-            }
-
-            int remain = count - loop;
-
-            if (queue.isEmpty()) {
-                return builder.toString();
-            }
-
-            // 重新放回队列
-            if (remain > 0) {
-                oldItem = item;
-                oldItem[1] = remain;
-            } else {
-                oldItem = null;
+            if (repeat == 2) {
+                if (queue.isEmpty()) {
+                    break;
+                }
+                if (queue.peek().ch == lastChar) {
+                    Pair remove = queue.remove();
+                    if (queue.isEmpty()) {
+                        break;
+                    }
+                    lastChar = queue.peek().ch;
+                    repeat = 1;
+                    builder.append(lastChar);
+                    queue.peek().freq -= 1;
+                    if (queue.peek().freq == 0) {
+                        queue.remove();
+                    }
+                    queue.add(remove);
+                }
             }
 
         }
 
 
         return builder.toString();
+    }
+
+    static class Pair {
+        int freq;
+        char ch;
+
+        public Pair(int freq, char ch) {
+            this.freq = freq;
+            this.ch = ch;
+        }
     }
 
     public static String right(int a, int b, int c) {
@@ -121,16 +128,6 @@ public class Leet1405 {
         }
 
         return res.toString();
-    }
-
-    static class Pair {
-        int freq;
-        char ch;
-
-        public Pair(int freq, char ch) {
-            this.freq = freq;
-            this.ch = ch;
-        }
     }
 
 
