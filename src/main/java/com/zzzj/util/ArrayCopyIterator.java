@@ -1,31 +1,26 @@
 package com.zzzj.util;
 
-import java.util.Iterator;
+import java.util.Arrays;
 
 /**
  * @author zzzj
  * @create 2022-09-29 17:12
  */
-public class ArrayCopyIterator implements Iterator<int[]> {
-
-    private final int[] origin;
+public class ArrayCopyIterator extends CopyableIterator<int[]> {
 
     public ArrayCopyIterator(int[] origin) {
-        this.origin = origin;
+        this(origin, false);
     }
 
-    public static ArrayCopyIterator fromArray(int[] origin) {
-        return new ArrayCopyIterator(origin);
+    public ArrayCopyIterator(int[] origin, boolean sort) {
+        super(origin, ArrayUtil::copy);
+        if (sort) {
+            Arrays.sort(origin);
+        }
     }
 
-    @Override
-    public boolean hasNext() {
-        return true;
-    }
-
-    @Override
-    public int[] next() {
-        return ArrayUtil.copy(origin);
+    public static ArrayCopyIterator fromArray(int[] arr) {
+        return new ArrayCopyIterator(arr);
     }
 
 }

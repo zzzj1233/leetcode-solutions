@@ -498,4 +498,14 @@ public class LeetUtils {
     public static String stringsToLeetCode(List<String> list) {
         return "[" + list.stream().map(s -> "\"" + s + "\"").collect(Collectors.joining(",")) + "]";
     }
+
+    public static String toBinaryString(int num) {
+        StringBuilder builder = new StringBuilder(32);
+
+        for (int i = 0; i < 31; i++) {
+            builder.append(((num >> i) & 1) == 1 ? "1" : "0");
+        }
+
+        return builder.reverse().toString();
+    }
 }

@@ -13,6 +13,14 @@ import java.util.function.Consumer;
  */
 public class ArrayUtil {
 
+    public static int[][] copy(int[][] arr) {
+        int[][] result = new int[arr.length][];
+        for (int i = 0; i < arr.length; i++) {
+            result[i] = copy(arr[i]);
+        }
+        return result;
+    }
+
     public static int[] copy(int[] arr) {
         return copy(arr, 0, arr.length - 1);
     }
