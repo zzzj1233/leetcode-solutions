@@ -265,10 +265,13 @@ public class LeetUtils {
         List<List<String>> result = new ArrayList<>(split.length);
 
         for (int i = 0; i < split.length; i++) {
-            String oneD = split[i].replaceAll("\\s*", "").replaceAll("\\[", "");
+            String oneD = split[i].replaceAll("\\s*", "")
+                    .replaceAll("\"", "")
+                    .replaceAll("\\[", "");
             String[] chars = oneD.split(",\\s*");
             // 去除双引号
             ArrayList<String> list = new ArrayList<>(chars.length);
+
             result.add(list);
 
             for (int j = 0; j < chars.length; j++) {
@@ -326,6 +329,10 @@ public class LeetUtils {
         }
 
         return result;
+    }
+
+    public static String[] convertString1(String source) {
+        return convertListStrings("[" + source + "]").get(0).toArray(new String[0]);
     }
 
     public static String charsToLeetCode(char[][] chars) {
