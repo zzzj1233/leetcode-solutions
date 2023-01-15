@@ -1,23 +1,51 @@
 package com.zzzj.design;
 
+import com.zzzj.leet.LeetUtils;
 import com.zzzj.util.InvokableExp;
-import com.zzzj.util.LeetCodeExp;
+import com.zzzj.util.InvokeMethodSource;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class Leet1670 {
 
     public static void main(String[] args) {
-        LeetCodeExp exp = new InvokableExp(FrontMiddleBackQueue.class);
 
-        System.out.println(exp.invokeMethod("pushFront", 1));
-        System.out.println(exp.invokeMethod("pushFront", 2));
-        System.out.println(exp.invokeMethod("pushFront", 3));
-        System.out.println(exp.invokeMethod("pushFront", 4));
-        System.out.println(exp.invokeMethod("popMiddle"));
-        System.out.println(exp.invokeMethod("popMiddle"));
-        System.out.println(exp.invokeMethod("popMiddle"));
-        System.out.println(exp.invokeMethod("popMiddle"));
+        InvokableExp my = new InvokableExp(FrontMiddleBackQueue.class);
+        InvokableExp right = new InvokableExp(Right.class);
 
-        System.out.println(exp);
+        int N = 10;
+
+        int limit = 10;
+
+        InvokeMethodSource[] invokeMethodSources = {
+                new InvokeMethodSource("pushFront", () -> new Object[]{LeetUtils.random.nextInt(limit) + 1}),
+                new InvokeMethodSource("pushMiddle", () -> new Object[]{LeetUtils.random.nextInt(limit) + 1}),
+                new InvokeMethodSource("pushBack", () -> new Object[]{LeetUtils.random.nextInt(limit) + 1}),
+                new InvokeMethodSource("popFront"),
+                new InvokeMethodSource("popMiddle"),
+                new InvokeMethodSource("popBack")
+        };
+
+
+        while (true) {
+            while (LeetUtils.executeExpression(my, right, N, invokeMethodSources)) {
+                my = new InvokableExp(FrontMiddleBackQueue.class);
+                right = new InvokableExp(Right.class);
+            }
+            System.out.println(my);
+            System.out.println(my.getResults());
+            System.out.println(right.getResults());
+
+            my.reInvoke();
+        }
+
+
+//        System.out.println(my);
+//        System.out.println(my.getResults());
+//        System.out.println(right.getResults());
+//
+//        System.out.println(my.getResults().equals(right.getResults()));
     }
 
     private static class Node {
@@ -45,17 +73,20 @@ public class Leet1670 {
         public void pushFront(int val) {
             Node node = new Node(val);
             length++;
-            if (head == null) {
+            if (head == null) { // 0
                 head = node;
                 tail = node;
-            } else if (head == tail) {
+            } else if (head == tail) { // 1
                 head = node;
                 head.next = tail;
                 tail.prev = head;
             } else {
-                if (middle == null) {
+                if (length == 3) {
                     middle = head;
+                } else if (middle != null && length % 2 == 0) {
+                    middle = middle.prev;
                 }
+
                 Node prevHead = head;
                 head = node;
 
@@ -65,22 +96,39 @@ public class Leet1670 {
         }
 
         public void pushMiddle(int val) {
-            // 没有节点 || 只有一个节点 || 只有两个节点
-            if (head == null || head == tail || middle == null) {
+            // 没有节点 || 只有一个节点
+            if (head == null || head == tail) {
                 pushFront(val);
+            } else if (middle == null) { // 有两个节点
+                length++;
+                Node node = new Node(val);
+
+                head.next = node;
+                node.prev = head;
+
+                node.next = tail;
+                tail.prev = node;
+                middle = node;
             } else {
                 length++;
                 Node node = new Node(val);
 
-                Node prevNext = middle.next;
-                middle.next = node;
-                node.prev = middle;
+                // 把节点放middle的前面
+                if (length % 2 == 0) {
+                    Node prev = middle.prev;
+                    prev.next = node;
+                    node.prev = prev;
+                    node.next = middle;
+                    middle.prev = node;
+                } else {    // 把节点放在middle的后面
+                    Node next = middle.next;
+                    next.prev = node;
+                    node.next = next;
 
-                node.next = prevNext;
-
-                if (length % 2 != 0) {
-                    middle = middle.next;
+                    node.prev = middle;
+                    middle.next = node;
                 }
+                middle = node;
             }
         }
 
@@ -95,15 +143,19 @@ public class Leet1670 {
                 tail.prev = head;
                 head.next = tail;
             } else {
-                Node prevTail = tail;
-
-                if (middle == null) {
+                // init middle
+                if (length == 3) {
                     middle = tail;
+                } else if (middle != null && length % 2 != 0) { // maintain middle
+                    middle = middle.next;
                 }
+
+                Node prevTail = tail;
 
                 tail = node;
                 tail.prev = prevTail;
                 prevTail.next = tail;
+
             }
         }
 
@@ -131,7 +183,7 @@ public class Leet1670 {
                 prevHead.next = null;
 
                 // 维护middle
-                if (length % 2 != 0) {
+                if (length % 2 == 0) {
                     middle = middle.prev;
                 }
             }
@@ -166,6 +218,8 @@ public class Leet1670 {
 
                 if (length % 2 != 0) {
                     middle = prevMiddle.prev;
+                } else {
+                    middle = prevMiddle.next;
                 }
                 length--;
                 return prevMiddle.val;
@@ -201,5 +255,88 @@ public class Leet1670 {
             return prevTail.val;
         }
     }
+
+    private static class Right {
+        Deque<Integer> q1;
+        Deque<Integer> q2;
+        //用size1，size2，维护两个队列的长度
+        int size1, size2;
+
+        public Right() {
+            this.q1 = new ArrayDeque<>();
+            this.q2 = new ArrayDeque<>();
+            this.size1 = this.size2 = 0;
+        }
+
+        public void pushFront(int val) {
+            q1.addFirst(val);
+            size1++;
+        }
+
+        public void pushMiddle(int val) {
+            //如果队列1长度 > 队列2长度，循环将队列1的最后一个元素移入队列2开头，直到size1 < size2;
+            while (size1 > size2) {
+                q2.addFirst(q1.pollLast());
+                size1--;
+                size2++;
+            }
+            //如果队列2长度 > 队列1长度 + 1,例如size1 = 2，size2 = 4，则循环将队列2的开头一个元素移入队列1末尾
+            while (size2 > size1 + 1) {
+                q1.addLast(q2.pollFirst());
+                size2--;
+                size1++;
+            }
+            q1.addLast(val);
+            size1++;
+        }
+
+        public void pushBack(int val) {
+            q2.addLast(val);
+            size2++;
+        }
+
+        public int popFront() {
+            //如果队列1长度 < 队列2长度，循环将队列2的第一个元素移入队列1末尾，直到size1 > size2;
+            while (size2 > size1) {
+                q1.addLast(q2.pollFirst());
+                size2--;
+                size1++;
+            }
+            if (size1 == 0) return -1;
+            size1--;
+            return q1.pollFirst();
+        }
+
+        public int popMiddle() {
+            //如果队列1长度 > 队列2长度，循环将队列1的最后一个元素移入队列2开头，直到size1 < size2;
+            while (size1 > size2) {
+                q2.addFirst(q1.pollLast());
+                size1--;
+                size2++;
+            }
+            //如果队列2长度 > 队列1长度,例如size1 = 2，size2 = 3，则循环将队列2的开头一个元素移入队列1末尾
+            while (size2 > size1) {
+                q1.addLast(q2.pollFirst());
+                size2--;
+                size1++;
+            }
+            if (q1.isEmpty()) return -1;
+            size1--;
+            return q1.pollLast();
+        }
+
+        public int popBack() {
+            //如果队列1长度 > 队列2长度，循环将队列1的最后一个元素移入队列2开头，直到size1 < size2;
+            while (size1 > size2) {
+                q2.addFirst(q1.pollLast());
+                size1--;
+                size2++;
+            }
+            if (q2.isEmpty()) return -1;
+            size2--;
+            return q2.pollLast();
+        }
+    }
+
 
 }

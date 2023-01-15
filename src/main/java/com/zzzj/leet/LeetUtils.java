@@ -2,8 +2,12 @@ package com.zzzj.leet;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.zzzj.util.ExecutionCallback;
+import com.zzzj.util.InvokableExp;
+import com.zzzj.util.InvokeMethodSource;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -514,6 +518,75 @@ public class LeetUtils {
         }
 
         return builder.reverse().toString();
+    }
+
+    public static boolean executeExpression(InvokableExp exp, InvokableExp expect, int N, InvokeMethodSource... sources) {
+        int length = sources.length;
+
+        for (int i = 0; i < N; i++) {
+            InvokeMethodSource source = sources[random.nextInt(length)];
+
+            Object[] parameters = source.getParamsSupplier().get();
+
+            Object result = null;
+            try {
+                result = exp.invokeMethod(source.getMethodName(), parameters);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+
+            Object expectResult = expect.invokeMethod(source.getMethodName(), parameters);
+
+            if (result == null && expectResult == null) {
+                continue;
+            }
+
+            boolean hasError = result == null && expectResult != null;
+            hasError |= result != null && expectResult == null;
+            hasError |= result.getClass().isPrimitive() && result != expectResult;
+            hasError |= !result.getClass().isPrimitive() && !result.equals(expectResult);
+
+            if (hasError) {
+
+                System.out.println("Error");
+
+                System.out.println("method = " + source.getMethodName() + " , params = " + Arrays.toString(parameters));
+                System.out.println("MyResult = " + result);
+                System.out.println("ExpectResult = " + expectResult);
+
+                return false;
+            }
+        }
+
+        // System.out.println("Ok");
+        return true;
+    }
+
+    public static InvokableExp executeExpression(InvokableExp exp, int N, InvokeMethodSource... sources) {
+        return executeExpression(exp, N, null, sources);
+    }
+
+    public static InvokableExp executeExpression(InvokableExp exp, int N, ExecutionCallback callback, InvokeMethodSource... sources) {
+        int length = sources.length;
+
+        for (int i = 0; i < N; i++) {
+            InvokeMethodSource source = sources[random.nextInt(length)];
+
+            Object[] parameters = source.getParamsSupplier().get();
+
+            if (callback != null) {
+                callback.beforeExecute(i, exp, source, parameters);
+            }
+
+            Object result = exp.invokeMethod(source.getMethodName(), parameters);
+
+            if (callback != null) {
+                callback.afterExecute(i, exp, source, result);
+            }
+        }
+
+        return exp;
     }
 
 }
