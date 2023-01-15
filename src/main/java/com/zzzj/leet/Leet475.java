@@ -8,45 +8,64 @@ import java.util.Arrays;
  */
 public class Leet475 {
 
-    public static void main(String[] args) {
-//        System.out.println(Arrays.toString(binSearch(new int[]{1, 3, 7, 14}, 2)));
-//        System.out.println(Arrays.toString(binSearch(new int[]{1, 3, 7, 14}, 6)));
-//        System.out.println(Arrays.toString(binSearch(new int[]{1, 3, 7, 14}, 9)));
 
-        // System.out.println(findRadius(new int[]{100, 5, 7, 9, 11}, new int[]{1, 5}));
+    public static void main(String[] args) {
+//        System.out.println(findRadius(LeetUtils.convertInts1("[1,2,3]"), LeetUtils.convertInts1("[2]")));
+//        System.out.println(findRadius(LeetUtils.convertInts1("[1,2,3,4]"), LeetUtils.convertInts1("[1,4]")));
+        // [1,2,3,5,15]
+        //[2,30]
+        System.out.println(findRadius(LeetUtils.convertInts1("[1,2,3,5,15]"), LeetUtils.convertInts1("[2,30]")));
     }
 
     public static int findRadius(int[] houses, int[] heaters) {
-        Arrays.sort(heaters);
         Arrays.sort(houses);
 
-        int ans = 0;
+        Arrays.sort(heaters);
 
-        for (int i = 0; i < houses.length; i++) {
-            int leftestIndex = binSearch(heaters, houses[i]);
-            int rightIndex = leftestIndex + 1;
-            int left = leftestIndex >= 0 ? houses[i] - heaters[leftestIndex] : houses[i];
-            // int right = rightIndex< heaters.length ? heaters[rightIndex] - houses[i] :
-            // ans = Math.max(ans, Math.min(left, right));
-        }
+        int last = houses[houses.length - 1];
 
-        return ans;
-    }
+        int first = houses[0];
 
-    public static int binSearch(int[] arr, int num) {
-        int l = 0;
-        int r = arr.length - 1;
-        int mid;
+        int left = 0;
 
-        while (l < r) {
-            mid = l + ((r - l) >> 1);
-            if (arr[mid] > num) {
-                r = mid - 1;
+        int right = Math.max(last, heaters[heaters.length - 1]);
+
+        while (left < right) {
+            int mid = left + ((right - left) >> 1);
+
+            if (check(houses, heaters, mid)) {
+                right = mid;
             } else {
-                l = mid + 1;
+                left = mid + 1;
             }
         }
-        return l;
+
+        return right;
+    }
+
+    private static boolean check(int[] houses, int[] heaters, int expect) {
+        int N = houses.length;
+        int M = heaters.length;
+
+        int j = 0;
+
+        for (int i = 0; i < N; i++) {
+            int house = houses[i];
+            if (heaters[j] - expect > house) {
+                return false;
+            }
+            while (heaters[j] + expect < house) {
+                j++;
+                if (j == M) {
+                    return false;
+                }
+            }
+            if (heaters[j] - expect > house) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

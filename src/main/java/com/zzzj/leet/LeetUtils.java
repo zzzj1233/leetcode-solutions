@@ -267,7 +267,7 @@ public class LeetUtils {
         for (int i = 0; i < split.length; i++) {
             String oneD = split[i].replaceAll("\\s*", "")
                     .replaceAll("\"", "")
-                    .replaceAll("\\[", "");
+                    .replaceAll("\\[", "").replaceAll("\"", "");
             String[] chars = oneD.split(",\\s*");
             // 去除双引号
             ArrayList<String> list = new ArrayList<>(chars.length);
@@ -515,4 +515,5 @@ public class LeetUtils {
 
         return builder.reverse().toString();
     }
+
 }

@@ -25,7 +25,7 @@ public class Leet300 {
 
             for (int j = 0; j < i; j++) {
                 if (nums[i] > nums[j]) {
-                    dp[i] = Math.max(dp[i], dp[j] + 1 );
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
                 }
             }
 
@@ -53,16 +53,18 @@ public class Leet300 {
 
     public static int[] dp(int[] nums) {
         int N = nums.length;
+
         int[] dp = new int[N];
-        dp[N - 1] = 1;
-        for (int i = N - 2; i >= 0; i--) {
-            int result = 1;
-            for (int j = i + 1; j < nums.length; j++) {
-                if (nums[j] > nums[i]) {
-                    result = Math.max(result, 1 + dp[j]);
+
+        dp[0] = 1;
+
+        for (int i = 1; i < N; i++) {
+            int num = nums[i];
+            for (int j = 0; j < i; j++) {
+                if (num > nums[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
                 }
             }
-            dp[i] = result;
         }
 
         return dp;
