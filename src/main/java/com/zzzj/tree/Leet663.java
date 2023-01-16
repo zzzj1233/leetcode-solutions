@@ -1,40 +1,48 @@
 package com.zzzj.tree;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author zzzj
  * @create 2022-08-11 18:57
  */
 public class Leet663 {
 
-    static int target;
+    public static void main(String[] args) {
+        System.out.println(checkEqualTree(TreeNode.buildTree("[5,10,10,null,null,2,3]")));
+    }
 
-    static boolean ans;
+    static Map<Integer, Integer> sumMap;
 
     public static boolean checkEqualTree(TreeNode root) {
-        int sum = dfs(root);
 
-        target = sum / 2;
+        sumMap = new HashMap<>();
 
-        ans = false;
+        int sum = sum(root);
 
-        dfs(root);
+        if (sum % 2 != 0) {
+            return false;
+        }
 
-        return ans;
+        if (sum == 0){
+            return sumMap.get(0) > 1;
+        }
+
+        return sumMap.containsKey(sum / 2);
     }
 
-    public static int dfs(TreeNode root) {
-        if (root == null) {
+    private static int sum(TreeNode root) {
+        if (root == null){
             return 0;
         }
-        if (ans) {
-            return -1;
-        }
-        int leftVal = dfs(root.left);
-        int rightVal = dfs(root.right);
-        if (root.val + leftVal == target || root.val + rightVal == target || root.val + leftVal + rightVal == target) {
-            ans = true;
-        }
-        return root.val + leftVal + rightVal;
+
+        int sum = root.val + sum(root.left) + sum(root.right);
+
+        sumMap.put(sum, sumMap.getOrDefault(sum, 0) + 1);
+
+        return sum;
     }
+
 
 }
