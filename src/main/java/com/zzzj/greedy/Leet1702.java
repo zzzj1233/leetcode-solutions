@@ -2,6 +2,8 @@ package com.zzzj.greedy;
 
 import com.zzzj.util.Unresolved;
 
+import java.util.Arrays;
+
 @Unresolved
 public class Leet1702 {
 
@@ -12,33 +14,32 @@ public class Leet1702 {
 
     public static String maximumBinaryString(String binary) {
 
-        int N = binary.length();
+        int n = binary.length();
 
-        StringBuilder ans = new StringBuilder(binary);
+        int begin = (int) 1e6, count = 0;
 
-        for (int i = 0; i < N; ) {
-            if (is00(ans, i)) {
-                ans.setCharAt(i, '1');
-                i++;
-            } else if (is010(ans, i)) {
-                ans.setCharAt(i, '1');
-                ans.setCharAt(i + 1, '0');
-                ans.setCharAt(i + 2, '1');
-                i += 3;
-            } else {
-                i++;
+        for (int i = 0; i < n; i++) {
+
+            if (binary.charAt(i) == '0') {
+
+                count++;
+
+                begin = Math.min(begin, i);
+
             }
+
         }
 
-        return ans.toString();
+        if (count < 2) return binary;
+
+        char[] res = new char[n];
+
+        Arrays.fill(res, '1');
+
+        res[begin + count - 1] = '0';
+
+        return new String(res);
     }
 
-    public static boolean is00(CharSequence binary, int index) {
-        return binary.charAt(index) == '0' && index + 1 < binary.length() && binary.charAt(index + 1) == '0';
-    }
-
-    public static boolean is010(CharSequence binary, int index) {
-        return binary.charAt(index) == '0' && index + 2 < binary.length() && binary.charAt(index + 1) == '1' && binary.charAt(index + 2) == '0';
-    }
 
 }
