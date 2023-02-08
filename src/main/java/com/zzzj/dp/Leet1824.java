@@ -12,11 +12,13 @@ public class Leet1824 {
 
 
     public static void main(String[] args) {
-//        System.out.println(minSideJumps(new int[]{0, 1, 2, 3, 0}));
-//        System.out.println(minSideJumps(new int[]{0, 1, 1, 3, 3, 0}));
-//        System.out.println(minSideJumps(new int[]{0, 2, 1, 0, 3, 0}));
+        System.out.println(minSideJumps(new int[]{0, 1, 2, 3, 0}));
+        System.out.println(minSideJumps(new int[]{0, 1, 1, 3, 3, 0}));
+        System.out.println(minSideJumps(new int[]{0, 2, 1, 0, 3, 0}));
 
-        for (int i = 0; i < 1000; i++) {
+//        System.exit(0);
+
+        for (int i = 0; i < 10000; i++) {
             int[] arr = ArrayUtil.generateArray(1000, 1, 3);
             arr[0] = 0;
             arr[arr.length - 1] = 0;
@@ -83,40 +85,47 @@ public class Leet1824 {
 
         int N = obstacles.length;
 
-        int[][] dp = new int[N - 1][4];
+        int[][] dp = new int[N][4];
 
         dp[0][1] = 1;
         dp[0][3] = 1;
 
-        for (int i = 1; i < obstacles.length - 1; i++) {
+        for (int i = 1; i < N; i++) {
 
             for (int j = 1; j < 4; j++) {
 
-                // 路障
-                int obstacle = obstacles[i];
+                // 这个地方没有石头
 
-                if (obstacle == j) {
+                if (j == obstacles[i]) {
                     dp[i][j] = Integer.MAX_VALUE;
+                    continue;
+                }
+
+                // 1. 上一条路有石头的路不可取
+
+                // 2. 当前路有石头的路不可取
+
+                dp[i][j] = dp[i - 1][j];
+
+                int min = dp[i - 1][j];
+
+                for (int k = 1; k < 4; k++) {
+                    if (k == obstacles[i - 1] || k == obstacles[i]) {
+                        continue;
+                    }
+                    min = Math.min(min, dp[i - 1][k]);
+                }
+
+                if (min == Integer.MAX_VALUE) {
+                    continue;
                 } else {
-                    dp[i][j] = dp[i - 1][j] == Integer.MAX_VALUE ? Integer.MAX_VALUE : dp[i - 1][j];
-
-                    int min = Integer.MAX_VALUE;
-                    for (int k = 1; k < 4; k++) {
-                        if (k == j || k == obstacle) {
-                            continue;
-                        }
-                        min = Math.min(min, dp[i - 1][k]);
-                    }
-
-                    if (min != Integer.MAX_VALUE) {
-                        dp[i][j] = Math.min(dp[i][j], min + 1);
-                    }
+                    dp[i][j] = Math.min(dp[i][j], min + 1);
                 }
             }
 
         }
 
-        return Math.min(dp[N - 2][1], Math.min(dp[N - 2][2], dp[N - 2][3]));
+        return Math.min(dp[N - 1][1], Math.min(dp[N - 1][2], dp[N - 1][3]));
     }
 
 

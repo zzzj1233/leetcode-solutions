@@ -34,20 +34,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <artifactId>i18n-maven-plugin</artifactId>
-                <groupId>com.github.zzzj1233</groupId>
-                <version>1.0-RELEASE</version>
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <phase>clean</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>proto-i18N</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-            </plugin>
-
         </plugins>
     </build>
 

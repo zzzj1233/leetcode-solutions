@@ -1,6 +1,5 @@
 package com.zzzj.stack;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -10,42 +9,39 @@ import java.util.LinkedList;
 public class Leet1526 {
 
     public static void main(String[] args) {
-        System.out.println(minNumberOperations(new int[]{3, 1, 5, 4, 2}));
+//        System.out.println(minNumberOperations(new int[]{3, 1, 5, 4, 2}));
+        System.out.println(minNumberOperations(new int[]{5, 3, 1, 4, 6}));
     }
 
     public static int minNumberOperations(int[] target) {
-        int answer = 0;
-        int curVal = 1;
+
+        int N = target.length;
 
         LinkedList<Integer> stack = new LinkedList<>();
 
-        int max = 0;
+        int ans = 0;
 
-        for (int i = 0; i < target.length; i++) {
-            stack.add(i);
-            max = Math.max(max, target[i]);
+        for (int i = 0; i < N; i++) {
+            int num = target[i];
+            int count = num;
+            while (!stack.isEmpty() && num < stack.peekLast()) {
+                Integer last = stack.removeLast();
+                ans += Math.max(0, last - count);
+                ans += Math.max(0, last - count);
+                count = last;
+            }
+            stack.add(num);
         }
 
-        while (true) {
-            Iterator<Integer> iterator = stack.iterator();
+        int del = 0;
 
-            while (iterator.hasNext()) {
-                Integer index = iterator.next();
-                if (target[index] < curVal && iterator.hasNext()) {
-                    answer++;
-                }
-            }
-
-            curVal++;
-            answer++;
-
-            if (curVal > max) {
-                break;
-            }
-
+        while (!stack.isEmpty()) {
+            Integer first = stack.removeFirst();
+            ans += first - del;
+            del += first - del;
         }
 
-        return answer;
+        return ans;
     }
 
 }

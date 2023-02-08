@@ -1,5 +1,8 @@
 package com.zzzj.stack;
 
+import sun.plugin.WJcovUtil;
+
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -8,49 +11,66 @@ import java.util.LinkedList;
  */
 public class Leet1856 {
 
-    // 子数组中 最小的值 * sum , 求最大值
-
     public static void main(String[] args) {
         System.out.println(maxSumMinProduct(new int[]{1, 2, 3, 2}));
+        System.out.println(maxSumMinProduct(new int[]{2, 3, 3, 1, 2}));
+        System.out.println(maxSumMinProduct(new int[]{3, 1, 5, 6, 4, 2}));
     }
 
     public static int maxSumMinProduct(int[] nums) {
-        int n = nums.length;
 
-        int answer = -1;
+        int N = nums.length;
 
-        int[] prefixSum = new int[n];
-        prefixSum[0] = nums[0];
+        int[] left = new int[N];
+        int[] right = new int[N];
 
-        for (int i = 1; i < nums.length; i++) {
-            prefixSum[i] = prefixSum[i - 1] + nums[i];
-        }
+        Arrays.fill(left, -1);
+        Arrays.fill(right, N);
 
         LinkedList<Integer> stack = new LinkedList<>();
 
-        stack.add(0);
-
-
-        for (int i = 1; i < n; i++) {
-            int value = nums[i];
-
-            while (!stack.isEmpty() && nums[stack.peekLast()] >= value) {
-                // 算answer
-                Integer last = stack.removeLast();
-                int compareVal = nums[last] * (prefixSum[i - 1] - (stack.isEmpty() ? 0 : prefixSum[stack.peekLast()]));
-                answer = Math.max(answer, compareVal);
+        for (int i = 0; i < N; i++) {
+            int num = nums[i];
+            while (!stack.isEmpty() && num < nums[stack.peekLast()]) {
+                right[stack.removeLast()] = i;
             }
-
-            stack.addLast(i);
+            stack.add(i);
         }
 
-        while (!stack.isEmpty()) {
-            Integer last = stack.removeLast();
-            int compareVal = nums[last] * (prefixSum[n - 1] - (stack.isEmpty() ? 0 : prefixSum[stack.peekLast()]));
-            answer = Math.max(answer, compareVal);
+        stack.clear();
+
+        for (int i = N - 1; i >= 0; i--) {
+            int num = nums[i];
+            while (!stack.isEmpty() && num < nums[stack.peekLast()]) {
+                left[stack.removeLast()] = i;
+            }
+            stack.add(i);
         }
 
-        return answer;
+        // 前缀和
+        long[] preSum = new long[N + 1];
+
+        for (int i = 1; i <= N; i++) {
+            preSum[i] = preSum[i - 1] + nums[i - 1];
+        }
+
+        long ans = 0;
+
+        final int MOD = 1000000007;
+
+        for (int i = 0; i < N; i++) {
+            // 以num为最小值
+            int num = nums[i];
+
+            int leftMin = left[i];
+            int rightMin = right[i];
+
+            long sum = preSum[rightMin] - preSum[leftMin + 1];
+
+            ans = Math.max(ans, (sum * num));
+        }
+
+        return (int) (ans % MOD);
     }
 
 
