@@ -46,7 +46,6 @@ public class Leet937 {
         }
 
         numLogs.sort(Comparator.comparingInt(o -> o.index));
-        ;
 
         for (int i = 0; i < numLogs.size(); i++) {
             ans[i + wordLogs.size()] = numLogs.get(i).log;

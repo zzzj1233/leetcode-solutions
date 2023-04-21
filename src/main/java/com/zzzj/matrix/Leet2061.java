@@ -87,6 +87,8 @@ public class Leet2061 {
         return -1;
     }
 
+
+
     public static boolean needShutdown(int[][] room, boolean[][] visited, int x, int y) {
         // 上下左边全部visited , 或者撞墙
         for (int[] dir : DIRS) {
