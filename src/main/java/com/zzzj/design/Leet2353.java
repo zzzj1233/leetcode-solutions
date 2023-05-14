@@ -1,9 +1,6 @@
 package com.zzzj.design;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * @author zzzj
@@ -46,7 +43,13 @@ public class Leet2353 {
 
             Integer oldRate = foodMap2.put(food, newRating);
 
-            curMap.get(cuisine).get(oldRate).remove(food);
+            Set<String> oldFoodSet = curMap.get(cuisine).get(oldRate);
+
+            oldFoodSet.remove(food);
+
+            if (oldFoodSet.isEmpty()) {
+                curMap.get(cuisine).remove(oldRate);
+            }
 
             curMap.get(cuisine).computeIfAbsent(newRating, it -> new TreeSet<>())
                     .add(food);

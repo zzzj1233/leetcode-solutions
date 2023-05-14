@@ -1,6 +1,5 @@
 package com.zzzj.greedy;
 
-import com.sun.media.sound.SoftTuning;
 import com.zzzj.leet.LeetUtils;
 import com.zzzj.util.ArrayCopyIterator;
 import com.zzzj.util.ArrayUtil;

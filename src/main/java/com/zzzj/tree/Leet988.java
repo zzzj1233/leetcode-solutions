@@ -10,48 +10,32 @@ public class Leet988 {
         System.out.println(smallestFromLeaf(TreeNode.buildTree("[25,1,null,0,0,1,null,null,null,0]")));
     }
 
+    static String ans = null;
+
     public static String smallestFromLeaf(TreeNode root) {
-        StringBuilder builder = dfs(root);
-        return builder == null ? "" : builder.toString();
+        ans = null;
+        dfs(root, new StringBuilder());
+        return ans;
     }
 
-    public static StringBuilder dfs(TreeNode root) {
-        if (root == null) {
-            return null;
+    public static void dfs(TreeNode node, StringBuilder builder) {
+        if (node == null) {
+            return;
         }
 
-        if (root.left == null && root.right == null) {
-            return new StringBuilder(1).append(((char) ('a' + root.val)));
-        }
+        builder.append((char) (node.val + 'a'));
 
-        if (root.left != null && root.right != null) {
-            StringBuilder left = dfs(root.left).append(((char) ('a' + root.val)));
-            StringBuilder right = dfs(root.right).append(((char) ('a' + root.val)));
-            return lt(left, right);
-        } else if (root.left != null) {
-            StringBuilder left = dfs(root.left);
-            return left.append(((char) ('a' + root.val)));
-        } else {
-            StringBuilder right = dfs(root.right);
-            return right.append(((char) ('a' + root.val)));
-        }
-    }
-
-    public static StringBuilder lt(StringBuilder left, StringBuilder right) {
-        int N = Math.min(left.length(), right.length());
-
-        for (int i = 0; i < N; i++) {
-            char a = left.charAt(i);
-            char b = right.charAt(i);
-
-            if (a < b) {
-                return left;
-            } else if (b < a) {
-                return right;
+        if (node.left == null && node.right == null) {
+            String str = new StringBuilder(builder.toString()).reverse().toString();
+            if (ans == null || str.compareTo(ans) < 0) {
+                ans = str;
             }
         }
 
-        return left.length() == N ? right : left;
+        dfs(node.left, builder);
+        dfs(node.right, builder);
+        builder.setLength(builder.length() - 1);
     }
+
 
 }

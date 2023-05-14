@@ -3,6 +3,7 @@ package com.zzzj.greedy;
 import com.zzzj.leet.LeetUtils;
 import com.zzzj.util.CopyableIterator;
 
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 
 /**
@@ -12,6 +13,14 @@ import java.util.Arrays;
 public class Leet2131 {
 
     public static void main(String[] args) {
+//
+//        System.out.println(longestPalindrome(new String[]{"lc", "cl", "gg"}));
+//
+//        System.out.println(longestPalindrome(new String[]{"ab", "ty", "yt", "lc", "cl", "ab"}));
+//
+//        System.out.println(longestPalindrome(new String[]{"cc", "ll", "xx"}));
+//
+//        System.exit(0);
 
         for (int i = 0; ; i++) {
             int N = 6;
@@ -20,7 +29,7 @@ public class Leet2131 {
 
             for (int j = 0; j < N; j++) {
                 arr[j] = LeetUtils.randomString(2, false);
-                if (LeetUtils.random.nextBoolean()){
+                if (LeetUtils.random.nextBoolean()) {
                     StringBuilder builder = new StringBuilder(arr[j]);
                     builder.setCharAt(1, builder.charAt(0));
                     arr[j] = builder.toString();
@@ -43,9 +52,35 @@ public class Leet2131 {
     }
 
     public static int longestPalindrome(String[] words) {
-        // 1. 相反字符串
-        // 2.
-        return -1;
+
+        int[][] tab = new int[26][26];
+
+        int ans = 0;
+
+        for (String word : words) {
+
+            int c1 = word.charAt(0) - 'a';
+
+            int c2 = word.charAt(1) - 'a';
+
+            // contains reversal
+
+            if (tab[c2][c1] > 0) {
+                tab[c2][c1]--;
+                ans += 4;
+            } else {
+                tab[c1][c2]++;
+            }
+        }
+
+        for (int i = 0; i < 26; i++) {
+            if (tab[i][i] > 0) {
+                ans += 2;
+                break;
+            }
+        }
+
+        return ans;
     }
 
 
