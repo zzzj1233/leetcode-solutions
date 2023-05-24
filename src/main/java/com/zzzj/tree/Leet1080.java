@@ -7,6 +7,8 @@ package com.zzzj.tree;
 public class Leet1080 {
 
     public static void main(String[] args) {
+        // [1,2,-3,-5,null,4,null]
+        // -1
         System.out.println(sufficientSubset(TreeNode.buildTree("[1,2,-3,-5,null,4,null]"), -1));
     }
 
@@ -14,26 +16,17 @@ public class Leet1080 {
         return dfs(root, limit, 0);
     }
 
-
-    public static TreeNode dfs(TreeNode root, int limit, int pathSum) {
+    public static TreeNode dfs(TreeNode root, int limit, int sum) {
         if (root == null) {
             return null;
         }
 
-        TreeNode left = dfs(root.left, limit, pathSum + root.val);
-        TreeNode right = dfs(root.right, limit, pathSum + root.val);
+        root.left = dfs(root.left, limit, sum + root.val);
+        root.right = dfs(root.right, limit, sum + root.val);
 
-        if (left == null && right == null) {
-            if (pathSum + root.val < limit) {
-                return null;
-            }
-            if (root.left != null || root.right != null) {
-                return null;
-            }
+        if (root.left == null && root.right == null) {
+            return sum + root.val >= limit ? root : null;
         }
-
-        root.left = left;
-        root.right = right;
 
         return root;
     }
