@@ -4,13 +4,13 @@ package com.zzzj.uf;
  * @author zzzj
  * @create 2022-10-31 17:23
  */
-public class StandUF {
+public class UF {
 
     private final int n;
     int[] parents;
     int[] rank;
 
-    public StandUF(int N) {
+    public UF(int N) {
         parents = new int[N];
         rank = new int[N];
         n = N;

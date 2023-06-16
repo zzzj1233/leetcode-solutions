@@ -1,53 +1,63 @@
 package com.zzzj.arr;
 
-import java.util.Arrays;
-
 /**
  * @author zzzj
  * @create 2023-04-20 18:10
  */
 public class Leet2594 {
 
+
+    public static void main(String[] args) {
+
+        System.out.println(repairCars(new int[]{4, 2, 3, 1}, 10));
+
+        System.out.println(repairCars(new int[]{5, 1, 8}, 6));
+
+    }
+
     public static long repairCars(int[] ranks, int cars) {
-        int left = 0;
+        long left = 1;
 
-        int max = Arrays.stream(ranks).max().getAsInt() * cars * cars;
+        long right = 100L * cars * cars;
 
-        int right = max < 0 ? Integer.MAX_VALUE : max;
+        long ans = -1;
 
         while (left <= right) {
-            int mid = left + ((right - left) >> 1);
 
+            long mid = left + ((right - left) >> 1);
+
+            if (can(ranks, cars, mid)) {
+                ans = mid;
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
         }
 
-        return -1;
+        return ans;
     }
 
-    public static boolean can(int[] ranks, int cars, int expectMinute) {
+    public static boolean can(int[] ranks, int cars, long expectMinute) {
 
-        return false;
-    }
+        int can = 0;
 
-    public static int maxRepairCar(int rank, int cars, int expectMinute) {
-        int left = 0;
+        for (int i = 0; i < ranks.length; i++) {
+            int r = ranks[i];
 
-        int right = cars;
+            // r * car * car
+            //
+            long c = expectMinute / r;
 
-        int result = 0;
+            if (c > 0) {
+                can += (int) Math.sqrt(c);
 
-        while (left <= right) {
-            int mid = left + ((right - left) >> 1);
-
-            if (mid * mid * rank <= expectMinute) {
-                result = mid;
-                left = mid + 1;
-            } else {
-                right = mid - 1;
+                if (can >= cars) return true;
             }
 
         }
 
-        return result;
+        return false;
     }
+
 
 }

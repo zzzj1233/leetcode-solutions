@@ -2,6 +2,7 @@ package com.zzzj.leet;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.TreeSet;
 
 /**
  * @author Zzzj
@@ -10,6 +11,11 @@ import java.util.Queue;
 public class Leet649 {
 
     public static void main(String[] args) {
+
+        System.out.println(predictPartyVictory("RD"));
+        System.out.println(predictPartyVictory("RDD"));
+
+//        System.exit(0);
 
         for (int i = 0; i < 1000; i++) {
             String str = LeetUtils.randomString(100, "RD");
@@ -27,52 +33,53 @@ public class Leet649 {
         System.out.println("Ok");
     }
 
+    public static final String R = "Radiant";
+
+    public static final String D = "Dire";
+
     public static String predictPartyVictory(String senate) {
 
-        boolean[] removed = new boolean[senate.length()];
+        int N = senate.length();
 
-        LinkedList<Integer> list = new LinkedList<>();
+        TreeSet<Integer> dset = new TreeSet<>();
 
-        list.add(0);
+        TreeSet<Integer> rset = new TreeSet<>();
 
-        Integer rIndex = senate.indexOf('R');
-        Integer dIndex = senate.indexOf('D');
-
-        while (list.size() > 1) {
-            int index = list.peekFirst();
-
-            if (index >= senate.length()) {
-                list.removeLast();
-                break;
-            }
-
-            if (removed[index]) {
-                list.removeLast();
-                list.add(index + 1);
-                continue;
-            }
-
-            char c = senate.charAt(index);
-
-            // 可以删除下一个D
-            if (c == 'R') {
-                if (dIndex >= 0) {
-                    removed[dIndex] = true;
-                    dIndex = senate.indexOf('D', dIndex + 1);
-                    list.remove(dIndex);
-                }
-            } else {
-                if (rIndex >= 0) {
-                    removed[rIndex] = true;
-                    rIndex = senate.indexOf('R', rIndex + 1);
-                    list.remove(rIndex);
-                }
-            }
-
-            list.add(index + 1);
+        for (int i = 0; i < N; i++) {
+            if (senate.charAt(i) == 'R') rset.add(i);
+            else dset.add(i);
         }
 
-        return senate.charAt(list.peekLast()) == 'R' ? "Radiant" : "Dire";
+        while (!dset.isEmpty() && !rset.isEmpty()) {
+
+            for (int i = 0; i < N; i++) {
+
+                if (senate.charAt(i) == 'R') {
+
+                    if (!rset.contains(i)) continue;
+
+                    Integer ceiling = dset.ceiling(i);
+
+                    if (ceiling == null) dset.pollFirst();
+                    else dset.remove(ceiling);
+
+                } else {
+
+                    if (!dset.contains(i)) continue;
+
+                    Integer ceiling = rset.ceiling(i);
+
+                    if (ceiling == null) rset.pollFirst();
+                    else rset.remove(ceiling);
+
+                }
+
+            }
+
+        }
+
+
+        return dset.isEmpty() ? R : D;
     }
 
 
