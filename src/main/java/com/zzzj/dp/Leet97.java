@@ -1,6 +1,5 @@
 package com.zzzj.dp;
 
-import com.sun.javafx.robot.FXRobotImage;
 
 /**
  * @author Zzzj
