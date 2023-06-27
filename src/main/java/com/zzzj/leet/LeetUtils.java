@@ -526,23 +526,25 @@ public class LeetUtils {
         for (int i = 0; i < N; i++) {
             InvokeMethodSource source = sources[random.nextInt(length)];
 
+            String methodName = source.getMethodName();
+
             Object[] parameters = source.getParamsSupplier().get();
 
             Object result = null;
             try {
-                result = exp.invokeMethod(source.getMethodName(), parameters);
+                result = exp.invokeMethod(methodName, parameters);
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
             }
 
-            Object expectResult = expect.invokeMethod(source.getMethodName(), parameters);
+            Object expectResult = expect.invokeMethod(methodName, parameters);
 
             if (result == null && expectResult == null) {
                 continue;
             }
 
-            boolean hasError = result == null && expectResult != null;
+            boolean hasError = result == null;
             hasError |= result != null && expectResult == null;
             hasError |= result.getClass().isPrimitive() && result != expectResult;
             hasError |= !result.getClass().isPrimitive() && !result.equals(expectResult);
@@ -551,7 +553,7 @@ public class LeetUtils {
 
                 System.out.println("Error");
 
-                System.out.println("method = " + source.getMethodName() + " , params = " + Arrays.toString(parameters));
+                System.out.println("method = " + methodName + " , params = " + Arrays.toString(parameters));
                 System.out.println("MyResult = " + result);
                 System.out.println("ExpectResult = " + expectResult);
 
@@ -559,7 +561,6 @@ public class LeetUtils {
             }
         }
 
-        // System.out.println("Ok");
         return true;
     }
 
