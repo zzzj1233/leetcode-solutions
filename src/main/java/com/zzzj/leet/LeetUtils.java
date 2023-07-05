@@ -2,7 +2,6 @@ package com.zzzj.leet;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.zzzj.util.ExecutionCallback;
@@ -244,7 +243,7 @@ public class LeetUtils {
         char[][] result = new char[split.length][];
 
         for (int i = 0; i < split.length; i++) {
-            String oneD = split[i].substring(1);
+            String oneD = split[i].trim().substring(1);
 
             String[] chars = oneD.split(",");
 
@@ -510,14 +509,18 @@ public class LeetUtils {
         return "[" + list.stream().map(s -> "\"" + s + "\"").collect(Collectors.joining(",")) + "]";
     }
 
-    public static String toBinaryString(int num) {
-        StringBuilder builder = new StringBuilder(32);
+    public static String toBinaryString(int num, int bitSize) {
+        StringBuilder builder = new StringBuilder(bitSize);
 
-        for (int i = 0; i < 31; i++) {
+        for (int i = 0; i < bitSize; i++) {
             builder.append(((num >> i) & 1) == 1 ? "1" : "0");
         }
 
         return builder.reverse().toString();
+    }
+
+    public static String toBinaryString(int num) {
+        return toBinaryString(num, Integer.SIZE);
     }
 
     public static boolean executeExpression(InvokableExp exp, InvokableExp expect, int N, InvokeMethodSource... sources) {
