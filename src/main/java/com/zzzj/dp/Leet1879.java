@@ -8,8 +8,7 @@ import java.util.Arrays;
  */
 public class Leet1879 {
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws Exception {
         System.out.println(minimumXORSum(new int[]{1, 2}, new int[]{2, 3}));
 
         System.out.println(minimumXORSum(new int[]{1, 0, 3}, new int[]{5, 3, 4}));
