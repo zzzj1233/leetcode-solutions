@@ -1,4 +1,4 @@
-package com.zzzj.contest.dweek;
+package com.zzzj.contest.dweek110;
 
 import java.util.Arrays;
 import java.util.HashSet;
