@@ -24,10 +24,15 @@ public class Dijkstra {
     private final List<Integer>[] paths;
 
     public Dijkstra(WeightedGraph graph, int source) {
+
         this.graph = graph;
+
         this.source = source;
+
         this.distance = new int[graph.getN()];
+
         this.visited = new boolean[graph.getN()];
+
         Arrays.fill(distance, Integer.MAX_VALUE);
 
         // source -> source , distance = 0
@@ -38,6 +43,7 @@ public class Dijkstra {
 
         // 每个节点到每个节点的最短路径
         paths = new List[graph.getN()];
+
         this.initShortestPath();
     }
 
@@ -130,6 +136,9 @@ public class Dijkstra {
         return new ArrayList<>(paths[target]);
     }
 
+    public int shortestDistance(int target) {
+        return distance[target];
+    }
 
     public static void main(String[] args) {
         String source = "5 8\n" +
@@ -151,6 +160,10 @@ public class Dijkstra {
         System.out.println(dijkstra.shortestPath(1));
         System.out.println(dijkstra.shortestPath(4));
         System.out.println(dijkstra.shortestPath(3));
+
+        System.out.println(dijkstra.shortestDistance(1));
+        System.out.println(dijkstra.shortestDistance(4));
+        System.out.println(dijkstra.shortestDistance(3));
     }
 
 }

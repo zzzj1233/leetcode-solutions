@@ -12,6 +12,7 @@ public class Leet2707 {
 
         System.out.println(minExtraChar("sayhelloworld", new String[]{"hello", "world"}));
 
+        System.out.println(minExtraChar("azvzulhlwxwobowijiyebeaskecvtjqwkmaqnvnaomaqnvf", new String[]{"na", "i", "edd", "wobow", "kecv", "b", "n", "or", "jj", "zul", "vk", "yeb", "qnfac", "azv", "grtjba", "yswmjn", "xowio", "u", "xi", "pcmatm", "maqnv"}));
     }
 
     public static int minExtraChar(String s, String[] dictionary) {
