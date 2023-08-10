@@ -14,15 +14,20 @@ public class Leet673 {
     // 2,2,2,2,2 = 5
 
     public static void main(String[] args) {
+
         System.out.println(findNumberOfLIS(new int[]{1, 3, 5, 4, 7}));
 
-        System.exit(0);
+        System.out.println(findNumberOfLIS(new int[]{6, 1, 1, 3, 4}));
+
+//        System.exit(0);
 
         for (int i = 0; i < 1000; i++) {
-            int[] arr = ArrayUtil.generateArray(1000, 0, 1000);
+            int[] arr = ArrayUtil.generateArray(5, 0, 10);
             if (findNumberOfLIS(arr) != right(arr)) {
                 System.out.println("Error");
                 System.out.println(Arrays.toString(arr));
+                System.out.println(findNumberOfLIS(arr));
+                System.out.println(right(arr));
                 return;
             }
         }
@@ -30,35 +35,42 @@ public class Leet673 {
     }
 
     public static int findNumberOfLIS(int[] nums) {
+
         int N = nums.length;
 
         int[] dp = new int[N];
-        int[] count = new int[N];
+
+        int[] cnt = new int[N];
 
         int max = 0;
 
+        int ans = 0;
+
         for (int i = 0; i < N; i++) {
+
             dp[i] = 1;
-            count[i] = 1;
+            cnt[i] = 1;
+
             for (int j = 0; j < i; j++) {
+
                 if (nums[j] < nums[i]) {
-                    if (1 + dp[j] > dp[i]) {
-                        dp[i] = 1 + dp[j];
-                        count[i] = count[j];
-                    } else if (1 + dp[j] == dp[i]) {
-                        count[i] += count[j];
+
+                    if (dp[j] + 1 > dp[i]) {
+                        dp[i] = dp[j] + 1;
+                        cnt[i] = cnt[j];
+                    } else if (dp[j] + 1 == dp[i]) {
+                        cnt[i] += cnt[j];
                     }
                 }
+
             }
+
             max = Math.max(max, dp[i]);
         }
 
-        int ans = 0;
-
-        for (int i = 0; i < dp.length; i++) {
-            if (dp[i] == max) {
-                ans += count[i];
-            }
+        for (int i = 0; i < N; i++) {
+            if (dp[i] == max)
+                ans += cnt[i];
         }
 
         return ans;

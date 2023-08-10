@@ -94,8 +94,6 @@ public class Leet14 {
             if (r == 0) {
                 return "";
             }
-            // abcdefg
-            // abc
         }
 
         return strs[0].substring(0, r);
