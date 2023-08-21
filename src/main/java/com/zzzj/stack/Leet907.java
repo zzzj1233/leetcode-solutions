@@ -1,26 +1,25 @@
-package com.zzzj.contest.dweek104;
+package com.zzzj.stack;
 
-
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
  * @author zzzj
- * @create 2023-08-01 17:33
+ * @create 2023-08-14 14:46
  */
-public class Leet2681 {
+public class Leet907 {
 
     public static void main(String[] args) {
 
-        System.out.println(sumOfPower(new int[]{2, 1, 4}));
+        System.out.println(sumSubarrayMins(new int[]{3, 1, 2, 4, 2, 1, 2, 3}));
 
     }
 
     static final int MOD = 1000000007;
 
+    public static int sumSubarrayMins(int[] arr) {
 
-    public static int sumOfPower(int[] nums) {
-
-        int N = nums.length;
+        int N = arr.length;
 
         LinkedList<Integer> stack = new LinkedList<>();
 
@@ -28,20 +27,19 @@ public class Leet2681 {
 
         int[] right = new int[N];
 
-        // 1,2,3,2,4
         for (int i = 0; i < N; i++) {
 
-            Integer last = null;
             left[i] = i;
 
-            while (!stack.isEmpty() && nums[stack.peekLast()] <= nums[i]) {
+            Integer last = null;
+
+            while (!stack.isEmpty() && arr[i] <= arr[stack.peekLast()]) {
                 last = stack.removeLast();
                 right[last] = i - 1;
             }
 
-            if (last != null) {
+            if (last != null)
                 left[i] = left[last];
-            }
 
             stack.add(i);
         }
@@ -49,16 +47,14 @@ public class Leet2681 {
         while (!stack.isEmpty())
             right[stack.removeLast()] = N - 1;
 
-        // 计算作为最大值的贡献
-        long max = 0;
+        long ans = 0;
 
         for (int i = 0; i < N; i++) {
-            max += (long) nums[i] * nums[i] * Math.pow(2, right[i] - left[i]);
+            ans += (long) (i - left[i] + 1) * (right[i] - i + 1) * arr[i];
+            ans %= MOD;
         }
 
-        System.out.println(max);
-
-        return -1;
+        return (int) ans % MOD;
     }
 
 }

@@ -2,32 +2,50 @@ package com.zzzj.dp;
 
 /**
  * @author zzzj
- * @create 2022-07-26 14:15
+ * @create 2023-08-18 16:59
  */
 public class Leet2707 {
 
-    public static int massage(int[] nums) {
-        int N = nums.length;
-        int[] dp = new int[N];
+    public static void main(String[] args) {
 
-        if (nums.length == 0) {
-            return 0;
-        }
-        if (nums.length == 1) {
-            return nums[0];
-        }
-        if (nums.length == 2) {
-            return Math.max(nums[0], nums[1]);
+        System.out.println(minExtraChar("leetscode", new String[]{"leet", "code", "leetcode"}));
+
+        System.out.println(minExtraChar("sayhelloworld", new String[]{"hello", "world"}));
+
+
+    }
+
+    public static int minExtraChar(String s, String[] dictionary) {
+
+        int N = s.length();
+
+        int[] dp = new int[N + 1];
+
+        for (int i = 1; i <= N; i++) {
+
+            // i作为最后一个字母
+            dp[i] = dp[i - 1];
+
+            OUTER:
+            for (String s1 : dictionary) {
+
+                if (i < s1.length()) continue;
+
+                for (int j = s1.length() - 1, x = i - 1; j >= 0; j--, x--) {
+
+                    if (s1.charAt(j) != s.charAt(x))
+                        continue OUTER;
+                }
+
+                dp[i] = Math.max(
+                        dp[i],
+                        dp[i - s1.length()] + s1.length()
+                );
+            }
+
         }
 
-        dp[0] = nums[0];
-        dp[1] = Math.max(nums[0], nums[1]);
-
-        for (int i = 2; i < N; i++) {
-            dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
-        }
-
-        return dp[N - 1];
+        return s.length() - dp[N];
     }
 
 }

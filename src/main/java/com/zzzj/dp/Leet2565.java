@@ -1,5 +1,7 @@
 package com.zzzj.dp;
 
+import java.util.Arrays;
+
 /**
  * @author zzzj
  * @create 2023-08-07 14:32
@@ -8,13 +10,13 @@ public class Leet2565 {
 
     public static void main(String[] args) {
 
-//        System.out.println(minimumScore("abacaba", "bzaa"));
+        System.out.println(minimumScore("abacaba", "bzaa"));
 //
-//        System.out.println(minimumScore("cde", "xyz"));
-//
-//        // 4
-//        System.out.println(minimumScore("ac", "dacd"));
+        System.out.println(minimumScore("cde", "xyz"));
 
+        // 4
+        System.out.println(minimumScore("ac", "dacd"));
+//
         System.out.println(minimumScore("adebddaccdcabaade", "adbae"));
 
     }
@@ -28,12 +30,15 @@ public class Leet2565 {
 
         int[] prefix = new int[N + 1];
 
-        for (int i = 1, j = 0; i <= N; i++) {
+        for (int i = 1, j = 1; i <= N; i++) {
+
             prefix[i] = prefix[i - 1];
-            if (j < M && s.charAt(i - 1) == t.charAt(j)) {
+
+            if (j - 1 < M && s.charAt(i - 1) == t.charAt(j - 1)) {
                 prefix[i]++;
                 j++;
             }
+
         }
 
         int[] suffix = new int[N + 1];
@@ -45,17 +50,12 @@ public class Leet2565 {
                 suffix[i]++;
                 j--;
             }
-
         }
 
         int ans = Integer.MAX_VALUE;
 
         for (int i = 0; i <= N; i++) {
-
-            int matchCount = prefix[i] + suffix[i];
-
-            ans = Math.min(ans, Math.max(0, M - matchCount));
-
+            ans = Math.min(ans, Math.max(0, M - (prefix[i] + suffix[i])));
         }
 
         return ans;

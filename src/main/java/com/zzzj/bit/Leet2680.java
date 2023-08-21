@@ -8,6 +8,8 @@ public class Leet2680 {
 
     public static void main(String[] args) {
 
+        System.out.println(maximumOr(new int[]{12, 9}, 1));
+
         System.out.println(maximumOr(new int[]{8, 1, 2}, 2));
 
         // [88,43,61,72,13]
@@ -18,59 +20,42 @@ public class Leet2680 {
 
     public static long maximumOr(int[] nums, int k) {
 
-        int N = nums.length;
+        // 1100
+        // 1001
+        // 10010
+        //  1100
+        // 11110
 
-        long prefix = 0;
+        int[] bucket = new int[32];
 
-        long max = 0;
-
-        int[] suffixTab = new int[32];
-
-        for (int i = 0; i < N; i++) {
-
-            int num = nums[i];
-
-            for (int j = 0; j < 31; j++) {
-                suffixTab[j] += (num >> j) & 1;
+        for (int num : nums) {
+            for (int i = 0; i < 32; i++) {
+                if ((num & (1 << i)) != 0)
+                    bucket[i]++;
             }
-
         }
 
-        for (int i = 0; i < N; i++) {
+        long ans = 0;
 
-            int num = nums[i];
+        for (int num : nums) {
 
-            for (int j = 0; j < 31; j++) {
-                suffixTab[j] -= (num >> j) & 1;
+            // 把num左移k位
+            long stat = 0;
+
+            for (int i = 0; i < 32; i++) {
+
+                if ((num & (1 << i)) != 0) {
+                    stat |= 1L << (i + k);
+                    if (bucket[i] > 1)
+                        stat |= 1 << i;
+                } else if (bucket[i] > 0)
+                    stat |= 1 << i;
             }
 
-            int suffix = suffix(suffixTab);
-
-            for (int j = 1; j <= k; j++) {
-
-                long mul = num * (1L << j);
-
-                max = Math.max(max, mul | prefix | suffix);
-
-            }
-
-            prefix |= num;
-
+            ans = Math.max(ans, stat);
         }
 
-        return max;
+        return ans;
     }
 
-    public static int suffix(int[] suffixTab) {
-
-        int suffix = 0;
-
-        for (int i = 0; i < 31; i++) {
-            if (suffixTab[i] > 0) {
-                suffix |= 1 << i;
-            }
-        }
-
-        return suffix;
-    }
 }
