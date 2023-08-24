@@ -593,4 +593,12 @@ public class LeetUtils {
         return exp;
     }
 
+    public static String arrayToString(int[][] arr) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < arr.length; i++) {
+            builder.append(Arrays.toString(arr[i]));
+            builder.append("\n");
+        }
+        return builder.toString();
+    }
 }
