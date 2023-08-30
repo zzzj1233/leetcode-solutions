@@ -13,8 +13,11 @@ public class Leet2370 {
 
     public static void main(String[] args) {
 
-        System.out.println(longestIdealString("ccacb", 15));
-
+//        System.out.println(longestIdealString("ccacb", 15));
+//        System.out.println(right("ccacb", 15));
+//        System.out.println(longestIdealString("acfgbd", 2));
+//        System.out.println(longestIdealString("abcd", 3));
+//
 //        System.exit(0);
 
         for (int i = 0; i < 10000; i++) {
@@ -39,27 +42,33 @@ public class Leet2370 {
     }
 
     public static int longestIdealString(String s, int k) {
-        int[] dp = new int[26];
 
         int N = s.length();
 
+        int[] dp = new int[26];
+
+        int ans = 0;
+
         for (int i = 0; i < N; i++) {
-            int idx = s.charAt(i) - 'a';
+            int index = s.charAt(i) - 'a';
 
-            int max = -1;
+            int[] temp = Arrays.copyOfRange(dp, 0, dp.length);
 
-            for (int j = 1; j <= k && idx + j < 26; j++) {
-                max = Math.max(max, dp[idx + j]);
+            for (int j = 0; j <= k; j++) {
+                if (index - j < 0) break;
+                temp[index] = Math.max(temp[index], dp[index - j] + 1);
             }
 
-            for (int j = Math.min(idx, k); j >= 0; j--) {
-                max = Math.max(max, dp[idx - j]);
+            for (int j = 0; j <= k; j++) {
+                if (index + j > 25) break;
+                temp[index] = Math.max(temp[index], dp[index + j] + 1);
             }
 
-            dp[idx] = max + 1;
+            dp = temp;
+            ans = Math.max(ans, dp[index]);
         }
 
-        return Arrays.stream(dp).max().orElse(0);
+        return ans;
     }
 
     public static int right(String s, int k) {

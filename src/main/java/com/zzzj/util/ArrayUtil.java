@@ -22,7 +22,7 @@ public class ArrayUtil {
     }
 
     public static int[] copy(int[] arr) {
-        return copy(arr, 0, arr.length - 1);
+        return Arrays.copyOfRange(arr, 0, arr.length);
     }
 
     public static int[] copy(int[] arr, int i, int j) {
@@ -131,5 +131,9 @@ public class ArrayUtil {
         return ret;
     }
 
+    public static int[] sort(int[] arr) {
+        Arrays.sort(arr);
+        return arr;
+    }
 
 }

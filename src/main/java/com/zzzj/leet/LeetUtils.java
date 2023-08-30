@@ -593,6 +593,11 @@ public class LeetUtils {
         return exp;
     }
 
+    public static void invokeAndExit(Runnable r) {
+        r.run();
+        System.exit(0);
+    }
+
     public static String arrayToString(int[][] arr) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < arr.length; i++) {
