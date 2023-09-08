@@ -3,7 +3,7 @@ package com.zzzj.util;
 import com.zzzj.leet.LeetUtils;
 
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Comparator;
 import java.util.Random;
 import java.util.function.Consumer;
 
@@ -144,6 +144,11 @@ public class ArrayUtil {
     }
     public static int[] sort(int[] arr) {
         Arrays.sort(arr);
+        return arr;
+    }
+
+    public static int[][] sort(int[][] arr, Comparator<int[]> comparator) {
+        Arrays.sort(arr,comparator);
         return arr;
     }
 

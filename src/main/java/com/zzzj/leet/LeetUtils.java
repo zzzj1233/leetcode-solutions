@@ -2,6 +2,7 @@ package com.zzzj.leet;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.zzzj.util.ExecutionCallback;
@@ -10,6 +11,7 @@ import com.zzzj.util.InvokeMethodSource;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 /**
@@ -594,8 +596,22 @@ public class LeetUtils {
     }
 
     public static void invokeAndExit(Runnable r) {
+        invokeAndExit(true, r);
+    }
+
+    public static void invokeAndExit(boolean exit, Runnable r) {
         r.run();
-        System.exit(0);
+        if (exit)
+            System.exit(0);
+    }
+
+    public static <T> void invokeAndExit(Callable<T> callable, T expect) {
+        try {
+            if (!ObjectUtil.equals(callable.call(), expect))
+                System.exit(0);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static String arrayToString(int[][] arr) {
