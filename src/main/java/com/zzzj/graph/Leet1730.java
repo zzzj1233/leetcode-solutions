@@ -1,4 +1,4 @@
-package com.zzzj.bfs;
+package com.zzzj.graph;
 
 import com.zzzj.leet.LeetUtils;
 
