@@ -1,149 +1,116 @@
 package com.zzzj.leet;
 
-import com.zzzj.util.ArrayUtil;
-
-import java.util.Arrays;
 
 /**
- * @author Zzzj
- * @create 2022-07-24 17:44
+ * @author zzzj
+ * @create 2023-10-03 22:59
  */
 public class Leet1803 {
 
     public static void main(String[] args) {
-        System.out.println(countPairs(new int[]{3, 2, 2}, 1, 1));
-//        System.out.println(countPairs(new int[]{9, 8, 4, 2, 1}, 5, 14));
 
-//        System.exit(0);
+        System.out.println(countPairs(new int[]{1, 4, 2, 7}, 2, 6));
 
-        for (int i = 0; i < 1000; i++) {
-            int[] arr = ArrayUtil.generateArray(100, 1, 1000);
-            int high = LeetUtils.random.nextInt(1000) + 1;
-            int low = LeetUtils.random.nextInt(high) + 1;
-//
-//            int[] arr = ArrayUtil.generateArray(3, 1, 5);
-//            int high = LeetUtils.random.nextInt(5) + 1;
-//            int low = LeetUtils.random.nextInt(high) + 1;
+        System.out.println(countPairs(new int[]{9, 8, 4, 2, 1}, 5, 14));
 
-            if (countPairs(arr, low, high) != right(arr, low, high)) {
-                System.out.println("Error");
-                System.out.println(Arrays.toString(arr));
-                System.out.println(low);
-                System.out.println(high);
-                System.out.println("myAns    = " + countPairs(arr, low, high));
-                System.out.println("rightAns = " + right(arr, low, high));
-                return;
-            }
-        }
-
-        System.out.println("Ok");
     }
 
     public static int countPairs(int[] nums, int low, int high) {
+
         Trie root = new Trie();
 
         int ans = 0;
 
         for (int i = 0; i < nums.length; i++) {
-            int num = nums[i];
 
-            Trie node = root;
+            int cnt = search(nums[i], root, high) - search(nums[i], root, low - 1);
 
-            int end = 0;
+            ans += cnt;
 
-            for (int j = 15; j >= 0; j--) {
-                if (((num >> j) & 1) == 1) {
-                    end = j;
-                    break;
-                }
-            }
-
-            for (int j = 0; j < 15; j++) {
-                boolean one = ((num >> j) & 1) == 1;
-                if (one) {
-                    if (node.one == null) {
-                        node.one = new Trie();
-                    }
-                    node = node.one;
-                } else {
-                    if (node.zero == null) {
-                        node.zero = new Trie();
-                    }
-                    node = node.zero;
-                }
-                if (end == j) {
-                    node.count++;
-                }
-            }
-
-            ans += dfs(num, 0, root, low, high, 0);
+            append(nums[i], root);
         }
-
 
         return ans;
     }
 
-    public static int dfs(int num, int index, Trie root, int low, int high, int cur) {
-        if (index >= 15) {
-            return 0;
+    public static int search(int num, Trie root, int high) {
+
+        int limit = 31;
+
+        for (; limit >= 0; limit--) {
+            if ((num & (1 << limit)) != 0 || ((high) & (1 << limit)) != 0)
+                break;
+            root = root.zero;
+            if (root == null)
+                return 0;
         }
 
-        // 0100
-        // 0010
-        // 0110
-        boolean one = ((num >> index) & 1) == 1;
 
-        int cleared = ((num >> index) << index) | cur;
+        int cnt = 0;
 
-        int result = root.count > 0 && cleared >= low && cleared <= high ? root.count : 0;
+        for (int i = limit; i >= 0 && root != null; i--) {
 
-        if (one) {
-            if (root.zero != null && (cur | 1 << index) <= high) {
-                result += dfs(num, index + 1, root.zero, low, high, (cur | 1 << index));
+            if ((high & (1 << i)) != 0) {
+
+                // high :  xxx1xxx
+                //  num :  xxx0xxx
+                // trie :  xxx0ccc
+                if ((num & (1 << i)) == 0) {
+
+                    cnt += root.zero == null ? 0 : root.zero.cnt;
+
+                    root = root.one;
+                } else {
+                    // high :  xxx1xxx
+                    //  num :  xxx1xxx
+                    // trie :  xxx1ccc
+                    cnt += root.one == null ? 0 : root.one.cnt;
+
+                    root = root.zero;
+                }
+
+            } else {
+                // high :  xxx0xxx
+                //  num :  xxx0xxx
+                if ((num & (1 << i)) == 0) {
+                    root = root.zero;
+                } else {
+                    root = root.one;
+                }
             }
-            if (root.one != null) {
-                result += dfs(num, index + 1, root.one, low, high, cur);
-            }
-        } else {
-            if (root.one != null && (cur | 1 << index) <= high) {
-                result += dfs(num, index + 1, root.one, low, high, (cur | 1 << index));
-            }
-            if (root.zero != null) {
-                result += dfs(num, index + 1, root.zero, low, high, cur);
-            }
+
         }
 
-        return result;
+        return (root == null ? 0 : root.cnt) + cnt;
+    }
+
+    public static void append(int num, Trie root) {
+        int limit = 31;
+
+        for (; limit >= 0; limit--) {
+            if ((num & (1 << limit)) != 0)
+                break;
+        }
+
+        for (int i = 31; i >= 0; i--) {
+            if ((num & (1 << i)) == 0) {
+                if (root.zero == null)
+                    root.zero = new Trie();
+                root = root.zero;
+            } else {
+                if (root.one == null)
+                    root.one = new Trie();
+                root = root.one;
+            }
+            root.cnt++;
+        }
+
     }
 
     private static class Trie {
         Trie zero;
         Trie one;
-        int count;
+        int cnt;
     }
-
-    public static int right(int[] nums, int low, int high) {
-        int ans = 0;
-        int max = 0;
-        int min = Integer.MAX_VALUE;
-        int[] freq = new int[20001];
-        for (int num : nums) {
-            freq[num]++;
-            max = Math.max(max, num);
-            min = Math.min(min, num);
-        }
-
-        for (int j = min; j <= max; j++) {
-            if (freq[j] == 0) continue;
-            for (int i = low; i <= high; i++) {
-                int xor = i ^ j;
-                if (xor >= 1 && xor <= 20000) {
-                    ans += freq[j] * freq[xor];
-                }
-            }
-        }
-        return ans >> 1;
-    }
-
 
 }
