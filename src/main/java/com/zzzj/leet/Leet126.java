@@ -12,103 +12,44 @@ public class Leet126 {
         System.out.println(findLadders("hit", "cog", TreeNode.buildList("[\"hot\",\"dot\",\"dog\",\"lot\",\"log\",\"cog\"]")));
     }
 
-    private static List<List<String>> result;
-
     public static List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
-        result = new ArrayList<>();
 
-        Set<String> words = new HashSet<>(wordList);
-
-        Set<String> visited = new HashSet<>(wordList.size());
-
+        // bfs
         LinkedList<String> queue = new LinkedList<>();
 
-        Map<String, Set<String>> path = new TreeMap<>();
+        queue.add(endWord);
 
-        queue.add(beginWord);
-
-        visited.add(beginWord);
-
-        boolean hasResult = false;
-
-        int level = 1;
+        Map<String, Set<String>> path = new HashMap<>();
 
         while (!queue.isEmpty()) {
+
             int size = queue.size();
 
-            level++;
+            boolean find = false;
 
-            for (int k = 0; k < size; k++) {
-                String last = queue.removeFirst();
+            for (int i = 0; i < size; i++) {
 
-                char[] chars = last.toCharArray();
+                String word = queue.removeFirst();
 
-                for (int j = 0; j < last.length(); j++) {
-
-                    char c = last.charAt(j);
-
-                    for (char i = 'a'; i <= 'z'; i++) {
-                        if (i == c) {
-                            continue;
-                        }
-                        chars[j] = i;
-
-                        String newStr = String.valueOf(chars);
-
-
-                        if (words.contains(newStr)) {
-
-                            boolean contains = visited.contains(newStr);
-
-                            if (contains && path.get(newStr) != null && path.get(newStr).contains(last)) {
-                                continue;
-                            }
-
-                            Set<String> set = path.get(last);
-                            if (set == null) {
-                                set = new HashSet<>();
-                                set.add(newStr);
-                                path.put(last, set);
-                            } else {
-                                set.add(newStr);
-                            }
-
-                            if (!contains) {
-                                if (!endWord.equals(newStr)) {
-                                    visited.add(newStr);
-                                } else {
-                                    hasResult = true;
-                                }
-
-                                queue.add(newStr);
-                            }
-                        }
-
-                    }
-                    chars[j] = c;
+                if (word.equals(beginWord)) {
+                    find = true;
                 }
+
+                for (int j = 0; j < word.length(); j++) {
+
+                    char c = word.charAt(j);
+
+                    
+                }
+
+
             }
-            if (hasResult) {
+
+            if (find)
                 break;
-            }
         }
 
-        if (hasResult) {
-            buildPath(beginWord, endWord, path, new LinkedList<>());
-        }
-
-        return result;
-    }
-
-    private static void buildPath(String beginWord, String endWord, Map<String, Set<String>> graph, List<String> path) {
-        Set<String> set = graph.get(beginWord);
-        path.add(beginWord);
-        if (set != null) {
-            set.forEach(s -> buildPath(s, endWord, graph, path));
-        } else if (endWord.equals(beginWord)) {
-            result.add(new ArrayList<>(path));
-        }
-        path.remove(beginWord);
+        return null;
     }
 
 }
