@@ -1,8 +1,6 @@
 package com.zzzj.graph.weighted.mindis;
 
 import com.zzzj.graph.weighted.WeightedGraph;
-import jdk.nashorn.api.scripting.AbstractJSObject;
-import org.omg.CORBA.AnySeqHelper;
 
 import java.io.StringReader;
 import java.util.*;

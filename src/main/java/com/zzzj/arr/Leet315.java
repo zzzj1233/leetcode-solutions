@@ -12,8 +12,10 @@ public class Leet315 {
 
     public static void main(String[] args) {
 
+//        System.out.println(countSmaller(new int[]{5, 2, 6, 1}));
+//
 //        System.out.println(countSmaller(new int[]{8, 3, 0, 2, 5}));
-
+//
 //        System.exit(0);
 
         for (int i = 0; i < 1000; i++) {
@@ -31,6 +33,63 @@ public class Leet315 {
     public static final Item[] EMPTY = new Item[0];
 
     public static List<Integer> countSmaller(int[] nums) {
+
+        int[] sorted = Arrays.stream(nums)
+                .distinct()
+                .sorted()
+                .toArray();
+
+        BinaryIndexedTree tree = new BinaryIndexedTree(sorted.length);
+
+        int N = nums.length;
+
+        List<Integer> ans = new ArrayList<>(N);
+
+        for (int i = N - 1; i >= 0; i--) {
+
+            int index = Arrays.binarySearch(sorted, nums[i]);
+
+            ans.add((int) tree.query(index - 1));
+
+            tree.update(index);
+        }
+
+        Collections.reverse(ans);
+
+        return ans;
+    }
+
+    private static class BinaryIndexedTree {
+        private final long[] data;
+
+        public BinaryIndexedTree(int N) {
+            this.data = new long[N + 1];
+        }
+
+        public long query(int value) {
+            int index = value + 1;
+            int cnt = 0;
+            while (index > 0) {
+                cnt += data[index];
+                index -= lowbit(index);
+            }
+            return cnt;
+        }
+
+        public void update(int value) {
+            int index = value + 1;
+            while (index < data.length) {
+                data[index]++;
+                index += lowbit(index);
+            }
+        }
+
+        private int lowbit(int x) {
+            return x & (-x);
+        }
+    }
+
+    public static List<Integer> countSmaller_old(int[] nums) {
         int N = nums.length;
 
         Item[] items = new Item[N];
@@ -54,7 +113,6 @@ public class Leet315 {
 
         return ans;
     }
-
 
     public static Item[] merge(Item[] items, int left, int right) {
         if (left > right) {

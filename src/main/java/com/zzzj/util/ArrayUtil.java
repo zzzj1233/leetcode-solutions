@@ -131,6 +131,17 @@ public class ArrayUtil {
         return ret;
     }
 
+    public static int[] distinctArray(int N){
+
+        int[] arr = new int[N];
+
+        for (int i = 0; i < N; i++)
+            arr[i] = i + 1;
+
+        cn.hutool.core.util.ArrayUtil.shuffle(arr);
+
+        return arr;
+    }
     public static int[] sort(int[] arr) {
         Arrays.sort(arr);
         return arr;

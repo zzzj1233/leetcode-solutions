@@ -1,6 +1,5 @@
 package com.zzzj.contest.week345;
 
-import jdk.nashorn.internal.runtime.ListAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
