@@ -323,6 +323,12 @@ public class LeetUtils {
 
         for (int i = 0; i < split.length; i++) {
             String oneD = split[i].replaceAll("\\s*", "").replaceAll("\\[", "");
+
+            if (oneD.isEmpty()) {
+                result[i] = new int[0];
+                continue;
+            }
+
             String[] chars = oneD.split(",\\s*");
             // 去除双引号
             result[i] = new int[chars.length];

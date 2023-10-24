@@ -1,4 +1,4 @@
-package com.zzzj.matrix;
+package com.zzzj.arr;
 
 import com.zzzj.leet.LeetUtils;
 
