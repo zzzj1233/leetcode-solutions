@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfGoodsMaintainBindMapper">
+
+
+    <resultMap type="com.ruoyi.project.xf.domain.XfGoodsMaintainBind" id="XfGoodsMaintainBindResult">
+        <result property="goodsId" column="goods_id"/>
+        <result property="siteId" column="site_id"/>
+        <result property="maintainRuleId" column="maintain_rule_id"/>
+        <result property="goodsDesc" column="goods_desc"/>
+        <result property="goodsDetail" column="goods_detail"/>
+        <result property="goodsIndentfication" column="goods_indentfication"/>
+        <result property="currentValue" column="current_value"/>
+        <result property="lastMaintainTime" column="last_maintain_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="siteName" column="site_name"/>
+        <result property="ruleName" column="rule_name"/>
+    </resultMap>
+
+    <sql id="selectXfGoodsMaintainBindVo">
+        select goods_id,
+               bind.site_id,
+               maintain_rule_id,
+               goods_desc,
+               goods_detail,
+               goods_indentfication,
+               current_value,
+               last_maintain_time,
+               bind.create_time,
+               goods.goods_name,
+               site.site_name,
+               rule.name as rule_name
+        from xf_goods_maintain_bind as bind
+                 left outer join xf_wz_goods as goods
+                                 on goods.id = bind.goods_id
+                 left outer join xf_base_site as site
+                                 on site.id = bind.site_id
+                 left outer join xf_maintian_goods_rule as rule
+                                 on rule.id = bind.maintain_rule_id
+    </sql>
+
+    <resultMap id="baseResultMap" type="com.ruoyi.project.xf.domain.XfGoodsMaintainBind">
+        <id column="goods_id" property="goodsId"/>
+        <result column="site_id" property="siteId"/>
+        <result column="maintain_rule_id" property="maintainRuleId"/>
+        <result column="goods_desc" property="goodsDesc"/>
+        <result column="goods_detail" property="goodsDetail"/>
+        <result column="goods_indentfication" property="goodsIndentfication"/>
+        <result column="current_value" property="currentValue"/>
+        <result column="last_maintain_time" property="lastMaintainTime"/>
+        <result column="last_maintain_value" property="lastMaintainValue"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <resultMap id="voBaseResultMap" type="com.ruoyi.project.xcx.response.XfGoodsMaintainBindVo">
+        <id column="goods_id" property="goodsId"/>
+        <result column="maintain_rule_id" property="maintainRuleId"/>
+        <result column="goods_desc" property="goodsDesc"/>
+        <result column="goods_detail" property="goodsDetail"/>
+        <result column="goods_indentfication" property="goodsIndentfication"/>
+        <result column="current_value" property="currentValue"/>
+        <result column="last_maintain_time" property="lastMaintainTime"/>
+        <result column="last_maintain_value" property="lastMaintainValue"/>
+        <result column="site_name" property="siteName"/>
+        <result column="priorityDayLimit" property="priorityDayLimit"/>
+        <result column="dayLimit" property="dayLimit"/>
+        <result column="trigger_value" property="triggerValue"/>
+        <result column="outable" property="outable"/>
+        <result column="ruleName" property="ruleName"/>
+    </resultMap>
+
+
+    <resultMap id="boBaseResultMap" type="com.ruoyi.project.xcx.bo.MaintainWithRuleBo">
+        <id column="goods_id" property="goodsId"/>
+        <result column="maintain_rule_id" property="maintainRuleId"/>
+        <result column="goods_desc" property="goodsDesc"/>
+        <result column="goods_detail" property="goodsDetail"/>
+        <result column="goods_indentfication" property="goodsIndentfication"/>
+        <result column="current_value" property="currentValue"/>
+        <result column="last_maintain_time" property="lastMaintainTime"/>
+        <result column="last_maintain_value" property="lastMaintainValue"/>
+        <result column="priorityDayLimit" property="priorityDayLimit"/>
+        <result column="dayLimit" property="dayLimit"/>
+        <result column="trigger_value" property="triggerValue"/>
+    </resultMap>
+
+    <sql id="column_list">
+        goods_id,maintain_rule_id,goods_desc,goods_detail,goods_indentfication,site_id,create_time,current_value
+    </sql>
+
+    <sql id="voBaseSelect">
+        select bind.goods_id,
+               maintain_rule_id,
+               goods_desc,
+               goods_detail,
+               goods_indentfication,
+               current_value,
+               last_maintain_time,
+               last_maintain_value,
+               priorityRule.trigger_day_limit as priorityDayLimit,
+               rule.trigger_day_limit         as dayLimit,
+               rule.outable                   as outable,
+               rule.name                      as ruleName,
+               site.site_name                 as site_name,
+               rule.trigger_value
+        from xf_goods_maintain_bind as bind
+                 left join xf_base_site as site on bind.site_id = site.id
+                 left outer join xf_maintian_goods_priority_rule as priorityRule
+                                 on bind.goods_id = priorityRule.goods_id
+                 left outer join xf_maintian_goods_rule as rule
+                                 on bind.maintain_rule_id = rule.id
+    </sql>
+
+    <sql id="boBaseSelect">
+        select bind.goods_id,
+               maintain_rule_id,
+               goods_desc,
+               goods_detail,
+               goods_indentfication,
+               current_value,
+               last_maintain_time,
+               last_maintain_value,
+               priorityRule.trigger_day_limit as priorityDayLimit,
+               rule.trigger_day_limit         as dayLimit,
+               rule.trigger_value
+        from xf_goods_maintain_bind as bind
+                 left outer join xf_maintian_goods_priority_rule as priorityRule
+                                 on bind.goods_id = priorityRule.goods_id
+                 left outer join xf_maintian_goods_rule as rule
+                                 on bind.maintain_rule_id = rule.id
+    </sql>
+
+    <insert id="batchBind">
+        insert into xf_goods_maintain_bind(goods_id, site_id, maintain_rule_id, goods_desc, goods_detail, goods_indentfication, current_value, last_maintain_time,
+        last_maintain_value,create_time)
+        values
+        <foreach collection="goods" item="item" separator=",">
+            (#{item.id},#{item.siteId},#{ruleId},#{goodsDesc},#{goodsDetail},#{goodsIndentfication},#{currentValue},now(),#{lastMaintainValue},now())
+        </foreach>
+    </insert>
+
+    <select id="selectList" resultMap="voBaseResultMap">
+        <include refid="voBaseSelect"/>
+    </select>
+
+    <select id="selectListBySite" resultMap="voBaseResultMap">
+        <include refid="voBaseSelect"/>
+        where bind.site_id in
+        <foreach collection="siteIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        order by bind.create_time desc,
+        priorityDayLimit desc
+        limit #{page_num},#{page_size}
+    </select>
+
+    <select id="selectListBySiteId" resultMap="voBaseResultMap">
+        <include refid="voBaseSelect"/>
+        where bind.site_id = #{siteId}
+        order by bind.create_time desc,
+        priorityDayLimit desc
+        limit #{page_num},#{page_size}
+    </select>
+
+    <select id="selectWithRuleListBySiteId" resultMap="boBaseResultMap">
+        <include refid="boBaseSelect"/>
+        where bind.site_id = #{siteId}
+    </select>
+
+    <select id="selectByGoodsId" resultMap="baseResultMap">
+        select
+        <include refid="column_list"/>
+        from xf_goods_maintain_bind
+        where goods_id = #{goodsId}
+    </select>
+
+
+    <select id="selectXfGoodsMaintainBindList" parameterType="com.ruoyi.project.xf.domain.XfGoodsMaintainBind" resultMap="XfGoodsMaintainBindResult">
+        <include refid="selectXfGoodsMaintainBindVo"/>
+        <where>
+            <if test="siteId != null ">and site_id = #{siteId}</if>
+            <if test="maintainRuleId != null ">and maintain_rule_id = #{maintainRuleId}</if>
+            <if test="siteName != null and siteName != ''">and site.site_name like concat('%',#{siteName},'%')</if>
+            <if test="ruleName != null and ruleName != '' ">and rule.name like concat('%',#{ruleName},'%')</if>
+        </where>
+        order by bind.create_time desc
+    </select>
+
+    <select id="selectXfGoodsMaintainBindById" parameterType="Long" resultMap="XfGoodsMaintainBindResult">
+        <include refid="selectXfGoodsMaintainBindVo"/>
+        where goods_id = #{goodsId}
+    </select>
+
+    <select id="selectGoodsIdIn" resultType="java.lang.Long">
+        select goods_id from xf_goods_maintain_bind where goods_id in
+        <foreach collection="list" open="(" separator="," close=")" item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectWithRuleListBySiteIds" resultMap="boBaseResultMap">
+        <include refid="boBaseSelect"/>
+        where bind.site_id in
+        <foreach collection="list" open="(" separator="," close=")" item="item">
+            #{item}
+        </foreach>
+    </select>
+
+
+    <insert id="insertXfGoodsMaintainBind" parameterType="com.ruoyi.project.xf.domain.XfGoodsMaintainBind">
+        insert into xf_goods_maintain_bind
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null ">goods_id,</if>
+            <if test="siteId != null ">site_id,</if>
+            <if test="maintainRuleId != null ">maintain_rule_id,</if>
+            <if test="goodsDesc != null  and goodsDesc != ''">goods_desc,</if>
+            <if test="goodsDetail != null  and goodsDetail != ''">goods_detail,</if>
+            <if test="goodsIndentfication != null  and goodsIndentfication != ''">goods_indentfication,</if>
+            <if test="currentValue != null ">current_value,</if>
+            <if test="lastMaintainTime != null ">last_maintain_time,</if>
+            <if test="lastMaintainValue != null ">last_maintain_value,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null ">#{goodsId},</if>
+            <if test="siteId != null ">#{siteId},</if>
+            <if test="maintainRuleId != null ">#{maintainRuleId},</if>
+            <if test="goodsDesc != null  and goodsDesc != ''">#{goodsDesc},</if>
+            <if test="goodsDetail != null  and goodsDetail != ''">#{goodsDetail},</if>
+            <if test="goodsIndentfication != null  and goodsIndentfication != ''">#{goodsIndentfication},</if>
+            <if test="currentValue != null ">#{currentValue},</if>
+            <if test="lastMaintainTime != null ">#{lastMaintainTime},</if>
+            <if test="lastMaintainValue != null ">#{lastMaintainValue},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfGoodsMaintainBind" parameterType="com.ruoyi.project.xf.mapper.XfGoodsMaintainBindMapper">
+        update xf_goods_maintain_bind
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="siteId != null ">site_id = #{siteId},</if>
+            <if test="maintainRuleId != null ">maintain_rule_id = #{maintainRuleId},</if>
+            <if test="goodsDesc != null  and goodsDesc != ''">goods_desc = #{goodsDesc},</if>
+            <if test="goodsDetail != null  and goodsDetail != ''">goods_detail = #{goodsDetail},</if>
+            <if test="goodsIndentfication != null  and goodsIndentfication != ''">goods_indentfication = #{goodsIndentfication},</if>
+            <if test="currentValue != null ">current_value = #{currentValue},</if>
+            <if test="lastMaintainTime != null ">last_maintain_time = #{lastMaintainTime},</if>
+            <if test="lastMaintainValue != null ">last_maintain_value = #{lastMaintainValue},</if>
+        </trim>
+        where goods_id = #{goodsId}
+    </update>
+
+    <delete id="deleteXfGoodsMaintainBindById" parameterType="Long">
+        delete
+        from xf_goods_maintain_bind
+        where goods_id = #{goodsId}
+    </delete>
+
+    <delete id="deleteXfGoodsMaintainBindByIds" parameterType="String">
+        delete from xf_goods_maintain_bind where goods_id in
+        <foreach item="goodsId" collection="array" open="(" separator="," close=")">
+            #{goodsId}
+        </foreach>
+
+    </delete>
+
+    <delete id="batchRemove">
+        delete from xf_goods_maintain_bind where goods_id in
+        <foreach item="goodsId" collection="collection" open="(" separator="," close=")">
+            #{goodsId}
+        </foreach>
+    </delete>
+
+</mapper>

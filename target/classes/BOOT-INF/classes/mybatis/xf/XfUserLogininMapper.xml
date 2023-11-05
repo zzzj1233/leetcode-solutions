@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfUserLogininMapper">
+
+    <resultMap type="XfUserLoginin" id="XfUserLogininResult">
+        <result property="id" column="id"/>
+        <result property="token" column="token"/>
+        <result property="createTime" column="create_time"/>
+        <result property="expairTime" column="expair_time"/>
+    </resultMap>
+
+    <sql id="selectXfUserLogininVo">
+        select id, token, create_time, expair_time
+        from xf_user_loginin
+    </sql>
+
+    <select id="queryByToken" resultMap="XfUserLogininResult">
+        <include refid="selectXfUserLogininVo"/>
+        where token = #{token}
+    </select>
+
+    <select id="selectXfUserLogininList" parameterType="XfUserLoginin" resultMap="XfUserLogininResult">
+        <include refid="selectXfUserLogininVo"/>
+        <where>
+            <if test="token != null  and token != ''">and token = #{token}</if>
+            <if test="expairTime != null ">and expair_time = #{expairTime}</if>
+        </where>
+    </select>
+
+    <select id="selectXfUserLogininById" parameterType="String" resultMap="XfUserLogininResult">
+        <include refid="selectXfUserLogininVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectLatestByToken" resultType="java.lang.String">
+        select id
+        from xf_user_loginin
+        where token = #{token}
+        order by create_time desc
+        limit 1
+    </select>
+
+    <insert id="insertXfUserLoginin" parameterType="XfUserLoginin">
+        insert into xf_user_loginin
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">id,</if>
+            <if test="token != null  and token != ''">token,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="expairTime != null ">expair_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null  and id != ''">#{id},</if>
+            <if test="token != null  and token != ''">#{token},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="expairTime != null ">#{expairTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfUserLoginin" parameterType="XfUserLoginin">
+        update xf_user_loginin
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="token != null  and token != ''">token = #{token},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="expairTime != null ">expair_time = #{expairTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="removeToken">
+        delete
+        from xf_user_loginin
+        where token = #{token}
+    </update>
+
+    <delete id="deleteXfUserLogininById" parameterType="String">
+        delete
+        from xf_user_loginin
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfUserLogininByIds" parameterType="String">
+        delete from xf_user_loginin where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteXfUserLogininByToken" parameterType="String">
+        delete
+        from xf_user_loginin
+        where token = #{token}
+    </delete>
+
+    <delete id="deleteAdminTokenByIds">
+        delete from xf_user_loginin where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            concat('1_',#{id})
+        </foreach>
+    </delete>
+
+    <delete id="deleteCustomerTokenById">
+        delete
+        from xf_user_loginin
+        where id = concat('2_', #{id})
+    </delete>
+
+    <delete id="deleteCustomerTokenByIds">
+        delete from xf_user_loginin where id in
+        <foreach collection="array" item="item" open="(" separator="," close=")">
+            concat('2_',#{item})
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfUseCarApplyMapper">
+
+    <resultMap type="com.ruoyi.project.xf.domain.XfUseCarApply" id="XfUseCarApplyResult">
+        <result property="id" column="id"/>
+        <result property="carId" column="car_id"/>
+        <result property="useTime" column="use_time"/>
+        <result property="expectedRetTime" column="expected_ret_time"/>
+        <result property="reason" column="reason"/>
+        <result property="users" column="users"/>
+        <result property="followUsers" column="follow_users"/>
+        <result property="checkerId" column="checker_id"/>
+        <result property="applyerId" column="applyer_id"/>
+        <result property="checkStatus" column="check_status"/>
+        <result property="outStatus" column="out_status"/>
+        <result property="returnTime" column="return_time"/>
+        <result property="applyTime" column="apply_time"/>
+        <result property="siteId" column="site_id"/>
+        <result property="carNo" column="goods_name"/>
+        <result property="applyerName" column="applyerName"/>
+        <result property="checkerName" column="checkerName"/>
+        <result property="carNum" column="car_no"/>
+        <result property="used" column="used"/>
+    </resultMap>
+
+    <sql id="selectXfUseCarApplyVo">
+        select id,
+               car_id,
+               use_time,
+               expected_ret_time,
+               reason,
+               users,
+               follow_users,
+               checker_id,
+               applyer_id,
+               check_status,
+               out_status,
+               return_time,
+               apply_time,
+               site_id,
+               used
+        from xf_use_car_apply
+    </sql>
+
+    <update id="markCarReturn">
+        update xf_use_car_apply
+        set return_time = now(),out_status=3,used=1
+        where car_id = #{carId} and out_status=2
+    </update>
+
+    <update id="updateUsed">
+        update xf_use_car_apply
+        set used = 1,out_status=2
+        where id = #{id}
+    </update>
+
+    <select id="selectXfUseCarApplyList" parameterType="XfUseCarApply" resultMap="XfUseCarApplyResult">
+        select
+        report.id,
+        goods.goods_name,
+        site.site_name,
+        user1.fullname as applyName,
+        user2.fullname as assessorName,
+        report.use_time,report.expected_ret_time,report.reason,report.users,report.follow_users,
+        report.check_status,report.out_status,report.return_time,report.apply_time
+        from  <include refid="selectXfUseCarApplyVo"/> as report
+        left outer join xf_user_customer as user1 on report.applyer_id = user1.id
+        left outer join xf_user_customer as user2 on report.checker_id = user2.id
+        inner join xf_wz_goods as goods on report.goods_id = goods.id
+        inner join xf_base_site as site on site.id = goods.site_id
+        inner join xf_wz_type as type on type.id = goods.type_id
+        <where>
+            <if test="customerName != null and customerName != ''">
+                and user1.fullname like concat('%',#{customerName},'%')
+            </if>
+
+            <if test="checkName != null and checkName != ''">
+                and user2.fullname like concat('%',#{checkName},'%')
+            </if>
+
+            <if test="state != null">
+                and report.state = #{state}
+            </if>
+
+            <if test="checkTime != null and checkTime!= ''">
+                and date_format(report.check_time,'%Y-%m-%d') = date_format(#{checkTime},'%Y-%m-%d')
+            </if>
+
+        </where>
+        <where>
+            <if test="carId != null ">and car_id = #{carId}</if>
+            <if test="useTime != null ">and use_time = #{useTime}</if>
+            <if test="expectedRetTime != null ">and expected_ret_time = #{expectedRetTime}</if>
+            <if test="reason != null  and reason != ''">and reason = #{reason}</if>
+            <if test="users != null  and users != ''">and users = #{users}</if>
+            <if test="followUsers != null  and followUsers != ''">and follow_users = #{followUsers}</if>
+            <if test="checkerId != null ">and checker_id = #{checkerId}</if>
+            <if test="applyerId != null ">and applyer_id = #{applyerId}</if>
+            <if test="checkStatus != null ">and check_status = #{checkStatus}</if>
+            <if test="outStatus != null ">and out_status = #{outStatus}</if>
+            <if test="returnTime != null ">and return_time = #{returnTime}</if>
+            <if test="applyTime != null ">and apply_time = #{applyTime}</if>
+        </where>
+    </select>
+
+    <select id="selectXfUseCarApplyById" parameterType="Long" resultMap="XfUseCarApplyResult">
+        <include refid="selectXfUseCarApplyVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectPassAuditUnUsedBySiteId" resultMap="XfUseCarApplyResult">
+        select apply.id,
+               apply.car_id,
+               apply.use_time,
+               apply.expected_ret_time,
+               apply.users,
+               apply.applyer_id,
+               apply.check_status,
+               apply.out_status,
+               apply.return_time,
+               apply.apply_time,
+               goods.goods_name,
+               goods.car_no,
+               c.fullname as applyerName
+        from xf_use_car_apply as apply
+                 left outer join xf_wz_goods as goods on goods.id = apply.car_id
+                 left outer join xf_user_customer as c on c.id = apply.applyer_id
+        where apply.site_id = #{siteId}
+          and apply.used = 0 and apply.check_status = 2
+        order by apply.apply_time desc
+    </select>
+
+    <select id="selectById" resultMap="XfUseCarApplyResult">
+        select a.id,
+               a.car_id,
+               a.use_time,
+               a.expected_ret_time,
+               a.reason,
+               a.users,
+               a.follow_users,
+               a.checker_id,
+               a.applyer_id,
+               a.check_status,
+               a.out_status,
+               a.return_time,
+               a.apply_time,
+               a.site_id,
+               a.used,
+               c1.fullname as applyerName,
+               c2.fullname as checkerName,
+               g.goods_name
+        from xf_use_car_apply as a
+                 left outer join xf_user_customer as c1 on c1.id = a.applyer_id
+                 left outer join xf_user_customer as c2 on c2.id = a.checker_id
+                 left outer join xf_wz_goods as g on g.id = a.car_id
+        where a.id = #{id}
+    </select>
+
+    <select id="selectBySiteId" resultMap="XfUseCarApplyResult">
+        select apply.id,
+               apply.car_id,
+               apply.use_time,
+               apply.expected_ret_time,
+               apply.users,
+               apply.applyer_id,
+               apply.check_status,
+               apply.checker_id,
+               apply.out_status,
+               apply.used,
+               apply.return_time,
+               apply.apply_time,
+               apply.used,
+               goods.goods_name,
+               goods.car_no,
+               c.fullname as applyerName
+        from xf_use_car_apply as apply
+                 left outer join xf_wz_goods as goods on goods.id = apply.car_id
+                 left outer join xf_user_customer as c on c.id = apply.applyer_id
+        where apply.site_id = #{siteId}
+        order by apply.apply_time desc
+    </select>
+
+    <insert id="insertXfUseCarApply" parameterType="XfUseCarApply" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_use_car_apply
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="carId != null ">car_id,</if>
+            <if test="useTime != null ">use_time,</if>
+            <if test="expectedRetTime != null ">expected_ret_time,</if>
+            <if test="reason != null  and reason != ''">reason,</if>
+            <if test="users != null  and users != ''">users,</if>
+            <if test="followUsers != null  and followUsers != ''">follow_users,</if>
+            <if test="checkerId != null ">checker_id,</if>
+            <if test="applyerId != null ">applyer_id,</if>
+            <if test="checkStatus != null ">check_status,</if>
+            <if test="outStatus != null ">out_status,</if>
+            <if test="returnTime != null ">return_time,</if>
+            <if test="applyTime != null ">apply_time,</if>
+            <if test="siteId != null ">site_id,</if>
+            used
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="carId != null ">#{carId},</if>
+            <if test="useTime != null ">#{useTime},</if>
+            <if test="expectedRetTime != null ">#{expectedRetTime},</if>
+            <if test="reason != null  and reason != ''">#{reason},</if>
+            <if test="users != null  and users != ''">#{users},</if>
+            <if test="followUsers != null  and followUsers != ''">#{followUsers},</if>
+            <if test="checkerId != null ">#{checkerId},</if>
+            <if test="applyerId != null ">#{applyerId},</if>
+            <if test="checkStatus != null ">#{checkStatus},</if>
+            <if test="outStatus != null ">#{outStatus},</if>
+            <if test="returnTime != null ">#{returnTime},</if>
+            <if test="applyTime != null ">#{applyTime},</if>
+            <if test="siteId != null ">#{siteId},</if>
+            #{used}
+        </trim>
+    </insert>
+
+    <update id="updateXfUseCarApply" parameterType="XfUseCarApply">
+        update xf_use_car_apply
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="carId != null ">car_id = #{carId},</if>
+            <if test="useTime != null ">use_time = #{useTime},</if>
+            <if test="expectedRetTime != null ">expected_ret_time = #{expectedRetTime},</if>
+            <if test="reason != null  and reason != ''">reason = #{reason},</if>
+            <if test="users != null  and users != ''">users = #{users},</if>
+            <if test="followUsers != null  and followUsers != ''">follow_users = #{followUsers},</if>
+            <if test="checkerId != null ">checker_id = #{checkerId},</if>
+            <if test="applyerId != null ">applyer_id = #{applyerId},</if>
+            <if test="checkStatus != null ">check_status = #{checkStatus},</if>
+            <if test="outStatus != null ">out_status = #{outStatus},</if>
+            <if test="returnTime != null ">return_time = #{returnTime},</if>
+            <if test="applyTime != null ">apply_time = #{applyTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfUseCarApplyById" parameterType="Long">
+        delete
+        from xf_use_car_apply
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfUseCarApplyByIds" parameterType="String">
+        delete from xf_use_car_apply where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

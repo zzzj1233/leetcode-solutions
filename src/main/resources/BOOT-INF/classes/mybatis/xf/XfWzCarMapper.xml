@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfWzCarMapper">
+
+    <resultMap type="com.ruoyi.project.xf.domain.XfWzCar" id="XfWzCarResult">
+        <result property="id" column="id"/>
+        <result property="licensePlate" column="license_plate"/>
+        <result property="carInfo" column="car_info"/>
+        <result property="carDetail" column="car_detail"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastMaintainTime" column="last_maintain_time"/>
+        <result property="state" column="state"/>
+        <result property="siteId" column="site_id"/>
+        <result property="siteName" column="site_name"/>
+        <result property="comeTime" column="come_time"/>
+        <result property="outType" column="out_type"/>
+    </resultMap>
+
+    <sql id="selectXfWzCarVo">
+        select id,
+               license_plate,
+               car_info,
+               car_detail,
+               create_time,
+               last_maintain_time,
+               state,
+               site_id
+        from xf_wz_car
+    </sql>
+    <sql id="selectXfWzCarSiteVo">
+        select car.id,
+               car.license_plate,
+               car.car_info,
+               car.car_detail,
+               car.create_time,
+               car.last_maintain_time,
+               car.state,
+               car.site_id,
+               site.site_name,
+               carOut.come_time,
+               carOut.out_type
+        from xf_wz_car car
+                 LEFT JOIN xf_base_site site ON car.site_id = site.id
+                 LEFT JOIN xf_wz_car_out as carOut ON carOut.car_id = car.id
+    </sql>
+
+    <sql id="selectXfWzCarSiteBasicVo">
+        select car.id,
+               car.license_plate,
+               car.car_info,
+               car.car_detail,
+               car.create_time,
+               car.last_maintain_time,
+               car.state,
+               car.site_id,
+               site.site_name
+        from xf_wz_car car
+                 LEFT JOIN xf_base_site site ON car.site_id = site.id
+    </sql>
+
+    <select id="selectXfWzCarList" parameterType="XfWzCar" resultMap="XfWzCarResult">
+        <include refid="selectXfWzCarSiteVo"/>
+        <where>
+            <if test="licensePlate != null  and licensePlate != ''">and car.license_plate like "%"#{licensePlate}"%"</if>
+            <if test="carInfo != null  and carInfo != ''">and car.car_info = #{carInfo}</if>
+            <if test="carDetail != null  and carDetail != ''">and car.car_detail = #{carDetail}</if>
+            <if test="lastMaintainTime != null and lastMaintainTime != ''">and car.last_maintain_time = #{lastMaintainTime}</if>
+            <if test="state != null  and state != ''">and car.state = #{state}</if>
+            <if test="siteId != null ">and car.site_id = #{siteId}</if>
+        </where>
+        ORDER BY car.create_time DESC
+    </select>
+    <select id="selectXfWzCarListPage" resultMap="XfWzCarResult">
+        <include refid="selectXfWzCarSiteBasicVo"/>
+        <where>
+            <if test="licensePlate != null  and licensePlate != ''">and car.license_plate = #{licensePlate}</if>
+            <if test="carInfo != null  and carInfo != ''">and car.car_info = #{carInfo}</if>
+            <if test="carDetail != null  and carDetail != ''">and car.car_detail = #{carDetail}</if>
+            <if test="lastMaintainTime != null and lastMaintainTime != ''">and car.last_maintain_time = #{lastMaintainTime}</if>
+            <if test="state != null  and state != ''">and car.state = #{state}</if>
+            <if test="siteId != null ">and car.site_id = #{siteId}</if>
+            <if test="siteArea != null  and siteArea != ''">and car.site_id in (SELECT id from xf_base_site where CONCAT(province,'-',city,'-',area,'-',street) like
+                CONCAT(#{siteArea},'%'))
+            </if>
+        </where>
+        ORDER BY car.create_time DESC
+        LIMIT #{page},#{limit}
+    </select>
+
+    <select id="selectXfWzCarById" parameterType="Long" resultMap="XfWzCarResult">
+        <include refid="selectXfWzCarVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectCountByCarNo" resultType="java.lang.Integer">
+        select count(1)
+        from xf_wz_car
+        where license_plate = #{carNo}
+    </select>
+
+    <insert id="insertXfWzCar" parameterType="XfWzCar" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_wz_car
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="licensePlate != null  and licensePlate != ''">license_plate,</if>
+            <if test="carInfo != null  and carInfo != ''">car_info,</if>
+            <if test="carDetail != null  and carDetail != ''">car_detail,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="lastMaintainTime != null">last_maintain_time,</if>
+            <if test="state != null  and state != ''">state,</if>
+            <if test="siteId != null">site_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="licensePlate != null  and licensePlate != ''">#{licensePlate},</if>
+            <if test="carInfo != null  and carInfo != ''">#{carInfo},</if>
+            <if test="carDetail != null  and carDetail != ''">#{carDetail},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="lastMaintainTime != null">#{lastMaintainTime},</if>
+            <if test="state != null  and state != ''">#{state},</if>
+            <if test="siteId != null">#{siteId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfWzCar" parameterType="com.ruoyi.project.xf.domain.XfWzCar">
+        update xf_wz_car
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="licensePlate != null  and licensePlate != ''">license_plate = #{licensePlate},</if>
+            <if test="carInfo != null  and carInfo != ''">car_info = #{carInfo},</if>
+            <if test="carDetail != null  and carDetail != ''">car_detail = #{carDetail},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="lastMaintainTime != null">last_maintain_time = #{lastMaintainTime},</if>
+            <if test="state != null  and state != ''">`state` = #{state},</if>
+            <if test="siteId != null">site_id = #{siteId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateXfWzCarMaintain" parameterType="Long">
+        update xf_wz_car
+        set last_maintain_time = now()
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfWzCarById" parameterType="Long">
+        delete
+        from xf_wz_car
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfWzCarByIds" parameterType="String">
+        delete from xf_wz_car where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

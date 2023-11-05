@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfWzGoodsDetailMapper">
+    
+    <resultMap type="XfWzGoodsDetail" id="XfWzGoodsDetailResult">
+        <result property="goodsId"    column="goods_id"    />
+        <result property="remarks"    column="remarks"    />
+    </resultMap>
+
+    <sql id="selectXfWzGoodsDetailVo">
+        select goods_id, remarks from xf_wz_goods_detail
+    </sql>
+
+    <select id="selectXfWzGoodsDetailList" parameterType="XfWzGoodsDetail" resultMap="XfWzGoodsDetailResult">
+        <include refid="selectXfWzGoodsDetailVo"/>
+        <where>  
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+        </where>
+    </select>
+    
+    <select id="selectXfWzGoodsDetailById" parameterType="Long" resultMap="XfWzGoodsDetailResult">
+        <include refid="selectXfWzGoodsDetailVo"/>
+        where goods_id = #{goodsId}
+    </select>
+        
+    <insert id="insertXfWzGoodsDetail" parameterType="XfWzGoodsDetail">
+        insert into xf_wz_goods_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null ">goods_id,</if>
+            <if test="remarks != null  and remarks != ''">remarks,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null ">#{goodsId},</if>
+            <if test="remarks != null  and remarks != ''">#{remarks},</if>
+         </trim>
+    </insert>
+
+    <update id="updateXfWzGoodsDetail" parameterType="XfWzGoodsDetail">
+        update xf_wz_goods_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remarks != null  and remarks != ''">remarks = #{remarks},</if>
+        </trim>
+        where goods_id = #{goodsId}
+    </update>
+
+    <delete id="deleteXfWzGoodsDetailById" parameterType="Long">
+        delete from xf_wz_goods_detail where goods_id = #{goodsId}
+    </delete>
+
+    <delete id="deleteXfWzGoodsDetailByIds" parameterType="String">
+        delete from xf_wz_goods_detail where goods_id in 
+        <foreach item="goodsId" collection="array" open="(" separator="," close=")">
+            #{goodsId}
+        </foreach>
+    </delete>
+    
+</mapper>

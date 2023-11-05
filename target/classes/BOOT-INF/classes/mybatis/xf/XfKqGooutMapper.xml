@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfKqGooutMapper">
+
+    <resultMap type="XfKqGoout" id="XfKqGooutResult">
+        <result property="id" column="id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="duration" column="duration"/>
+        <result property="reason" column="reason"/>
+        <result property="siteId" column="site_id"/>
+        <result property="siteName" column="site_name"/>
+    </resultMap>
+
+    <sql id="selectXfKqGooutVo">
+        select id, customer_id, start_time, end_time, duration, reason, site_id
+        from xf_kq_goout
+    </sql>
+
+    <select id="queryListByPage" resultType="com.ruoyi.project.xf.domain.Goout">
+        SELECT goout.id,customer_id customerId,customer.fullname, start_time,end_time ,goout.create_time,goout.site_id siteId,site.site_name
+        from xf_kq_goout goout LEFT JOIN xf_user_customer customer ON customer.id=goout.customer_id
+        LEFT JOIN xf_base_site site ON site.id=goout.site_id
+        where 1=1
+        <if test="customerId != null  and customerId != ''">and goout.customer_id=#{customerId}</if>
+        <if test="siteId != null  and siteId != ''">and goout.site_id=#{siteId}</if>
+        <if test="siteArea != null  and siteArea != ''">and goout.site_id in (SELECT id from xf_base_site where CONCAT(province,'-',city,'-',area,'-',street) like
+            CONCAT(#{siteArea},'%'))
+        </if>
+        ORDER BY id DESC LIMIT #{page},#{limit}
+    </select>
+
+    <select id="queryGoOutInfo" resultType="com.ruoyi.project.xf.domain.Goout">
+        SELECT goout.id,
+               customer_id   customerId,
+               customer.fullname,
+               start_time,
+               end_time,
+               goout.create_time,
+               goout.site_id siteId,
+               site.site_name,
+               reason
+        from xf_kq_goout goout
+                 LEFT JOIN xf_user_customer customer ON customer.id = goout.customer_id
+                 LEFT JOIN xf_base_site site ON site.id = goout.site_id
+        where goout.id = #{id}
+    </select>
+
+    <sql id="selectXfKqGooutVoWeb">
+        select goout.id,
+               goout.customer_id,
+               goout.start_time,
+               goout.end_time,
+               goout.duration,
+               goout.reason,
+               goout.site_id,
+               customer.fullname    as customerName,
+               customer.mobilephone as customerMobile
+    </sql>
+
+    <select id="selectXfKqGooutList" parameterType="XfKqGoout" resultMap="XfKqGooutResult">
+        <include refid="selectXfKqGooutVoWeb"/>,site.site_name
+        from xf_kq_goout goout
+        LEFT JOIN xf_user_customer customer on customer.id=goout.customer_id
+        LEFT JOIN xf_base_site site ON site.id=goout.site_id
+        <where>
+            <if test="customerId != null ">and goout.customer_id = #{customerId}</if>
+            <if test="startTime != null ">and goout.start_time = #{startTime}</if>
+            <if test="endTime != null ">and goout.end_time = #{endTime}</if>
+            <if test="duration != null ">and goout.duration = #{duration}</if>
+            <if test="reason != null  and reason != ''">and goout.reason = #{reason}</if>
+            <if test="siteId != null ">and goout.site_id = #{siteId}</if>
+            <if test="customerName!=null and customerName.trim()!=''">and customer.fullname LIKE concat(concat('%',#{customerName}),'%')</if>
+            <if test="siteName!=null and siteName.trim()!=''">and site.site_name LIKE concat(concat('%',#{siteName}),'%')</if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <select id="selectXfKqGooutById" parameterType="Long" resultMap="XfKqGooutResult">
+        <include refid="selectXfKqGooutVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectCustomerGoOutCount" resultType="java.lang.Integer">
+        SELECT count(*) from xf_kq_goout
+        <where>
+            <if test="customerId != null and customerId != '' ">and customer_id = #{customerId}</if>
+            <if test="siteId != null  and siteId != ''">and site_id = #{siteId}</if>
+            <if test="siteArea != null  and siteArea != ''">and site_id in (SELECT id from xf_base_site where CONCAT(province,'-',city,'-',area,'-',street) like
+                CONCAT(#{siteArea},'%'))
+            </if>
+            <if test="month != null  and month != ''">and date_format(start_time,'%Y-%m')&lt;=#{month} and date_format(end_time,'%Y-%m')&gt;=#{month}</if>
+            <if test="startDay != null  and startDay != ''">
+                and date_format(start_time,'%Y-%m-%d')&gt;= date_format(#{startDay},'%Y-%m-%d')
+            </if>
+            <if test="endDay != null  and endDay != '' ">and date_format(end_time,'%Y-%m-%d')&lt;=date_format(#{endDay},'%Y-%m-%d')</if>
+        </where>
+    </select>
+
+    <select id="selectAttendanceCalGoOutDetail" resultType="com.ruoyi.project.xf.domain.AttendanceCalDetail">
+        SELECT
+        customer_id,
+        cust.fullname,
+        start_time AS onwork_time,
+        end_time AS offwork_time
+        FROM
+        xf_kq_goout AS goOut
+        LEFT JOIN xf_user_customer AS cust ON customer_id = cust.id
+        <where>
+            <if test="customerId != null and customerId != '' ">and goOut.customer_id = #{customerId}</if>
+            <if test="siteId != null  and siteId != ''">and goOut.site_id = #{siteId}</if>
+            <if test="siteArea != null  and siteArea != ''">and goOut.site_id in (SELECT id from xf_base_site where CONCAT(province,'-',city,'-',area,'-',street) like
+                CONCAT(#{siteArea},'%'))
+            </if>
+            <if test="month != null  and month != ''">and date_format(start_time,'%Y-%m')&lt;=#{month} and date_format(end_time,'%Y-%m')&gt;=#{month}</if>
+            <if test="startDay != null  and startDay != ''">
+                and date_format(start_time,'%Y-%m-%d')&gt;= date_format(#{startDay},'%Y-%m-%d')
+            </if>
+            <if test="endDay != null  and endDay != '' ">and date_format(end_time,'%Y-%m-%d')&lt;=date_format(#{endDay},'%Y-%m-%d')</if>
+        </where>
+
+    </select>
+
+    <select id="selectUserIdListBySite" resultType="java.lang.Long">
+        select distinct customer_id
+        from xf_kq_goout
+        where now() between DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s') and DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s')
+          and site_id = #{siteId}
+    </select>
+
+    <select id="selectUserIdListBySites" resultType="java.lang.Long">
+        select distinct customer_id
+        from xf_kq_goout
+        where now() between DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s') and DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s')
+        and site_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectNameAndSiteNameBySite"
+            resultMap="com.ruoyi.project.xf.mapper.XfUserCustomerMapper.CustomerStatisticsListOutputVoResultMap">
+        select user.id, user.fullname, site.site_name
+        from xf_kq_goout as goout
+                 inner join xf_user_customer user
+                            on goout.customer_id = user.id
+                 inner join xf_base_site as site on site.id = user.site_id
+        where now() between DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s') and DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s')
+          and goout.site_id = #{siteId}
+    </select>
+
+    <select id="selectNameAndSiteNameBySites" resultMap="com.ruoyi.project.xf.mapper.XfUserCustomerMapper.CustomerStatisticsListOutputVoResultMap">
+        select user.id, user.fullname, site.site_name
+        from xf_kq_goout as goout
+        inner join xf_user_customer user
+        on goout.customer_id = user.id
+        inner join xf_base_site as site on site.id = user.site_id
+        where now() between DATE_FORMAT(start_time, '%Y-%m-%d %H:%i:%s') and DATE_FORMAT(end_time, '%Y-%m-%d %H:%i:%s')
+        and goout.site_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach> and user.user_type=1
+    </select>
+
+    <insert id="insertXfKqGoout" parameterType="XfKqGoout" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_kq_goout
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null ">customer_id,</if>
+            <if test="startTime != null ">start_time,</if>
+            <if test="endTime != null ">end_time,</if>
+            <if test="duration != null ">duration,</if>
+            <if test="reason != null  and reason != ''">reason,</if>
+            <if test="siteId != null ">site_id,</if>
+            <if test="createTime != null ">create_time</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null ">#{customerId},</if>
+            <if test="startTime != null ">#{startTime},</if>
+            <if test="endTime != null ">#{endTime},</if>
+            <if test="duration != null ">#{duration},</if>
+            <if test="reason != null  and reason != ''">#{reason},</if>
+            <if test="siteId != null ">#{siteId},</if>
+            <if test="createTime != null ">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfKqGoout" parameterType="XfKqGoout">
+        update xf_kq_goout
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null ">customer_id = #{customerId},</if>
+            <if test="startTime != null ">start_time = #{startTime},</if>
+            <if test="endTime != null ">end_time = #{endTime},</if>
+            <if test="duration != null ">duration = #{duration},</if>
+            <if test="reason != null  and reason != ''">reason = #{reason},</if>
+            <if test="siteId != null ">site_id = #{siteId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfKqGooutById" parameterType="Long">
+        delete
+        from xf_kq_goout
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfKqGooutByIds" parameterType="String">
+        delete from xf_kq_goout where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

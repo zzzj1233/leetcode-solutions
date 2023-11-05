@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfClockInDailyMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.project.xf.domain.XfClockInDaily">
+        <result column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="rest" property="rest"/>
+        <result column="clock_in_time" property="clockInTime"/>
+        <result column="site_id" property="siteId"/>
+    </resultMap>
+
+    <resultMap type="com.ruoyi.project.xf.domain.XfClockInDaily" id="XfClockInDailyResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="rest" column="rest"/>
+        <result property="clockInTime" column="clock_in_time"/>
+        <result property="siteId" column="site_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="siteName" column="site_name"/>
+    </resultMap>
+
+    <sql id="selectXfClockInDailyVo">
+        select id, user_id, rest, clock_in_time, site_id
+        from xf_clock_in_daily
+    </sql>
+
+    <select id="selectXfClockInDailyList"
+            parameterType="com.ruoyi.project.xf.domain.XfClockInDaily"
+            resultMap="XfClockInDailyResult">
+        select
+        clock.id,
+        clock.user_id,
+        clock.rest,
+        clock.clock_in_time,
+        clock.site_id,
+        user.fullname as user_name,
+        site.site_name
+        from xf_clock_in_daily as clock
+        left outer join xf_user_customer as user on clock.user_id = user.id
+        left outer join xf_base_site as site on clock.site_id = site.id
+        <where>
+            <if test="userId != null ">and clock.user_id = #{userId}</if>
+            <if test="clockInTime != null ">and TO_DAYS(clock.clock_in_time) = TO_DAYS(#{clockInTime})</if>
+            <if test="siteId != null ">and clock.site_id = #{siteId}</if>
+            <if test="userName != null and userName != ''">and user.fullname like concat('%',#{userName},'%')</if>
+            <if test="siteName != null and siteName != ''">and site.site_name like concat('%',#{siteName},'%')</if>
+        </where>
+    </select>
+
+    <select id="selectXfClockInDailyById" parameterType="Long" resultMap="XfClockInDailyResult">
+        <include refid="selectXfClockInDailyVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertXfClockInDaily" parameterType="XfClockInDaily" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_clock_in_daily
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="rest != null ">rest,</if>
+            <if test="clockInTime != null ">clock_in_time,</if>
+            <if test="siteId != null ">site_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="rest != null ">#{rest},</if>
+            <if test="clockInTime != null ">#{clockInTime},</if>
+            <if test="siteId != null ">#{siteId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfClockInDaily" parameterType="XfClockInDaily">
+        update xf_clock_in_daily
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="rest != null ">rest = #{rest},</if>
+            <if test="clockInTime != null ">clock_in_time = #{clockInTime},</if>
+            <if test="siteId != null ">site_id = #{siteId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfClockInDailyById" parameterType="Long">
+        delete
+        from xf_clock_in_daily
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfClockInDailyByIds" parameterType="String">
+        delete from xf_clock_in_daily where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <sql id="Base_Column_List">
+        id,
+                user_id,
+                rest,
+                clock_in_time,
+                site_id
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="com.ruoyi.project.xf.domain.XfClockInDaily">
+        INSERT INTO xf_clock_in_daily
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test='null != userId'>
+                user_id,
+            </if>
+            <if test='null != rest'>
+                rest,
+            </if>
+            <if test='null != clockInTime'>
+                clock_in_time,
+            </if>
+            <if test='null != siteId'>
+                site_id
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test='null != userId'>
+                #{userId},
+            </if>
+            <if test='null != rest'>
+                #{rest},
+            </if>
+            <if test='null != clockInTime'>
+                #{clockInTime},
+            </if>
+            <if test='null != siteId'>
+                #{siteId}
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM xf_clock_in_daily
+        WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.ruoyi.project.xf.domain.XfClockInDaily">
+        UPDATE xf_clock_in_daily
+        <set>
+            <if test='null != userId'>user_id = #{userId},</if>
+            <if test='null != rest'>rest = #{rest},</if>
+            <if test='null != clockInTime'>clock_in_time = #{clockInTime},</if>
+            <if test='null != siteId'>site_id = #{siteId}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+
+    <select id="load" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM xf_clock_in_daily
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectTodayByUser" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM xf_clock_in_daily
+        WHERE user_id = #{userId}
+        and TO_DAYS(now()) = TO_DAYS(clock_in_time)
+    </select>
+
+
+    <select id="selectUserIdListBySite" resultType="java.lang.Long">
+        select user_id
+        from xf_clock_in_daily as clock
+        where site_id = #{siteId}
+          and TO_DAYS(now()) = TO_DAYS(clock_in_time)
+          and rest = 0
+    </select>
+
+    <select id="selectUserIdListBySites" resultType="java.lang.Long">
+        select user_id
+        from xf_clock_in_daily as clock
+        where site_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and TO_DAYS(now()) = TO_DAYS(clock_in_time)
+        and rest = 0
+    </select>
+
+    <select id="selectListBySite" resultMap="BaseResultMap">
+        select user_id, rest
+        from xf_clock_in_daily as clock
+        where site_id = #{siteId}
+          and TO_DAYS(now()) = TO_DAYS(clock_in_time)
+    </select>
+
+    <select id="selectListBySites" resultMap="BaseResultMap">
+        select user_id, rest
+        from xf_clock_in_daily as clock
+        where site_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and TO_DAYS(now()) = TO_DAYS(clock_in_time)
+    </select>
+
+    <select id="selectRestUserIdListBySites" resultType="java.lang.Long">
+        select user_id
+        from xf_clock_in_daily as clock
+        where site_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and TO_DAYS(now()) = TO_DAYS(clock_in_time)
+        and rest = 1
+    </select>
+
+    <select id="selectWorkCountBySiteIds" resultType="java.lang.Integer">
+        select count(1) from xf_clock_in_daily as d
+        inner join xf_user_customer as u
+        on u.id = d.user_id and u.user_type = 1
+        where d.site_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and TO_DAYS(clock_in_time) = TO_DAYS(now())
+    </select>
+
+    <select id="selectOnWorkCustomerBySiteIds" resultType="com.ruoyi.project.xcx.vo.NameSiteVo">
+        select u.fullname as name,s.site_name as siteName from xf_clock_in_daily as d
+        left outer join xf_user_customer as u
+        on d.user_id = u.id and u.user_type = 1
+        left outer join xf_base_site as s
+        on s.id = d.site_id
+        where s.id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and TO_DAYS(d.clock_in_time) = TO_DAYS(now())
+    </select>
+
+</mapper>

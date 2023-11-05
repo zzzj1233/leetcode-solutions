@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfWzCarOutMapper">
+
+    <resultMap type="XfWzCarOut" id="XfWzCarOutResult">
+        <result property="id" column="id"/>
+        <result property="outType" column="out_type"/>
+        <result property="comeTime" column="come_time"/>
+        <result property="event" column="event"/>
+        <result property="carId" column="car_id"/>
+        <result property="licensePlate" column="license_plate"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="fullname" column="fullname"/>
+    </resultMap>
+
+    <sql id="selectXfWzCarOutVo">
+        select id, out_type, come_time, event, car_id, customer_id
+        from xf_wz_car_out
+    </sql>
+    <sql id="selectXfWzCarOutCustomerVo">
+        select o.id,
+               o.out_type,
+               o.come_time,
+               o.event,
+               o.car_id,
+               o.customer_id,
+               cus.fullname,
+               car.license_plate
+        from xf_wz_car_out o
+                 LEFT JOIN xf_user_customer cus on o.customer_id = cus.id
+                 LEFT JOIN xf_wz_car car on o.car_id = car.id
+    </sql>
+
+    <select id="selectXfWzCarOutListPage" resultMap="XfWzCarOutResult">
+        <include refid="selectXfWzCarOutCustomerVo"/>
+        <where>
+            <if test="outType != null ">and out_type = #{outType}</if>
+            <if test="comeTime != null ">and come_time = #{comeTime}</if>
+            <if test="event != null  and event != ''">and event = #{event}</if>
+            <if test="carId != null ">and car_id = #{carId}</if>
+            <if test="customerId != null ">and customer_id = #{customerId}</if>
+        </where>
+        ORDER BY id DESC
+        LIMIT #{page},#{limit}
+    </select>
+
+    <select id="selectXfWzCarOutList" parameterType="XfWzCarOut" resultMap="XfWzCarOutResult">
+        select o.id, o.out_type, o.come_time, o.event, o.car_id, o.customer_id, car.license_plate, cus.fullname
+        from xf_wz_car_out o
+        LEFT JOIN xf_user_customer cus on o.customer_id=cus.id
+        LEFT JOIN xf_wz_car car on o.car_id=car.id
+        <where>
+            <if test="outType != null ">and out_type = #{outType}</if>
+            <if test="comeTime != null ">and come_time = #{comeTime}</if>
+            <if test="event != null  and event != ''">and event = #{event}</if>
+            <if test="carId != null ">and car_id = #{carId}</if>
+            <if test="licensePlate != null ">and license_plate = #{licensePlate}</if>
+            <if test="customerId != null ">and customer_id = #{customerId}</if>
+            <if test="fullname != null ">and fullname = #{fullname}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectXfWzCarOutById" parameterType="Long" resultMap="XfWzCarOutResult">
+        <include refid="selectXfWzCarOutVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectLatestXfWzCarOutByCarId" resultMap="XfWzCarOutResult">
+        <include refid="selectXfWzCarOutVo"/>
+        where car_id = #{carId}
+        order by come_time desc
+        limit 0,1
+    </select>
+
+    <insert id="insertXfWzCarOut" parameterType="XfWzCarOut">
+        insert into xf_wz_car_out
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="outType != null ">out_type,</if>
+            <if test="comeTime != null ">come_time,</if>
+            <if test="event != null  and event != ''">event,</if>
+            <if test="carId != null ">car_id,</if>
+            <if test="customerId != null ">customer_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="outType != null ">#{outType},</if>
+            <if test="comeTime != null ">#{comeTime},</if>
+            <if test="event != null  and event != ''">#{event},</if>
+            <if test="carId != null ">#{carId},</if>
+            <if test="customerId != null ">#{customerId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfWzCarOut" parameterType="XfWzCarOut">
+        update xf_wz_car_out
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="outType != null ">out_type = #{outType},</if>
+            <if test="comeTime != null ">come_time = #{comeTime},</if>
+            <if test="event != null  and event != ''">event = #{event},</if>
+            <if test="carId != null ">car_id = #{carId},</if>
+            <if test="customerId != null ">customer_id = #{customerId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfWzCarOutById" parameterType="Long">
+        delete
+        from xf_wz_car_out
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfWzCarOutByIds" parameterType="String">
+        delete from xf_wz_car_out where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

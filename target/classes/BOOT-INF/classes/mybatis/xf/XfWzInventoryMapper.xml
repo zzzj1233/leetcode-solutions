@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfWzInventoryMapper">
+
+    <resultMap type="XfWzInventory" id="XfWzInventoryResult">
+        <result property="id" column="id"/>
+        <result property="topic" column="topic"/>
+        <result property="wxtypeId" column="wxtype_id"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="totalNum" column="total_num"/>
+        <result property="realNum" column="real_num"/>
+        <result property="siteId" column="site_id"/>
+        <result property="siteName" column="site_name"/>
+        <result property="wxtypeName" column="type_name"/>
+    </resultMap>
+
+    <sql id="selectXfWzInventoryVo">
+        select inventory.id,
+               inventory.topic,
+               inventory.wxtype_id,
+               inventory.start_time,
+               inventory.end_time,
+               inventory.total_num,
+               inventory.real_num,
+               inventory.site_id,
+               site.site_name,
+               wztype.type_name
+        from xf_wz_inventory inventory
+                 LEFT JOIN xf_base_site site ON site.id = inventory.site_id
+                 LEFT JOIN xf_wz_type wztype ON wztype.id = inventory.wxtype_id
+    </sql>
+
+    <select id="selectTopOne" resultType="XfWzInventory">
+        select max(id) id
+        from xf_wz_inventory
+    </select>
+
+    <select id="selectXfWzInventoryList" parameterType="XfWzInventory" resultMap="XfWzInventoryResult">
+        <include refid="selectXfWzInventoryVo"/>
+        <where>
+            <if test="topic != null  and topic != ''">and inventory.topic = #{topic}</if>
+            <if test="wxtypeId != null ">and inventory.wxtype_id = #{wxtypeId}</if>
+            <if test="startTime != null  and startTime != ''">and inventory.start_time = #{startTime}</if>
+            <if test="endTime != null  and endTime != ''">and inventory.end_time = #{endTime}</if>
+            <if test="totalNum != null ">and inventory.total_num = #{totalNum}</if>
+            <if test="realNum != null ">and inventory.real_num = #{realNum}</if>
+            <if test="siteId != null  and siteId != ''">and inventory.site_id = #{siteId}</if>
+            <if test="checkState == 0"> and inventory.total_num = inventory.real_num  </if>
+            <if test="checkState == 1"> and inventory.total_num &lt; inventory.real_num  </if>
+            <if test="checkState == 2"> and inventory.total_num &gt; inventory.real_num  </if>
+        </where>
+    </select>
+
+    <select id="selectXfWzInventoryListPage" resultMap="XfWzInventoryResult">
+        <include refid="selectXfWzInventoryVo"/>
+        <where>
+            <if test="topic != null  and topic != ''">and inventory.topic = #{topic}</if>
+            <if test="wxtypeId != null ">and inventory.wxtype_id = #{wxtypeId}</if>
+            <if test="startTime != null  and startTime != ''">and inventory.start_time = #{startTime}</if>
+            <if test="endTime != null  and endTime != ''">and inventory.end_time = #{endTime}</if>
+            <if test="totalNum != null ">and inventory.total_num = #{totalNum}</if>
+            <if test="realNum != null ">and inventory.real_num = #{realNum}</if>
+            <if test="siteId != null  and siteId != ''">and inventory.site_id = #{siteId}</if>
+            <if test="siteArea != null  and siteArea != ''">and inventory.site_id in (SELECT id from xf_base_site where CONCAT(province,'-',city,'-',area,'-',street) like CONCAT(#{siteArea},'%')) </if>
+            <if test="checkState == 0"> and inventory.total_num = inventory.real_num  </if>
+            <if test="checkState == 1"> and inventory.total_num &lt; inventory.real_num  </if>
+            <if test="checkState == 2"> and inventory.total_num &gt; inventory.real_num  </if>
+        </where>
+        ORDER BY id DESC
+        LIMIT #{page},#{limit}
+    </select>
+
+    <select id="selectXfWzInventoryById" parameterType="Long" resultMap="XfWzInventoryResult">
+        <include refid="selectXfWzInventoryVo"/>
+        where inventory.id = #{id}
+    </select>
+
+    <select id="queryXfWzInventoryList" resultMap="XfWzInventoryResult" parameterType="com.ruoyi.project.xf.vo.input.XfWzInventoryQueryInput">
+        <include refid="selectXfWzInventoryVo"/>
+
+        <where>
+            <if test="topic != null  and topic != ''">inventory.topic like "%"#{topic}"%"</if>
+            <if test="startTimeDate != null">
+                and STR_TO_DATE(start_time,"%Y-%m-%d ") &gt;= #{startTimeDate}
+            </if>
+
+            <if test="endTimeDate != null">
+                and STR_TO_DATE(end_time,"%Y-%m-%d ") &lt;= #{endTimeDate}
+            </if>
+
+            <if test="wxtypeId != null">inventory.wxtype_id = #{wxtypeId}</if>
+
+            <if test="checkState == 0"> and inventory.total_num = inventory.real_num  </if>
+            <if test="checkState == 1"> and inventory.total_num &lt; inventory.real_num  </if>
+            <if test="checkState == 2"> and inventory.total_num &gt; inventory.real_num  </if>
+
+        </where>
+    </select>
+
+    <insert id="insertXfWzInventory" parameterType="XfWzInventory" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_wz_inventory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="topic != null  and topic != ''">topic,</if>
+            <if test="wxtypeId != null ">wxtype_id,</if>
+            <if test="startTime != null  and startTime != ''">start_time,</if>
+            <if test="endTime != null  and endTime != ''">end_time,</if>
+            <if test="totalNum != null ">total_num,</if>
+            <if test="realNum != null ">real_num,</if>
+            <if test="siteId != null ">site_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="topic != null  and topic != ''">#{topic},</if>
+            <if test="wxtypeId != null ">#{wxtypeId},</if>
+            <if test="startTime != null  and startTime != ''">#{startTime},</if>
+            <if test="endTime != null  and endTime != ''">#{endTime},</if>
+            <if test="totalNum != null ">#{totalNum},</if>
+            <if test="realNum != null ">#{realNum},</if>
+            <if test="siteId != null ">#{siteId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfWzInventory" parameterType="XfWzInventory">
+        update xf_wz_inventory
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="topic != null  and topic != ''">topic = #{topic},</if>
+            <if test="wxtypeId != null ">wxtype_id = #{wxtypeId},</if>
+            <if test="startTime != null  and startTime != ''">start_time = #{startTime},</if>
+            <if test="endTime != null  and endTime != ''">end_time = #{endTime},</if>
+            <if test="totalNum != null ">total_num = #{totalNum},</if>
+            <if test="realNum != null ">real_num = #{realNum},</if>
+            <if test="siteId != null ">site_id = #{siteId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <update id="updateXfWzInventoryNum" parameterType="XfWzInventoryDetail">
+        update xf_wz_inventory
+        set real_num = real_num + #{plusCount}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfWzInventoryById" parameterType="Long">
+        delete
+        from xf_wz_inventory
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfWzInventoryByIds" parameterType="String">
+        delete from xf_wz_inventory where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

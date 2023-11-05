@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfMaintianGoodsPriorityRuleMapper">
+    
+    <resultMap type="XfMaintianGoodsPriorityRule" id="XfMaintianGoodsPriorityRuleResult">
+        <result property="goodsId"    column="goods_id"    />
+        <result property="triggerDayLimit"    column="trigger_day_limit"    />
+    </resultMap>
+
+    <sql id="selectXfMaintianGoodsPriorityRuleVo">
+        select goods_id, trigger_day_limit from xf_maintian_goods_priority_rule
+    </sql>
+
+    <select id="selectXfMaintianGoodsPriorityRuleList" parameterType="XfMaintianGoodsPriorityRule" resultMap="XfMaintianGoodsPriorityRuleResult">
+        <include refid="selectXfMaintianGoodsPriorityRuleVo"/>
+        <where>  
+            <if test="triggerDayLimit != null "> and trigger_day_limit = #{triggerDayLimit}</if>
+        </where>
+    </select>
+    
+    <select id="selectXfMaintianGoodsPriorityRuleById" parameterType="Long" resultMap="XfMaintianGoodsPriorityRuleResult">
+        <include refid="selectXfMaintianGoodsPriorityRuleVo"/>
+        where goods_id = #{goodsId}
+    </select>
+        
+    <insert id="insertXfMaintianGoodsPriorityRule" parameterType="XfMaintianGoodsPriorityRule">
+        insert into xf_maintian_goods_priority_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null ">goods_id,</if>
+            <if test="triggerDayLimit != null ">trigger_day_limit,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null ">#{goodsId},</if>
+            <if test="triggerDayLimit != null ">#{triggerDayLimit},</if>
+         </trim>
+    </insert>
+
+    <update id="updateXfMaintianGoodsPriorityRule" parameterType="XfMaintianGoodsPriorityRule">
+        update xf_maintian_goods_priority_rule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="triggerDayLimit != null ">trigger_day_limit = #{triggerDayLimit},</if>
+        </trim>
+        where goods_id = #{goodsId}
+    </update>
+
+    <delete id="deleteXfMaintianGoodsPriorityRuleById" parameterType="Long">
+        delete from xf_maintian_goods_priority_rule where goods_id = #{goodsId}
+    </delete>
+
+    <delete id="deleteXfMaintianGoodsPriorityRuleByIds" parameterType="String">
+        delete from xf_maintian_goods_priority_rule where goods_id in 
+        <foreach item="goodsId" collection="array" open="(" separator="," close=")">
+            #{goodsId}
+        </foreach>
+    </delete>
+    
+</mapper>

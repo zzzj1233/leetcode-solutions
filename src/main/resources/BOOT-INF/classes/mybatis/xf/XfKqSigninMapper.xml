@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfKqSigninMapper">
+
+    <resultMap type="XfKqSignin" id="XfKqSigninResult">
+        <result property="id" column="id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="siteId" column="site_id"/>
+        <result property="signinAddress" column="signin_address"/>
+        <result property="longitude" column="longitude"/>
+        <result property="latitude" column="latitude"/>
+        <result property="signinTime" column="signin_time"/>
+        <result property="signinType" column="signin_type"/>
+        <result property="siteName" column="site_name"/>
+    </resultMap>
+
+    <sql id="selectXfKqSigninVo">
+        select id,
+               customer_id,
+               site_id,
+               signin_address,
+               longitude,
+               latitude,
+               signin_time,
+               signin_type
+        from xf_kq_signin
+    </sql>
+
+    <select id="queryCurrentDayBuUserId" parameterType="long" resultMap="XfKqSigninResult">
+        <include refid="selectXfKqSigninVo"/>
+        WHERE customer_id=#{userId} AND To_DAYS(signin_time)=TO_DAYS(NOW())
+    </select>
+
+    <sql id="selectXfKqSigninWeb">
+        select signin.id
+             , signin.customer_id
+             , signin.site_id
+             , signin.signin_address
+             , signin.longitude
+             , signin.latitude
+             , signin.signin_time
+             , signin.signin_type
+             , customer.fullname    as customerName
+             , customer.mobilephone as customerMobile
+             , site.site_name
+        from xf_kq_signin signin
+                 LEFT JOIN xf_user_customer customer ON customer.id = signin.customer_id
+                 LEFT JOIN xf_base_site site ON site.id = signin.site_id
+    </sql>
+
+    <select id="selectXfKqSigninList" parameterType="XfKqSignin" resultMap="XfKqSigninResult">
+        <include refid="selectXfKqSigninWeb"/>
+        <where>
+            <if test="customerId != null ">and siggin.customer_id = #{customerId}</if>
+            <if test="siteId != null ">and siggin.site_id = #{siteId}</if>
+            <if test="signinAddress != null  and signinAddress != ''">and siggin.signin_address = #{signinAddress}</if>
+            <if test="longitude != null ">and siggin.longitude = #{longitude}</if>
+            <if test="latitude != null ">and siggin.latitude = #{latitude}</if>
+            <if test="signinTime != null ">and siggin.signin_time = #{signinTime}</if>
+            <if test="queryTime != null and queryTime.trim()!=''">and date(signin_time) = #{queryTime}</if>
+            <if test="signinType != null ">and siggin.signin_type = #{signinType}</if>
+            <if test="customerName!=null and customerName.trim()!=''">and customer.fullname LIKE concat(concat('%',#{customerName}),'%')</if>
+            <if test="siteName!=null and siteName.trim()!=''">and site.site_name LIKE concat(concat('%',#{siteName}),'%')</if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <select id="selectXfKqSigninById" parameterType="Long" resultMap="XfKqSigninResult">
+        <include refid="selectXfKqSigninVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectUserIdListBySite" resultType="java.lang.Long">
+        select distinct s1.customer_id
+        from xf_kq_signin AS s1
+                 left join (select distinct customer_id
+                            from xf_kq_signin
+                            where site_id = #{siteId}
+                              and To_DAYS(signin_time) = TO_DAYS(NOW())
+                              and signin_type = 2) as s2
+                           on s1.customer_id = s2.customer_id
+        where s1.site_id = #{siteId}
+          and To_DAYS(s1.signin_time) = TO_DAYS(NOW())
+          and s1.signin_type = 1
+          and s2.customer_id is null;
+    </select>
+
+    <select id="selectUserIdListBySites" resultType="java.lang.Long">
+        select distinct s1.customer_id
+        from xf_kq_signin AS s1
+        left join (select distinct customer_id
+        from xf_kq_signin
+        where site_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and To_DAYS(signin_time) = TO_DAYS(NOW())
+        and signin_type = 2) s2
+        on s1.customer_id = s2.customer_id
+        where s1.site_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and To_DAYS(s1.signin_time) = TO_DAYS(NOW())
+        and s1.signin_type = 1
+        and s2.customer_id is null
+    </select>
+
+    <select id="selectNameAndSiteNameBySite"
+            resultMap="com.ruoyi.project.xf.mapper.XfUserCustomerMapper.CustomerStatisticsListOutputVoResultMap">
+        select user.id, user.fullname, site.site_name
+        from xf_kq_signin AS s1
+                 left join (select distinct customer_id
+                             from xf_kq_signin
+                             where site_id = #{siteId}
+                               and To_DAYS(signin_time) = TO_DAYS(NOW())
+                               and signin_type = 2) as s2
+                            on s1.customer_id = s2.customer_id
+                 inner join xf_user_customer as user on s1.customer_id = user.id
+                 inner join xf_base_site as site on user.site_id = site.id
+        where s1.site_id = #{siteId}
+          and To_DAYS(s1.signin_time) = TO_DAYS(NOW())
+          and s1.signin_type = 1
+          and s2.customer_id is null
+    </select>
+
+    <select id="selectNameAndSiteNameBySites" resultType="com.ruoyi.project.xcx.response.CustomerStatisticsListOutputVo">
+        select user.id, user.fullname, site.site_name
+        from xf_kq_signin AS s1
+        left join xf_kq_signin as s2
+        on s1.customer_id = s2.customer_id
+        and s2.signin_type = 2
+        and To_DAYS(s2.signin_time) = TO_DAYS(NOW())
+        and s2.site_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        inner join xf_user_customer as user on s1.customer_id = user.id
+        inner join xf_base_site as site on user.site_id = site.id
+        where s1.site_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and To_DAYS(s1.signin_time) = TO_DAYS(NOW())
+        and s1.signin_type = 1
+        and s2.customer_id is null
+    </select>
+
+
+    <insert id="insertXfKqSignin" parameterType="com.ruoyi.project.xf.domain.XfKqSignin" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_kq_signin
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null ">customer_id,</if>
+            <if test="siteId != null ">site_id,</if>
+            <if test="signinAddress != null  and signinAddress != ''">signin_address,</if>
+            <if test="longitude != null ">longitude,</if>
+            <if test="latitude != null ">latitude,</if>
+            <if test="signinTime != null ">signin_time,</if>
+            <if test="signinType != null ">signin_type,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null ">#{customerId},</if>
+            <if test="siteId != null ">#{siteId},</if>
+            <if test="signinAddress != null  and signinAddress != ''">#{signinAddress},</if>
+            <if test="longitude != null ">#{longitude},</if>
+            <if test="latitude != null ">#{latitude},</if>
+            <if test="signinTime != null ">#{signinTime},</if>
+            <if test="signinType != null ">#{signinType},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfKqSignin" parameterType="XfKqSignin">
+        update xf_kq_signin
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null ">customer_id = #{customerId},</if>
+            <if test="siteId != null ">site_id = #{siteId},</if>
+            <if test="signinAddress != null  and signinAddress != ''">signin_address = #{signinAddress},</if>
+            <if test="longitude != null ">longitude = #{longitude},</if>
+            <if test="latitude != null ">latitude = #{latitude},</if>
+            <if test="signinTime != null ">signin_time = #{signinTime},</if>
+            <if test="signinType != null ">signin_type = #{signinType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfKqSigninById" parameterType="Long">
+        delete
+        from xf_kq_signin
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfKqSigninByIds" parameterType="String">
+        delete from xf_kq_signin where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

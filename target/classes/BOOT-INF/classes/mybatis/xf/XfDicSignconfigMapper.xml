@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfDicSignconfigMapper">
+    
+    <resultMap type="XfDicSignconfig" id="XfDicSignconfigResult">
+        <result property="id"    column="id"    />
+        <result property="onworkTime"    column="onwork_time"    />
+        <result property="offworkTime"    column="offwork_time"    />
+        <result property="onStartTime"    column="on_start_time"    />
+        <result property="onEndTime"    column="on_end_time"    />
+        <result property="offStartTime"    column="off_start_time"    />
+        <result property="offEndTime"    column="off_end_time"    />
+    </resultMap>
+
+    <sql id="selectXfDicSignconfigVo">
+        select id, onwork_time, offwork_time, on_start_time, on_end_time, off_start_time, off_end_time from xf_dic_signconfig
+    </sql>
+
+    <select id="queryLastOne" resultMap="XfDicSignconfigResult">
+        <include refid="selectXfDicSignconfigVo"/>
+       order by id DESC
+    </select>
+
+    <select id="selectXfDicSignconfigList" parameterType="XfDicSignconfig" resultMap="XfDicSignconfigResult">
+        <include refid="selectXfDicSignconfigVo"/>
+        <where>  
+            <if test="onworkTime != null "> and onwork_time = #{onworkTime}</if>
+            <if test="offworkTime != null "> and offwork_time = #{offworkTime}</if>
+            <if test="onStartTime != null "> and on_start_time = #{onStartTime}</if>
+            <if test="onEndTime != null "> and on_end_time = #{onEndTime}</if>
+            <if test="offStartTime != null "> and off_start_time = #{offStartTime}</if>
+            <if test="offEndTime != null "> and off_end_time = #{offEndTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectXfDicSignconfigById" parameterType="Long" resultMap="XfDicSignconfigResult">
+        <include refid="selectXfDicSignconfigVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertXfDicSignconfig" parameterType="XfDicSignconfig" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_dic_signconfig
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="onworkTime != null ">onwork_time,</if>
+            <if test="offworkTime != null ">offwork_time,</if>
+            <if test="onStartTime != null ">on_start_time,</if>
+            <if test="onEndTime != null ">on_end_time,</if>
+            <if test="offStartTime != null ">off_start_time,</if>
+            <if test="offEndTime != null ">off_end_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="onworkTime != null ">#{onworkTime},</if>
+            <if test="offworkTime != null ">#{offworkTime},</if>
+            <if test="onStartTime != null ">#{onStartTime},</if>
+            <if test="onEndTime != null ">#{onEndTime},</if>
+            <if test="offStartTime != null ">#{offStartTime},</if>
+            <if test="offEndTime != null ">#{offEndTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateXfDicSignconfig" parameterType="XfDicSignconfig">
+        update xf_dic_signconfig
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="onworkTime != null ">onwork_time = #{onworkTime},</if>
+            <if test="offworkTime != null ">offwork_time = #{offworkTime},</if>
+            <if test="onStartTime != null ">on_start_time = #{onStartTime},</if>
+            <if test="onEndTime != null ">on_end_time = #{onEndTime},</if>
+            <if test="offStartTime != null ">off_start_time = #{offStartTime},</if>
+            <if test="offEndTime != null ">off_end_time = #{offEndTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfDicSignconfigById" parameterType="Long">
+        delete from xf_dic_signconfig where id = #{id}
+    </delete>
+
+    <delete id="deleteXfDicSignconfigByIds" parameterType="String">
+        delete from xf_dic_signconfig where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

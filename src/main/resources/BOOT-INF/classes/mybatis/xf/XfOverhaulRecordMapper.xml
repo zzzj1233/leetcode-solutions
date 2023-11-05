@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfOverhaulRecordMapper">
+
+    <resultMap type="com.ruoyi.project.xf.domain.XfOverhaulRecord" id="XfOverhaulRecordResult">
+        <result property="id" column="id"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="overhaulValue" column="overhaul_value"/>
+        <result property="userId" column="user_id"/>
+        <result property="imgs" column="imgs"/>
+        <result property="remark" column="remark"/>
+        <result property="createTime" column="create_time"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="userName" column="fullname"/>
+        <result property="userName" column="fullname"/>
+        <result property="siteName" column="site_name"/>
+    </resultMap>
+
+    <resultMap id="OverhaulRecordVoMap" type="com.ruoyi.project.xcx.vo.OverhaulRecordVo">
+        <result property="overhaulValue" column="overhaul_value"/>
+        <result property="imgs" column="imgs"/>
+        <result property="remark" column="remark"/>
+        <result property="createTime" column="create_time"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="siteName" column="site_name"/>
+        <result property="userName" column="fullname"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="extra" column="extra"/>
+        <result property="siteName" column="site_name"/>
+    </resultMap>
+
+    <sql id="selectXfOverhaulRecordVo">
+        select re.id,
+               goods_id,
+               overhaul_value,
+               user_id,
+               imgs,
+               remark,
+               re.extra,
+               re.create_time,
+               user.fullname,
+               goods.goods_name,
+               site.site_name
+        from xf_overhaul_record as re
+                 left outer join xf_user_customer as user
+                                 on re.user_id = user.id
+                 left outer join xf_wz_goods as goods
+                                 on goods.id = re.goods_id
+                 left outer join xf_base_site as site on site.id = goods.site_id
+    </sql>
+
+    <sql id="selectOverhaulRecordVo">
+        select overhaul_value,
+               imgs,
+               remark,
+               extra,
+               record.goods_id,
+               record.create_time,
+               goods.goods_name,
+               site.site_name,
+               user.fullname
+        from xf_overhaul_record as record
+                 left outer join xf_wz_goods as goods
+                                 on record.goods_id = goods.id
+                 left outer join xf_base_site as site
+                                 on goods.site_id = site.id
+                 left outer join xf_user_customer as user
+                                 on record.user_id = user.id
+    </sql>
+
+    <select id="selectXfOverhaulRecordList" parameterType="XfOverhaulRecord" resultMap="XfOverhaulRecordResult">
+        <include refid="selectXfOverhaulRecordVo"/>
+        <where>
+            <if test="goodsId != null ">and goods_id = #{goodsId}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="goodsName != null and goodsName != '' ">and goods.goods_name like concat('%',#{goodsName},'%')</if>
+        </where>
+        order by re.create_time desc
+    </select>
+
+    <select id="selectXfOverhaulRecordById" parameterType="Long" resultMap="XfOverhaulRecordResult">
+        <include refid="selectXfOverhaulRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectOverhaulRecordVoList" resultMap="OverhaulRecordVoMap">
+        <include refid="selectOverhaulRecordVo"/>
+        where record.goods_id = #{goodsId}
+        order by record.create_time desc
+    </select>
+
+    <select id="selectLastTimeByGoodsId" resultType="java.util.Date">
+        select max(create_time)
+        from xf_overhaul_record
+        where goods_id = #{goodsId}
+    </select>
+
+    <insert id="insertXfOverhaulRecord" parameterType="com.ruoyi.project.xf.domain.XfOverhaulRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_overhaul_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null ">goods_id,</if>
+            <if test="overhaulValue != null ">overhaul_value,</if>
+            <if test="userId != null ">user_id,</if>
+            <if test="imgs != null  and imgs != ''">imgs,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="extra != null and extra != '' ">extra,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null ">#{goodsId},</if>
+            <if test="overhaulValue != null ">#{overhaulValue},</if>
+            <if test="userId != null ">#{userId},</if>
+            <if test="imgs != null  and imgs != ''">#{imgs},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="extra != null and extra != '' ">#{extra},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfOverhaulRecord" parameterType="com.ruoyi.project.xf.domain.XfOverhaulRecord">
+        update xf_overhaul_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="goodsId != null ">goods_id = #{goodsId},</if>
+            <if test="overhaulValue != null ">overhaul_value = #{overhaulValue},</if>
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="imgs != null  and imgs != ''">imgs = #{imgs},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfOverhaulRecordById" parameterType="Long">
+        delete
+        from xf_overhaul_record
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfOverhaulRecordByIds" parameterType="String">
+        delete from xf_overhaul_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

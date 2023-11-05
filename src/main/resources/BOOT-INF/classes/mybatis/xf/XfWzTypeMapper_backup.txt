@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfWzTypeMapper">
+
+    <resultMap type="XfWzType" id="XfWzTypeResult">
+        <result property="id"    column="id"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="parentId"   column="parent_id"   />
+        <result property="createTime"    column="create_time"    />
+        <result property="typeCode"    column="type_code"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="ancestors"    column="ancestors"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="parentTypeName"    column="parentTypeName"    />
+    </resultMap>
+
+    <sql id="selectXfWzTypeVo">
+        select id, type_name, parent_id, create_time, type_code, update_time,ancestors,order_num from xf_wz_type
+    </sql>
+
+    <select id="selectTypeByIds" resultMap="XfWzTypeResult">
+        <include refid="selectXfWzTypeVo"></include>
+        where id in
+        <foreach item="id" collection="typeIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY  id ASC
+    </select>
+
+    <update id="updateDeptChildren" parameterType="java.util.List">
+        update xf_wz_type
+        SET  ancestors=
+        <foreach collection="childres" item="item" index="index" separator=" " open="case id" close="end">
+            WHEN #{item.id} THEN #{item.ancestors}
+        </foreach>
+        WHERE id IN
+        <foreach collection="childres" item="item" index="index" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <select id="queryChildrenById"  resultMap="XfWzTypeResult">
+        <include refid="selectXfWzTypeVo"/>
+        WHERE  find_in_set(#{id}, ancestors)
+    </select>
+
+    <select id="checkChildren"  resultType="int" parameterType="long">
+        SELECT  count(*) from xf_wz_type
+        WHERE parent_id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")" >
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="checkTypeUnique"  resultMap="XfWzTypeResult">
+        <include refid="selectXfWzTypeVo"/>
+        WHERE  (type_name=#{typeName} OR  type_code=#{typeCode}) AND parent_id=#{parentId}
+    </select>
+
+    <select id="queryByParentId"  resultMap="XfWzTypeResult">
+        <include refid="selectXfWzTypeVo"/>
+        WHERE   parent_id=#{parentId}
+    </select>
+
+    <select id="count"  resultType="int">
+        SELECT count(*) from xf_wz_type
+
+    </select>
+
+    <select id="selectXfWzTypeList" parameterType="XfWzType" resultMap="XfWzTypeResult">
+        <include refid="selectXfWzTypeVo"/>
+        <where>
+            <if test="typeName != null  and typeName != ''"> and type_name like concat('%', #{typeName}, '%')</if>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="typeCode != null  and typeCode != ''"> and type_code = #{typeCode}</if>
+        </where>
+        ORDER BY  order_num DESC
+    </select>
+
+    <select id="selectXfWzTypeListSun" parameterType="XfWzType" resultType="XfWzTypeSimple">
+        select id, type_name typeName,type_code typeCode from xf_wz_type
+        where parent_id!=0 ORDER BY  order_num DESC
+    </select>
+
+    <select id="selectXfWzTypeList2" parameterType="XfWzType" resultMap="XfWzTypeResult">
+        select t.id, t.type_name, t.type_code,p.type_name parentTypeName
+        from xf_wz_type t LEFT JOIN xf_wz_type p ON t.parent_id=p.id
+        <where>
+            <if test="typeName != null  and typeName != ''"> and t.type_name like concat('%', #{typeName}, '%')</if>
+            <if test="parentId != null "> and t.parent_id = #{parentId}</if>
+            <if test="typeCode != null  and typeCode != ''"> and t.type_code = #{typeCode}</if>
+        </where>
+        ORDER BY  t.order_num DESC
+    </select>
+
+    <select id="selectXfWzTypeById" parameterType="Long" resultMap="XfWzTypeResult">
+        <include refid="selectXfWzTypeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertXfWzType" parameterType="XfWzType" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_wz_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="typeName != null  and typeName != ''">type_name,</if>
+            <if test="parentId != null ">parent_id,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="typeCode != null  and typeCode != ''">type_code,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="ancestors != null ">ancestors,</if>
+            <if test="orderNum != null ">order_num,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="typeName != null  and typeName != ''">#{typeName},</if>
+            <if test="parentId != null ">#{parentId},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="typeCode != null  and typeCode != ''">#{typeCode},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="ancestors != null ">#{ancestors},</if>
+            <if test="orderNum != null ">#{orderNum},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfWzType" parameterType="XfWzType">
+        update xf_wz_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="typeName != null  and typeName != ''">type_name = #{typeName},</if>
+            <if test="parentId != null ">parent_id = #{parentId},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="typeCode != null  and typeCode != ''">type_code = #{typeCode},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="ancestors != null ">ancestors = #{ancestors},</if>
+            <if test="orderNum != null ">order_num=#{orderNum},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfWzTypeById" parameterType="Long">
+        delete from xf_wz_type where id = #{id}
+    </delete>
+
+    <delete id="deleteXfWzTypeByIds" parameterType="String">
+        delete from xf_wz_type where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

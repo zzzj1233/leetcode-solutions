@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfUserBInnerSiteMapper">
+    
+    <resultMap type="XfUserBInnerSite" id="XfUserBInnerSiteResult">
+        <result property="id"    column="id"    />
+        <result property="innerId"    column="inner_id"    />
+        <result property="siteId"    column="site_id"    />
+    </resultMap>
+
+    <sql id="selectXfUserBInnerSiteVo">
+        select id, inner_id, site_id from xf_user_b_inner_site
+    </sql>
+
+    <select id="selectXfUserBInnerSiteList" parameterType="XfUserBInnerSite" resultMap="XfUserBInnerSiteResult">
+        <include refid="selectXfUserBInnerSiteVo"/>
+        <where>  
+            <if test="innerId != null "> and inner_id = #{innerId}</if>
+            <if test="siteId != null "> and site_id = #{siteId}</if>
+        </where>
+    </select>
+    
+    <select id="selectXfUserBInnerSiteById" parameterType="Long" resultMap="XfUserBInnerSiteResult">
+        <include refid="selectXfUserBInnerSiteVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertXfUserBInnerSite" parameterType="XfUserBInnerSite" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_user_b_inner_site
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="innerId != null ">inner_id,</if>
+            <if test="siteId != null ">site_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="innerId != null ">#{innerId},</if>
+            <if test="siteId != null ">#{siteId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateXfUserBInnerSite" parameterType="XfUserBInnerSite">
+        update xf_user_b_inner_site
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="innerId != null ">inner_id = #{innerId},</if>
+            <if test="siteId != null ">site_id = #{siteId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfUserBInnerSiteById" parameterType="Long">
+        delete from xf_user_b_inner_site where id = #{id}
+    </delete>
+
+    <delete id="deleteXfUserBInnerSiteByIds" parameterType="String">
+        delete from xf_user_b_inner_site where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

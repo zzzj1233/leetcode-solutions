@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfWorkPolicerecordMapper">
+
+    <resultMap type="com.ruoyi.project.xf.domain.XfWorkPolicerecord" id="XfWorkPolicerecordResult">
+        <result property="id" column="id"/>
+        <result property="leader" column="leader"/>
+        <result property="contactNumber" column="contact_number"/>
+        <result property="policeSource" column="police_source"/>
+        <result property="receiveTime" column="receive_time"/>
+        <result property="policeTime" column="police_time"/>
+        <result property="arrivalTime" column="arrival_time"/>
+        <result property="completeTime" column="complete_time"/>
+        <result property="policeMan" column="police_man"/>
+        <result property="policeCar" column="police_car"/>
+        <result property="process" column="process"/>
+        <result property="summary" column="summary"/>
+        <result property="senderId" column="sender_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="siteId" column="site_id"/>
+        <result property="siteName" column="siteName"/>
+        <result property="senderName" column="senderName"/>
+    </resultMap>
+
+    <sql id="selectXfWorkPolicerecordVo">
+        select re.id,
+               re.leader,
+               re.contact_number,
+               re.police_source,
+               re.receive_time,
+               re.police_time,
+               re.arrival_time,
+               re.complete_time,
+               re.police_man,
+               re.police_car,
+               re.process,
+               re.summary,
+               re.sender_id,
+               re.create_time,
+               re.site_id,
+               user.fullname  as senderName,
+               site.site_name as siteName
+        from xf_work_policerecord as re
+                 left outer join xf_user_customer as user
+                                 on re.sender_id = user.id
+                 left outer join xf_base_site as site
+                                 on site.id = re.site_id
+    </sql>
+
+    <select id="selectXfWorkPolicerecordList" parameterType="com.ruoyi.project.xf.domain.XfWorkPolicerecord" resultMap="XfWorkPolicerecordResult">
+        <include refid="selectXfWorkPolicerecordVo"/>
+        <where>
+            <if test="policeSource != null  and policeSource != ''">and police_source like concat('%',#{policeSource},'%')</if>
+            <if test="siteName != null  and siteName != ''">and site.site_name like concat('%', #{siteName},'%')</if>
+        </where>
+        order by re.create_time desc
+    </select>
+
+    <select id="selectXfWorkPolicerecordById" parameterType="Long" resultMap="XfWorkPolicerecordResult">
+        <include refid="selectXfWorkPolicerecordVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertXfWorkPolicerecord" parameterType="XfWorkPolicerecord" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_work_policerecord
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="leader != null  and leader != ''">leader,</if>
+            <if test="contactNumber != null  and contactNumber != ''">contact_number,</if>
+            <if test="policeSource != null  and policeSource != ''">police_source,</if>
+            <if test="receiveTime != null ">receive_time,</if>
+            <if test="policeTime != null ">police_time,</if>
+            <if test="arrivalTime != null ">arrival_time,</if>
+            <if test="completeTime != null ">complete_time,</if>
+            <if test="policeMan != null  and policeMan != ''">police_man,</if>
+            <if test="policeCar != null  and policeCar != ''">police_car,</if>
+            <if test="process != null  and process != ''">process,</if>
+            <if test="summary != null  and summary != ''">summary,</if>
+            <if test="senderId != null ">sender_id,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="siteId != null ">site_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="leader != null  and leader != ''">#{leader},</if>
+            <if test="contactNumber != null  and contactNumber != ''">#{contactNumber},</if>
+            <if test="policeSource != null  and policeSource != ''">#{policeSource},</if>
+            <if test="receiveTime != null ">#{receiveTime},</if>
+            <if test="policeTime != null ">#{policeTime},</if>
+            <if test="arrivalTime != null ">#{arrivalTime},</if>
+            <if test="completeTime != null ">#{completeTime},</if>
+            <if test="policeMan != null  and policeMan != ''">#{policeMan},</if>
+            <if test="policeCar != null  and policeCar != ''">#{policeCar},</if>
+            <if test="process != null  and process != ''">#{process},</if>
+            <if test="summary != null  and summary != ''">#{summary},</if>
+            <if test="senderId != null ">#{senderId},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="siteId != null ">#{siteId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfWorkPolicerecord" parameterType="XfWorkPolicerecord">
+        update xf_work_policerecord
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="leader != null  and leader != ''">leader = #{leader},</if>
+            <if test="contactNumber != null  and contactNumber != ''">contact_number = #{contactNumber},</if>
+            <if test="policeSource != null  and policeSource != ''">police_source = #{policeSource},</if>
+            <if test="receiveTime != null ">receive_time = #{receiveTime},</if>
+            <if test="policeTime != null ">police_time = #{policeTime},</if>
+            <if test="arrivalTime != null ">arrival_time = #{arrivalTime},</if>
+            <if test="completeTime != null ">complete_time = #{completeTime},</if>
+            <if test="policeMan != null  and policeMan != ''">police_man = #{policeMan},</if>
+            <if test="policeCar != null  and policeCar != ''">police_car = #{policeCar},</if>
+            <if test="process != null  and process != ''">process = #{process},</if>
+            <if test="summary != null  and summary != ''">summary = #{summary},</if>
+            <if test="senderId != null ">sender_id = #{senderId},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="siteId != null ">site_id = #{siteId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfWorkPolicerecordById" parameterType="Long">
+        delete
+        from xf_work_policerecord
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfWorkPolicerecordByIds" parameterType="String">
+        delete from xf_work_policerecord where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectXfWorkListH5" resultType="com.ruoyi.project.xcx.response.PoliceRecordListVo">
+        select l.id, l.police_source policeSource, l.receive_time receiveTime, l.police_time policeTime, l.arrival_time arrivalTime, l.complete_time completeTime,
+        l.create_time createTime,s.site_name siteName,c.fullname senderName from xf_work_policerecord l
+        left join xf_user_customer c on c.id=l.sender_id
+        left join xf_base_site s on s.id=l.site_id
+        <where>
+            <if test="customerId != null ">and l.sender_id = #{customerId}</if>
+            <if test="siteId != null ">and l.site_id = #{siteId}</if>
+            <if test="province != null  and province != ''">and l.site_id in ( select id from xf_base_site where province= #{province}
+                <if test="city != null  and city != ''">and city = #{city}</if>
+                <if test="area != null  and area != ''">and area = #{area}</if>
+                <if test="street != null  and street != ''">and street = #{street}</if>
+                )
+            </if>
+            <if test="selectDate != null  and selectDate != ''">and date_format(l.police_time ,'%Y-%m-%d')=date_format(#{selectDate} ,'%Y-%m-%d')</if>
+        </where>
+        order by l.create_time desc
+        limit #{page},#{limit}
+    </select>
+
+    <select id="selectXfWorkListExcel" resultType="XfWorkPolicerecord">
+        select l.id,l.leader,l.contact_number contactNumber, l.police_source policeSource,
+        l.receive_time receiveTime, l.police_time policeTime, l.arrival_time arrivalTime, l.complete_time completeTime,
+        l.police_man policeMan,l.police_car policeCar,l.process,l.summary,
+        l.create_time createTime,s.site_name siteName,c.fullname senderName from xf_work_policerecord l
+        left join xf_user_customer c on c.id=l.sender_id
+        left join xf_base_site s on s.id=l.site_id
+        <where>
+            <if test="customerId != null ">and l.sender_id = #{customerId}</if>
+            <if test="siteId != null ">and l.site_id = #{siteId}</if>
+            <if test="province != null  and province != ''">and l.site_id in ( select id from xf_base_site where province= #{province}
+                <if test="city != null  and city != ''">and city = #{city}</if>
+                <if test="area != null  and area != ''">and area = #{area}</if>
+                <if test="street != null  and street != ''">and street = #{street}</if>
+                )
+            </if>
+            <if test="selectDate != null  and selectDate != ''">and date_format(l.police_time ,'%Y-%m-%d')=date_format(#{selectDate} ,'%Y-%m-%d')</if>
+        </where>
+        order by l.create_time desc
+    </select>
+
+    <select id="selectXfWorkPolicerecordH5ById" parameterType="Long" resultType="XfWorkPolicerecord">
+        select l.id,
+               l.leader,
+               l.contact_number contactNumber,
+               l.police_source  policeSource,
+               l.receive_time   receiveTime,
+               l.police_time    policeTime,
+               l.arrival_time   arrivalTime,
+               l.complete_time  completeTime,
+               l.police_man     policeMan,
+               l.police_car     policeCar,
+               l.process,
+               l.summary,
+               l.create_time    createTime,
+               s.site_name      siteName,
+               c.fullname       senderName
+        from xf_work_policerecord l
+                 left join xf_user_customer c on c.id = l.sender_id
+                 left join xf_base_site s on s.id = l.site_id
+        where l.id = #{id}
+    </select>
+
+
+    <insert id="saveBatchImg">
+        insert into xf_work_policerecord_img (url,work_id,create_time) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.url},#{item.workId},#{item.createTime})
+        </foreach>
+    </insert>
+
+    <select id="selectXfWorkImgList" parameterType="Long" resultType="com.ruoyi.project.xcx.response.XfWorkImgVo">
+        select url
+        from xf_work_policerecord_img
+        where work_id = #{id}
+    </select>
+
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfWorkLogCommentMapper">
+    
+    <resultMap type="XfWorkLogComment" id="XfWorkLogCommentResult">
+        <result property="id"    column="id"    />
+        <result property="comment"    column="comment"    />
+        <result property="workId"    column="work_id"    />
+        <result property="reviewerId"    column="reviewer_id"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectXfWorkLogCommentVo">
+        select id, comment, work_id, reviewer_id, create_time from xf_work_log_comment
+    </sql>
+
+    <select id="selectXfWorkLogCommentList" parameterType="XfWorkLogComment" resultMap="XfWorkLogCommentResult">
+        <include refid="selectXfWorkLogCommentVo"/>
+        <where>  
+            <if test="comment != null  and comment != ''"> and comment = #{comment}</if>
+            <if test="workId != null "> and work_id = #{workId}</if>
+            <if test="reviewerId != null "> and reviewer_id = #{reviewerId}</if>
+        </where>
+    </select>
+    
+    <select id="selectXfWorkLogCommentById" parameterType="Long" resultMap="XfWorkLogCommentResult">
+        <include refid="selectXfWorkLogCommentVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertXfWorkLogComment" parameterType="XfWorkLogComment" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_work_log_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="comment != null  and comment != ''">comment,</if>
+            <if test="workId != null ">work_id,</if>
+            <if test="reviewerId != null ">reviewer_id,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="comment != null  and comment != ''">#{comment},</if>
+            <if test="workId != null ">#{workId},</if>
+            <if test="reviewerId != null ">#{reviewerId},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateXfWorkLogComment" parameterType="XfWorkLogComment">
+        update xf_work_log_comment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="comment != null  and comment != ''">comment = #{comment},</if>
+            <if test="workId != null ">work_id = #{workId},</if>
+            <if test="reviewerId != null ">reviewer_id = #{reviewerId},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfWorkLogCommentById" parameterType="Long">
+        delete from xf_work_log_comment where id = #{id}
+    </delete>
+
+    <delete id="deleteXfWorkLogCommentByIds" parameterType="String">
+        delete from xf_work_log_comment where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByWorkId">
+        delete from xf_work_event_img where work_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insertXfWorkComment" parameterType="com.ruoyi.project.xcx.request.CommentRequest" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_work_log_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="comment != null  and comment != ''">comment,</if>
+            <if test="workId != null ">work_id,</if>
+            <if test="reviewerId != null ">reviewer_id,</if>
+            <if test="createTime != null ">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="comment != null  and comment != ''">#{comment},</if>
+            <if test="workId != null ">#{workId},</if>
+            <if test="reviewerId != null ">#{reviewerId},</if>
+            <if test="createTime != null ">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <select id="selectXfWorkCommentH5List" resultType="com.ruoyi.project.xcx.response.WorkCommentListVo">
+        select c.id, c.comment, c.create_time createTime,u.fullname reviewerName  from xf_work_log_comment c
+        left join xf_user_customer u on u.id=c.reviewer_id
+        <where>
+            <if test="id != null "> and c.work_id = #{id}</if>
+        </where>
+        order by c.create_time desc
+        limit #{page},#{limit}
+    </select>
+    
+</mapper>

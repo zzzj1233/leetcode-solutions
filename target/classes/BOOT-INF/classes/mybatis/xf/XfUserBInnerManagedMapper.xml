@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfUserBInnerManagedMapper">
+    
+    <resultMap type="XfUserBInnerManaged" id="XfUserBInnerManagedResult">
+        <result property="id"    column="id"    />
+        <result property="managerInnerId"    column="manager_inner_id"    />
+        <result property="innerId"    column="inner_id"    />
+    </resultMap>
+
+    <sql id="selectXfUserBInnerManagedVo">
+        select id, manager_inner_id, inner_id from xf_user_b_inner_managed
+    </sql>
+
+    <select id="selectXfUserBInnerManagedList" parameterType="XfUserBInnerManaged" resultMap="XfUserBInnerManagedResult">
+        <include refid="selectXfUserBInnerManagedVo"/>
+        <where>  
+            <if test="managerInnerId != null "> and manager_inner_id = #{managerInnerId}</if>
+            <if test="innerId != null "> and inner_id = #{innerId}</if>
+        </where>
+    </select>
+    
+    <select id="selectXfUserBInnerManagedById" parameterType="Long" resultMap="XfUserBInnerManagedResult">
+        <include refid="selectXfUserBInnerManagedVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertXfUserBInnerManaged" parameterType="XfUserBInnerManaged" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_user_b_inner_managed
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="managerInnerId != null ">manager_inner_id,</if>
+            <if test="innerId != null ">inner_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="managerInnerId != null ">#{managerInnerId},</if>
+            <if test="innerId != null ">#{innerId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateXfUserBInnerManaged" parameterType="XfUserBInnerManaged">
+        update xf_user_b_inner_managed
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="managerInnerId != null ">manager_inner_id = #{managerInnerId},</if>
+            <if test="innerId != null ">inner_id = #{innerId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfUserBInnerManagedById" parameterType="Long">
+        delete from xf_user_b_inner_managed where id = #{id}
+    </delete>
+
+    <delete id="deleteXfUserBInnerManagedByIds" parameterType="String">
+        delete from xf_user_b_inner_managed where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

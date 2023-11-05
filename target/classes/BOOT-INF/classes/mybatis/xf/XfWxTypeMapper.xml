@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfWxTypeMapper">
+
+    <resultMap type="XfWxType" id="XfWxTypeResult">
+        <result property="id" column="id"/>
+        <result property="wxTypeName" column="wx_type_name"/>
+        <result property="wxTypeState" column="wx_type_state"/>
+    </resultMap>
+
+    <sql id="selectXfWxTypeVo">
+        select id, wx_type_name, wx_type_state
+        from xf_wx_type
+    </sql>
+
+    <select id="selectXfWxTypeList" parameterType="XfWxType" resultMap="XfWxTypeResult">
+        <include refid="selectXfWxTypeVo"/>
+        <where>
+            <if test="wxTypeName != null  and wxTypeName != ''">and wx_type_name like concat('%', #{wxTypeName}, '%')</if>
+            <if test="wxTypeState != null ">and wx_type_state = #{wxTypeState}</if>
+        </where>
+    </select>
+
+    <select id="selectXfWxTypeById" parameterType="Long" resultMap="XfWxTypeResult">
+        <include refid="selectXfWxTypeVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectTypeNameExists" resultType="java.lang.Integer">
+        select count(1)
+        from xf_wx_type
+        where wx_type_name = #{typeName}
+    </select>
+
+    <select id="selectTypeNameAndStatusExists" resultType="java.lang.Integer">
+        select count(1)
+        from xf_wx_type
+        where wx_type_name = #{typeName}
+        <if test="state != null">
+            and wx_type_state = #{state}
+        </if>
+    </select>
+
+    <select id="selectByTypeName" resultMap="XfWxTypeResult">
+        <include refid="selectXfWxTypeVo"/>
+        where wx_type_name = #{typeName}
+        <if test="state != null">
+            and wx_type_state = #{state}
+        </if>
+    </select>
+
+    <insert id="insertXfWxType" parameterType="XfWxType" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_wx_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wxTypeName != null  and wxTypeName != ''">wx_type_name,</if>
+            <if test="wxTypeState != null ">wx_type_state,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wxTypeName != null  and wxTypeName != ''">#{wxTypeName},</if>
+            <if test="wxTypeState != null ">#{wxTypeState},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfWxType" parameterType="XfWxType">
+        update xf_wx_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wxTypeName != null  and wxTypeName != ''">wx_type_name = #{wxTypeName},</if>
+            <if test="wxTypeState != null ">wx_type_state = #{wxTypeState},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfWxTypeById" parameterType="Long">
+        delete
+        from xf_wx_type
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfWxTypeByIds" parameterType="String">
+        delete from xf_wx_type where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

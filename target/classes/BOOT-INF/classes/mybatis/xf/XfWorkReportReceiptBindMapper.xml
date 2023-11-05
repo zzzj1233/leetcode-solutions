@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfWorkReportReceiptBindMapper">
+
+    <resultMap type="XfWorkReportReceiptBind" id="XfWorkReportReceiptBindResult">
+        <result property="id" column="id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="workId" column="work_id"/>
+        <result property="read" column="read"/>
+        <result property="readTime" column="read_time"/>
+    </resultMap>
+
+    <sql id="selectXfWorkReportReceiptBindVo">
+        select id, customer_id, work_id, `read`, read_time
+        from xf_work_report_receipt_bind
+    </sql>
+
+    <select id="selectXfWorkReportReceiptBindList" parameterType="XfWorkReportReceiptBind" resultMap="XfWorkReportReceiptBindResult">
+        <include refid="selectXfWorkReportReceiptBindVo"/>
+        <where>
+            <if test="customerId != null ">and customer_id = #{customerId}</if>
+            <if test="workId != null ">and work_id = #{workId}</if>
+            <if test="read != null ">and read = #{read}</if>
+            <if test="readTime != null ">and read_time = #{readTime}</if>
+        </where>
+    </select>
+
+    <select id="selectXfWorkReportReceiptBindListNoPage" resultMap="XfWorkReportReceiptBindResult">
+        <include refid="selectXfWorkReportReceiptBindVo"/>
+        <where>
+            <if test="customerId != null ">and customer_id = #{customerId}</if>
+            <if test="workId != null ">and work_id = #{workId}</if>
+        </where>
+    </select>
+
+    <select id="selectXfWorkReportReceiptBindById" parameterType="Long" resultMap="XfWorkReportReceiptBindResult">
+        <include refid="selectXfWorkReportReceiptBindVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertXfWorkReportReceiptBind" parameterType="XfWorkReportReceiptBind" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_work_report_receipt_bind
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null ">customer_id,</if>
+            <if test="workId != null ">work_id,</if>
+            <if test="read != null ">read,</if>
+            <if test="readTime != null ">read_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null ">#{customerId},</if>
+            <if test="workId != null ">#{workId},</if>
+            <if test="read != null ">#{read},</if>
+            <if test="readTime != null ">#{readTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfWorkReportReceiptBind" parameterType="com.ruoyi.project.xf.domain.XfWorkReportReceiptBind">
+        update xf_work_report_receipt_bind
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null ">customer_id = #{customerId},</if>
+            <if test="workId != null ">work_id = #{workId},</if>
+            <if test="read != null ">read = #{read},</if>
+            <if test="readTime != null ">read_time = #{readTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfWorkReportReceiptBindById" parameterType="Long">
+        delete
+        from xf_work_report_receipt_bind
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfWorkReportReceiptBindByIds" parameterType="String">
+        delete from xf_work_report_receipt_bind where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByWorkId">
+        delete from xf_work_report_comment where work_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

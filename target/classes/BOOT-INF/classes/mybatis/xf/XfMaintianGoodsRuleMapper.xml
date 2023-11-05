@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfMaintianGoodsRuleMapper">
+
+    <resultMap type="com.ruoyi.project.xf.domain.XfMaintianGoodsRule" id="XfMaintianGoodsRuleResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="triggerValue" column="trigger_value"/>
+        <result property="reset" column="reset"/>
+        <result property="triggerDayLimit" column="trigger_day_limit"/>
+        <result property="keword" column="keword"/>
+        <result property="valueUnit" column="value_unit"/>
+        <result property="outable" column="outable"/>
+        <result property="extra" column="extra"/>
+    </resultMap>
+
+    <sql id="selectXfMaintianGoodsRuleVo">
+        select id,
+               name,
+               trigger_value,
+               reset,
+               trigger_day_limit,
+               keword,
+               extra,
+               value_unit,
+               outable
+        from xf_maintian_goods_rule
+    </sql>
+
+    <select id="selectXfMaintianGoodsRuleList" parameterType="com.ruoyi.project.xf.domain.XfMaintianGoodsRule" resultMap="XfMaintianGoodsRuleResult">
+        <include refid="selectXfMaintianGoodsRuleVo"/>
+        <where>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectXfMaintianGoodsRuleById" parameterType="Long" resultMap="XfMaintianGoodsRuleResult">
+        <include refid="selectXfMaintianGoodsRuleVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectSimpleInfoList" resultType="com.ruoyi.project.xf.domain.XfMaintianGoodsRule">
+        select id, name
+        from xf_maintian_goods_rule
+    </select>
+
+    <select id="selectCountById" resultType="java.lang.Integer">
+        select count(1)
+        from xf_maintian_goods_rule
+        where id = #{id}
+    </select>
+
+    <insert id="insertXfMaintianGoodsRule" parameterType="com.ruoyi.project.xf.domain.XfMaintianGoodsRule" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_maintian_goods_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null  and name != ''">name,</if>
+            <if test="triggerValue != null ">trigger_value,</if>
+            <if test="reset != null ">reset,</if>
+            <if test="triggerDayLimit != null ">trigger_day_limit,</if>
+            <if test="keword != null  and keword != ''">keword,</if>
+            <if test="valueUnit != null  and valueUnit != ''">value_unit,</if>
+            <if test="extra != null  and extra != ''">extra,</if>
+            <if test="outable != null ">outable,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="triggerValue != null ">#{triggerValue},</if>
+            <if test="reset != null ">#{reset},</if>
+            <if test="triggerDayLimit != null ">#{triggerDayLimit},</if>
+            <if test="keword != null  and keword != ''">#{keword},</if>
+            <if test="valueUnit != null  and valueUnit != ''">#{valueUnit},</if>
+            <if test="extra != null  and extra != ''">#{extra},</if>
+            <if test="outable != null">#{outable},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfMaintianGoodsRule" parameterType="com.ruoyi.project.xf.domain.XfMaintianGoodsRule">
+        update xf_maintian_goods_rule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="triggerValue != null ">trigger_value = #{triggerValue},</if>
+            <if test="reset != null ">reset = #{reset},</if>
+            <if test="triggerDayLimit != null ">trigger_day_limit = #{triggerDayLimit},</if>
+            <if test="keword != null  and keword != ''">keword = #{keword},</if>
+            <if test="valueUnit != null  and valueUnit != ''">value_unit = #{valueUnit},</if>
+            <if test="outable != null ">outable = #{outable},</if>
+            <if test="extra != null">extra = #{extra},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfMaintianGoodsRuleById" parameterType="Long">
+        delete
+        from xf_maintian_goods_rule
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfMaintianGoodsRuleByIds" parameterType="String">
+        delete from xf_maintian_goods_rule where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

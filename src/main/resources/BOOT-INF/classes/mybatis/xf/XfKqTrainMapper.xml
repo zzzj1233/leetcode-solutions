@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfKqTrainMapper">
+
+    <resultMap type="com.ruoyi.project.xf.domain.XfKqTrain" id="XfKqTrainResult">
+        <result property="id" column="id"/>
+        <result property="trainTheme" column="train_theme"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="trainState" column="train_state"/>
+        <result property="trainInfo" column="train_info"/>
+        <result property="address" column="address"/>
+        <result property="longitude" column="longitude"/>
+        <result property="latitude" column="latitude"/>
+        <result property="site" column="site"/>
+        <result property="siteId" column="site_id"/>
+        <result property="province" column="province"/>
+        <result property="city" column="city"/>
+        <result property="area" column="area"/>
+        <result property="street" column="street"/>
+        <result property="filekey" column="filekey"/>
+        <result property="organizerId" column="organizer_id"/>
+    </resultMap>
+
+    <sql id="selectXfKqTrainVo">
+        select id,
+               train_theme,
+               start_time,
+               end_time,
+               train_state,
+               train_info,
+               address,
+               longitude,
+               latitude,
+               organizer_id,
+               filekey,
+               site,
+               site_id,
+               province,
+               city,
+               area,
+               street
+        from xf_kq_train
+    </sql>
+
+    <select id="queryListByTrainIds" parameterType="Long" resultMap="XfKqTrainResult">
+        <include refid="selectXfKqTrainVo"/>
+        <if test="trainIds!=null">
+            where id in
+            <foreach collection="trainIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+    </select>
+
+    <select id="selectXfKqTrainList" parameterType="XfKqTrain" resultMap="XfKqTrainResult">
+        <include refid="selectXfKqTrainVo"/>
+        <where>
+            <if test="trainTheme != null  and trainTheme != ''">and train_theme LIKE concat(concat('%',#{trainTheme}),'%')</if>
+            <if test="startTime != null ">and start_time = #{startTime}</if>
+            <if test="endTime != null ">and end_time = #{endTime}</if>
+            <if test="trainState != null ">and train_state = #{trainState}</if>
+            <if test="trainInfo != null  and trainInfo != ''">and train_info = #{trainInfo}</if>
+            <if test="address != null  and address != ''">and address = #{address}</if>
+            <if test="longitude != null ">and longitude = #{longitude}</if>
+            <if test="latitude != null ">and latitude = #{latitude}</if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <select id="selectXfKqTrainById" parameterType="Long" resultMap="XfKqTrainResult">
+        <include refid="selectXfKqTrainVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertXfKqTrain" parameterType="XfKqTrain" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_kq_train
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="trainTheme != null  and trainTheme != ''">train_theme,</if>
+            <if test="startTime != null ">start_time,</if>
+            <if test="endTime != null ">end_time,</if>
+            <if test="trainState != null ">train_state,</if>
+            <if test="trainInfo != null  and trainInfo != ''">train_info,</if>
+            <if test="address != null  and address != ''">address,</if>
+            <if test="longitude != null ">longitude,</if>
+            <if test="latitude != null ">latitude,</if>
+            <if test="organizerId != null ">organizer_id,</if>
+            <if test="site != null ">site,</if>
+            <if test="siteId != null ">site_id,</if>
+            <if test="province != null ">province,</if>
+            <if test="city != null ">city,</if>
+            <if test="area != null ">area,</if>
+            <if test="street != null ">street,</if>
+            <if test="filekey != null ">filekey,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="trainTheme != null  and trainTheme != ''">#{trainTheme},</if>
+            <if test="startTime != null ">#{startTime},</if>
+            <if test="endTime != null ">#{endTime},</if>
+            <if test="trainState != null ">#{trainState},</if>
+            <if test="trainInfo != null  and trainInfo != ''">#{trainInfo},</if>
+            <if test="address != null  and address != ''">#{address},</if>
+            <if test="longitude != null ">#{longitude},</if>
+            <if test="latitude != null ">#{latitude},</if>
+            <if test="organizerId != null ">#{organizerId},</if>
+            <if test="site != null ">#{site},</if>
+            <if test="siteId != null ">#{siteId},</if>
+            <if test="province != null ">#{province},</if>
+            <if test="city != null ">#{city},</if>
+            <if test="area != null ">#{area},</if>
+            <if test="street != null ">#{street},</if>
+            <if test="filekey != null ">#{filekey},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfKqTrain" parameterType="XfKqTrain">
+        update xf_kq_train
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="trainTheme != null  and trainTheme != ''">train_theme = #{trainTheme},</if>
+            <if test="startTime != null ">start_time = #{startTime},</if>
+            <if test="endTime != null ">end_time = #{endTime},</if>
+            <if test="trainState != null ">train_state = #{trainState},</if>
+            <if test="trainInfo != null  and trainInfo != ''">train_info = #{trainInfo},</if>
+            <if test="address != null  and address != ''">address = #{address},</if>
+            <if test="longitude != null ">longitude = #{longitude},</if>
+            <if test="latitude != null ">latitude = #{latitude},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateFileKey">
+        update xf_kq_train
+        set filekey = #{fileKey}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteXfKqTrainById" parameterType="Long">
+        delete
+        from xf_kq_train
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfKqTrainByIds" parameterType="String">
+        delete from xf_kq_train where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

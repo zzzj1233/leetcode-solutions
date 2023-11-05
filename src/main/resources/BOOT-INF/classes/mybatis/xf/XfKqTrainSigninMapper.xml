@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfKqTrainSigninMapper">
+
+    <resultMap type="com.ruoyi.project.xf.domain.XfKqTrainSignin" id="XfKqTrainSigninResult">
+        <result property="id" column="id"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="trainId" column="train_id"/>
+        <result property="signinTime" column="signin_time"/>
+        <result property="signinState" column="signin_state"/>
+        <result property="trainId" column="train_id"/>
+    </resultMap>
+
+    <resultMap id="TrainSignin2Map" type="com.ruoyi.project.xf.domain.TrainSignin2">
+        <result property="id" column="id"/>
+        <result property="address" column="address"/>
+        <result property="trainTheme" column="train_theme"/>
+        <result property="trainInfo" column="train_info"/>
+        <result property="trainStartTime" column="start_time"/>
+        <result property="trainEndTime" column="end_time"/>
+        <result property="signinNum" column="signinNum"/>
+        <result property="signinTime" column="signin_time"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="organizerId" column="organizer_id"/>
+    </resultMap>
+
+    <sql id="selectXfKqTrainSigninVo">
+        select id, customer_id, train_id, signin_time, signin_state
+        from xf_kq_train_signin
+    </sql>
+
+    <select id="queryTrainInfoById" resultType="com.ruoyi.project.xf.domain.TrainSignin">
+        SELECT train.id
+             , train_theme      trainTheme
+             , start_time       trainStartTime
+             , end_time         trainEndTime
+             , train_info       trainInfo
+             , address
+             , count(signin.id) signinNum
+        from xf_kq_train train
+                 LEFT JOIN xf_kq_train_signin signin ON train.id = signin.train_id
+        where train.id = #{id}
+    </select>
+
+    <select id="querySigninListByPage" resultType="com.ruoyi.project.xf.domain.XfKqTrainSigninSimple">
+        SELECT signin.customer_id customerId, signin.signin_time signinTime, customer.fullname customerName
+        from xf_kq_train_signin signin
+                 LEFT JOIN xf_user_customer customer ON customer.id = signin.customer_id
+        where signin.train_id = #{train_id}
+        ORDER BY signin.id DESC
+        LIMIT #{page},#{limit}
+    </select>
+
+    <select id="queryListByPage" resultType="com.ruoyi.project.xf.domain.TrainSignin">
+        SELECT train.id,train_theme trainTheme,start_time trainStartTime,end_time trainEndTime,train_info trainInfo,address
+        ,count(signin.id) totalNum,sum(CASE WHEN signin.signin_state=2 THEN 1 ELSE 0 END) signinNum
+        from xf_kq_train train LEFT JOIN xf_kq_train_signin signin ON train.id=signin.train_id
+        where train_state=2
+        <if test="customerId != null  and customerId != ''">and train.id in (SELECT DISTINCT train_id from xf_kq_train_signin where customer_id=#{customerId})</if>
+        <if test="siteId != null  and siteId != ''">and train.id in (SELECT DISTINCT train_id from xf_kq_b_train_site where site_id=#{siteId})</if>
+        GROUP BY id,trainTheme,trainStartTime,trainEndTime,trainInfo,address
+        ORDER BY id DESC LIMIT #{page},#{limit}
+    </select>
+
+    <!-- TODO 培训对象变更 -->
+    <select id="queryListByPage2" resultType="com.ruoyi.project.xf.domain.TrainSignin2">
+        SELECT train.id,train_theme trainTheme,start_time trainStartTime,end_time trainEndTime,train_info trainInfo,address
+        ,count(signin.id) totalNum,sum(CASE WHEN signin.signin_state=2 THEN 1 ELSE 0 END) signinNum
+        <if test="customerId != null  and customerId != ''">,mysignin.signin_time signinTime, mysignin.signin_state needSignin</if>
+        from xf_kq_train train LEFT JOIN xf_kq_train_signin signin ON train.id=signin.train_id
+        <if test="customerId != null  and customerId != ''">LEFT JOIN xf_kq_train_signin mysignin ON train.id=mysignin.train_id and mysignin.customer_id=#{customerId}</if>
+        where train_state=2
+        <if test="customerId != null  and customerId != ''">and train.id in (SELECT DISTINCT train_id from xf_kq_train_signin where customer_id=#{customerId})</if>
+        <if test="siteId != null  and siteId != ''">and train.id in (SELECT DISTINCT train_id from xf_kq_b_train_site where site_id=#{siteId})</if>
+        <if test="siteArea != null  and siteArea != ''">and train.id in (SELECT DISTINCT train_id from xf_kq_b_train_site where site_id in
+            (SELECT id from xf_base_site where CONCAT(province,'-',city,'-',area,'-',street) like CONCAT(#{siteArea},'%')) )
+        </if>
+        GROUP BY id,trainTheme,trainStartTime,trainEndTime,trainInfo,address
+        ORDER BY id DESC LIMIT #{page},#{limit}
+    </select>
+
+    <select id="queryShowListByPage2" resultType="com.ruoyi.project.xf.domain.RepairInfo">
+        SELECT wxRepair.id,wxRepair.create_time as createTime,goods_name as goodsName,repair_grade as repairGrade,site.site_address as siteAddress,site.site_name as
+        siteName,repair_state as repairState
+        FROM xf_wx_repair wxRepair LEFT JOIN xf_wz_goods goods ON wxRepair.goods_id=goods.id
+        LEFT JOIN xf_base_site site ON site.id=goods.site_id
+        WHERE 1=1
+        <if test="customerId != null  and customerId != ''">and customer_id=#{customerId}</if>
+        <if test="siteId != null  and siteId != ''">and goods.site_id=#{siteId}</if>
+        <if test="repairState == 1">and repair_state IN (1,2,3)</if>
+        <if test="repairState == 2">and repair_state IN (4,5)</if>
+        <if test="repairState == 3">and repair_state = 4</if>
+        ORDER BY id DESC LIMIT #{page},#{limit}
+    </select>
+
+    <select id="selectXfKqTrainSigninList" parameterType="XfKqTrainSignin" resultMap="XfKqTrainSigninResult">
+        <include refid="selectXfKqTrainSigninVo"/>
+        <where>
+            <if test="customerId != null ">and customer_id = #{customerId}</if>
+            <if test="trainId != null ">and train_id = #{trainId}</if>
+            <if test="signinTime != null ">and signin_time = #{signinTime}</if>
+            <if test="signinState != null ">and signin_state = #{signinState}</if>
+        </where>
+    </select>
+
+    <select id="selectXfKqTrainSigninById" parameterType="Long" resultMap="XfKqTrainSigninResult">
+        <include refid="selectXfKqTrainSigninVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectAll" resultType="com.ruoyi.project.xf.domain.TrainSignin">
+        select *
+        from xf_kq_train
+    </select>
+
+    <select id="selectFiremanOrStationMasterTrainList" resultMap="TrainSignin2Map">
+        select train.id
+             , train.train_theme
+             , train.train_info
+             , train.start_time
+             , train.end_time
+             , train.organizer_id
+             , train.address
+        from xf_kq_train as train,
+             (select province, city, area, street from xf_base_site where id = #{siteId}) as siteInfo
+            /* 根据站点 */
+        where (site = 1 and site_id = #{siteId})
+           or (site = 0
+            and siteInfo.province = train.province
+            and (siteInfo.city = train.city or train.city is null)
+            and (siteInfo.area = train.area or train.area is null)
+            and (siteInfo.street = train.street or train.street is null)
+            )
+        order by train.id desc
+    </select>
+
+    <select id="selectEmergencyMasterTrainList" resultMap="TrainSignin2Map">
+        select train.id
+        , train.train_theme
+        , train.train_info
+        , train.start_time
+        , train.end_time
+        , train.organizer_id
+        , train.address
+        FROM xf_kq_train as train
+        left join xf_base_site as siteInfo on siteInfo.id = train.site_id
+        where
+        (
+        site = 1
+        and siteInfo.province = #{province}
+        <if test="city != null">
+            and (siteInfo.city = #{city})
+        </if>
+
+        <if test="area != null">
+            and (siteInfo.area = #{area})
+        </if>
+
+        <if test="street != null">
+            and (siteInfo.street = #{street})
+        </if>
+        )
+        or (
+        site = 0
+        and train.province = #{province}
+
+        <if test="city != null">
+            and (train.city = #{city} or train.city is null)
+        </if>
+
+        <if test="area != null">
+            and (train.area = #{area} or train.area is null)
+        </if>
+
+        <if test="street != null">
+            and (train.street = #{street} or train.street is null)
+        </if>
+        )
+        order by train.id desc
+    </select>
+
+    <select id="selectByTrainIds" resultMap="XfKqTrainSigninResult">
+        select id,customer_id,signin_time,train_id,customer_id,signin_time from xf_kq_train_signin
+        where train_id in
+        <foreach collection="list" item="item" separator="," close=")" open="(">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectExistsByTrainIdAndUserId" resultType="java.lang.Integer">
+        select count(1)
+        from xf_kq_train_signin
+        where train_id = #{id}
+          and customer_id = #{userId}
+    </select>
+
+    <insert id="insertXfKqTrainSignin" parameterType="XfKqTrainSignin" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_kq_train_signin
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null ">customer_id,</if>
+            <if test="trainId != null ">train_id,</if>
+            <if test="signinTime != null ">signin_time,</if>
+            <if test="signinState != null ">signin_state,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null ">#{customerId},</if>
+            <if test="trainId != null ">#{trainId},</if>
+            <if test="signinTime != null ">#{signinTime},</if>
+            <if test="signinState != null ">#{signinState},</if>
+        </trim>
+    </insert>
+
+    <insert id="saveBatch">
+        insert into xf_kq_train_signin
+        (customer_id,train_id,signin_state)
+        VALUES
+        <foreach collection="kqSigns" item="item" separator=",">
+            (#{item.customerId},#{item.trainId},#{item.signinState})
+        </foreach>
+    </insert>
+
+    <update id="updateXfKqTrainSignin" parameterType="XfKqTrainSignin">
+        update xf_kq_train_signin
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customerId != null ">customer_id = #{customerId},</if>
+            <if test="trainId != null ">train_id = #{trainId},</if>
+            <if test="signinTime != null ">signin_time = #{signinTime},</if>
+            <if test="signinState != null ">signin_state = #{signinState},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteByTrainId" parameterType="Long">
+        delete
+        from xf_kq_train_signin
+        where train_id = #{trainId}
+    </delete>
+
+    <delete id="deleteXfKqTrainSigninById" parameterType="Long">
+        delete
+        from xf_kq_train_signin
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfKqTrainSigninByIds" parameterType="String">
+        delete from xf_kq_train_signin where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByTrainIds">
+        delete from xf_kq_train_signin where train_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

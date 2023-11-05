@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfWxBRepairFileMapper">
+
+    <resultMap type="XfWxBRepairFile" id="XfWxBRepairFileResult">
+        <result property="id" column="id"/>
+        <result property="repairId" column="repair_id"/>
+        <result property="filePath" column="file_path"/>
+        <result property="repaired" column="repaired"/>
+    </resultMap>
+
+    <sql id="selectXfWxBRepairFileVo">
+        select id, repair_id, file_path, repaired
+        from xf_wx_b_repair_file
+    </sql>
+
+    <select id="selectXfWxBRepairFileList" parameterType="Long" resultMap="XfWxBRepairFileResult">
+        <include refid="selectXfWxBRepairFileVo"/>
+        WHERE repair_id = #{repairId}
+    </select>
+
+    <select id="selectXfWxBRepairFileById" parameterType="Long" resultMap="XfWxBRepairFileResult">
+        <include refid="selectXfWxBRepairFileVo"/>
+        where id = #{id}
+    </select>
+    <!--批量保存-->
+    <insert id="saveBatch">
+        insert into xf_wx_b_repair_file (repair_id,file_path) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.repairId},#{item.filePath})
+        </foreach>
+    </insert>
+
+    <insert id="insertXfWxBRepairFile" parameterType="XfWxBRepairFile" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_wx_b_repair_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="repairId != null ">repair_id,</if>
+            <if test="filePath != null  and filePath != ''">file_path,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="repairId != null ">#{repairId},</if>
+            <if test="filePath != null  and filePath != ''">#{filePath},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfWxBRepairFile" parameterType="XfWxBRepairFile">
+        update xf_wx_b_repair_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="repairId != null ">repair_id = #{repairId},</if>
+            <if test="filePath != null  and filePath != ''">file_path = #{filePath},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <insert id="bindRepairedImgs">
+        insert into xf_wx_b_repair_file(repair_id,file_path,repaired) values
+        <foreach collection="repairImgs" item="img" separator=",">
+            (#{repairId},#{img},true)
+        </foreach>
+    </insert>
+
+    <delete id="deleteXfWxBRepairFileById" parameterType="Long">
+        delete
+        from xf_wx_b_repair_file
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfWxBRepairFileByIds" parameterType="String">
+        delete from xf_wx_b_repair_file where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

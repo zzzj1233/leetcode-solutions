@@ -1,0 +1,114 @@
+{
+  "groups": [
+    {
+      "name": "gen",
+      "type": "com.ruoyi.framework.config.GenConfig",
+      "sourceType": "com.ruoyi.framework.config.GenConfig"
+    },
+    {
+      "name": "management.endpoint.zzzj",
+      "type": "com.ruoyi.project.xcx.endpoint.MyEndPoint",
+      "sourceType": "com.ruoyi.project.xcx.endpoint.MyEndPoint"
+    },
+    {
+      "name": "ruoyi",
+      "type": "com.ruoyi.framework.config.RuoYiConfig",
+      "sourceType": "com.ruoyi.framework.config.RuoYiConfig"
+    },
+    {
+      "name": "spring.datasource.druid.master",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.ruoyi.framework.config.DruidConfig",
+      "sourceMethod": "masterDataSource(com.ruoyi.framework.config.properties.DruidProperties)"
+    },
+    {
+      "name": "spring.datasource.druid.slave",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.ruoyi.framework.config.DruidConfig",
+      "sourceMethod": "slaveDataSource(com.ruoyi.framework.config.properties.DruidProperties)"
+    },
+    {
+      "name": "yckj",
+      "type": "com.ruoyi.framework.config.BusinessConfig",
+      "sourceType": "com.ruoyi.framework.config.BusinessConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "management.endpoint.zzzj.cache.time-to-live",
+      "type": "java.time.Duration",
+      "description": "Maximum time that a response can be cached.",
+      "sourceType": "com.ruoyi.project.xcx.endpoint.MyEndPoint",
+      "defaultValue": "0ms"
+    },
+    {
+      "name": "management.endpoint.zzzj.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to enable the zzzj endpoint.",
+      "sourceType": "com.ruoyi.project.xcx.endpoint.MyEndPoint",
+      "defaultValue": true
+    },
+    {
+      "name": "ruoyi.copyright-year",
+      "type": "java.lang.String",
+      "description": "版权年份",
+      "sourceType": "com.ruoyi.framework.config.RuoYiConfig"
+    },
+    {
+      "name": "ruoyi.demo-enabled",
+      "type": "java.lang.Boolean",
+      "description": "实例演示开关",
+      "sourceType": "com.ruoyi.framework.config.RuoYiConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "ruoyi.name",
+      "type": "java.lang.String",
+      "description": "项目名称",
+      "sourceType": "com.ruoyi.framework.config.RuoYiConfig"
+    },
+    {
+      "name": "ruoyi.version",
+      "type": "java.lang.String",
+      "description": "版本",
+      "sourceType": "com.ruoyi.framework.config.RuoYiConfig"
+    },
+    {
+      "name": "yckj.bucket",
+      "type": "java.lang.String",
+      "sourceType": "com.ruoyi.framework.config.BusinessConfig",
+      "defaultValue": "dhc-01"
+    },
+    {
+      "name": "yckj.oss-biz-channel",
+      "type": "java.lang.String",
+      "sourceType": "com.ruoyi.framework.config.BusinessConfig",
+      "defaultValue": "10a41c6f6c8c4eb28f9480968abc971b"
+    },
+    {
+      "name": "yckj.oss-biz-secret",
+      "type": "java.lang.String",
+      "sourceType": "com.ruoyi.framework.config.BusinessConfig",
+      "defaultValue": " b7ac7c0200225b7d259e6a0036a649c7"
+    },
+    {
+      "name": "yckj.sms-biz-channel",
+      "type": "java.lang.String",
+      "sourceType": "com.ruoyi.framework.config.BusinessConfig",
+      "defaultValue": "ef273077404b4a5193b8ddb9fd263fa0"
+    },
+    {
+      "name": "yckj.sms-biz-secret",
+      "type": "java.lang.String",
+      "sourceType": "com.ruoyi.framework.config.BusinessConfig",
+      "defaultValue": "5e939c1188c2e3acdd8aef889b4c6a6c"
+    },
+    {
+      "name": "yckj.sms-type",
+      "type": "java.lang.String",
+      "sourceType": "com.ruoyi.framework.config.BusinessConfig",
+      "defaultValue": "DHC001"
+    }
+  ],
+  "hints": []
+}

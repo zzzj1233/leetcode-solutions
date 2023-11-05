@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.xf.mapper.XfUserBWechatMapper">
+
+    <resultMap type="XfUserBWechat" id="XfUserBWechatResult">
+        <result property="id" column="id"/>
+        <result property="wxBindDate" column="wx_bind_date"/>
+        <result property="wxOpenId" column="wx_open_id"/>
+        <result property="wxNikename" column="wx_nikename"/>
+        <result property="wxHeadimg" column="wx_headimg"/>
+        <result property="userId" column="user_id"/>
+        <result property="userType" column="user_type"/>
+        <result property="lastLogininTime" column="last_loginin_time"/>
+    </resultMap>
+
+    <sql id="selectXfUserBWechatVo">
+        select id,
+               wx_bind_date,
+               wx_open_id,
+               wx_nikename,
+               wx_headimg,
+               user_id,
+               user_type,
+               last_loginin_time
+        from xf_user_b_wechat
+    </sql>
+
+    <select id="selectXfUserByUserInfo" parameterType="XfUserBWechat" resultMap="XfUserBWechatResult">
+        <include refid="selectXfUserBWechatVo"/>
+        where user_id = #{userId} and user_type = #{userType}
+    </select>
+
+    <select id="queryObjectByopenId" parameterType="string" resultMap="XfUserBWechatResult">
+        <include refid="selectXfUserBWechatVo"/>
+        where wx_open_id = #{wxOpenId}
+    </select>
+
+    <select id="selectXfUserBWechatList" parameterType="XfUserBWechat" resultMap="XfUserBWechatResult">
+        <include refid="selectXfUserBWechatVo"/>
+        <where>
+            <if test="wxBindDate != null ">and wx_bind_date = #{wxBindDate}</if>
+            <if test="wxOpenId != null  and wxOpenId!= ''">and wx_open_id = #{wxOpenId}</if>
+            <if test="wxNikename != null  and wxNikename != ''">and wx_nikename like concat('%', #{wxNikename}, '%')</if>
+            <if test="wxHeadimg != null  and wxHeadimg != ''">and wx_headimg = #{wxHeadimg}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="userType != null ">and user_type = #{userType}</if>
+            <if test="lastLogininTime != null ">and last_loginin_time = #{lastLogininTime}</if>
+        </where>
+    </select>
+
+    <select id="selectXfUserBWechatById" parameterType="Long" resultMap="XfUserBWechatResult">
+        <include refid="selectXfUserBWechatVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="queryCustomerByUserId" resultType="com.ruoyi.project.xf.domain.XfUserBWechat">
+        <include refid="selectXfUserBWechatVo"/>
+        where user_id = #{userId}
+        and user_type = 2
+    </select>
+
+    <select id="queryManagerByUserId" resultType="com.ruoyi.project.xf.domain.XfUserBWechat">
+        <include refid="selectXfUserBWechatVo"/>
+        where user_id = #{userId}
+        and user_type = 1
+    </select>
+
+    <insert id="insertXfUserBWechat" parameterType="XfUserBWechat" useGeneratedKeys="true" keyProperty="id">
+        insert into xf_user_b_wechat
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wxBindDate != null ">wx_bind_date,</if>
+            <if test="wxOpenId != null  and wxOpenId != ''">wx_open_id,</if>
+            <if test="wxNikename != null  and wxNikename != ''">wx_nikename,</if>
+            <if test="wxHeadimg != null  and wxHeadimg != ''">wx_headimg,</if>
+            <if test="userId != null ">user_id,</if>
+            <if test="userType != null ">user_type,</if>
+            <if test="lastLogininTime != null ">last_loginin_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wxBindDate != null ">#{wxBindDate},</if>
+            <if test="wxOpenId != null  and wxOpenId != ''">#{wxOpenId},</if>
+            <if test="wxNikename != null  and wxNikename != ''">#{wxNikename},</if>
+            <if test="wxHeadimg != null  and wxHeadimg != ''">#{wxHeadimg},</if>
+            <if test="userId != null ">#{userId},</if>
+            <if test="userType != null ">#{userType},</if>
+            <if test="lastLogininTime != null ">#{lastLogininTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateXfUserBWechat" parameterType="XfUserBWechat">
+        update xf_user_b_wechat
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wxBindDate != null ">wx_bind_date = #{wxBindDate},</if>
+            <if test="wxOpenId != null  and wxOpenId != ''">wx_open_id = #{wxOpenId},</if>
+            <if test="wxNikename != null  and wxNikename != ''">wx_nikename = #{wxNikename},</if>
+            <if test="wxHeadimg != null  and wxHeadimg != ''">wx_headimg = #{wxHeadimg},</if>
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="userType != null ">user_type = #{userType},</if>
+            <if test="lastLogininTime != null ">last_loginin_time = #{lastLogininTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteByUserId" parameterType="Long">
+        delete
+        from xf_user_b_wechat
+        where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteXfUserBWechatById" parameterType="Long">
+        delete
+        from xf_user_b_wechat
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteXfUserBWechatByIds" parameterType="String">
+        delete from xf_user_b_wechat where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteAdminByIds">
+        delete from xf_user_b_wechat where user_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and user_type = 1
+    </delete>
+
+    <delete id="deleteCustomerByUserId">
+        delete
+        from xf_user_b_wechat
+        where user_id = #{userId}
+          and user_type = 2
+    </delete>
+
+    <delete id="deleteSysUserById">
+        delete
+        from xf_user_b_wechat
+        where user_id = #{userId}
+          and user_type = 1
+    </delete>
+
+    <delete id="deleteCustomerByUserIds">
+        delete
+        from xf_user_b_wechat
+        where user_id in
+        <foreach collection="array" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and user_type = 1
+    </delete>
+
+</mapper>
