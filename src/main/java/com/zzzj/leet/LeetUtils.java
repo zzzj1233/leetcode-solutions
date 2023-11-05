@@ -8,7 +8,10 @@ import com.zzzj.util.ExecutionCallback;
 import com.zzzj.util.InvokableExp;
 import com.zzzj.util.InvokeMethodSource;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -321,6 +324,12 @@ public class LeetUtils {
 
         for (int i = 0; i < split.length; i++) {
             String oneD = split[i].replaceAll("\\s*", "").replaceAll("\\[", "");
+
+            if (oneD.isEmpty()) {
+                result[i] = new int[0];
+                continue;
+            }
+
             String[] chars = oneD.split(",\\s*");
             // 去除双引号
             result[i] = new int[chars.length];
@@ -606,4 +615,16 @@ public class LeetUtils {
         }
         return builder.toString();
     }
+
+    public static InputStream checkSource(String source) {
+        InputStream inputStream;
+
+        if ("zzzj".equals(System.getenv("USERNAME")))
+            inputStream = new ByteArrayInputStream(source.getBytes(StandardCharsets.UTF_8));
+        else
+            inputStream = System.in;
+
+        return inputStream;
+    }
+
 }

@@ -1,30 +1,65 @@
 package com.zzzj.graph;
 
-import java.util.List;
+import com.zzzj.leet.LeetUtils;
+
+import java.util.*;
 
 public class Leet802 {
 
+    public static void main(String[] args) {
+
+        System.out.println(eventualSafeNodes(LeetUtils.convertInts("[[1,2],[2,3],[5],[0],[5],[],[]]")));
+
+    }
+
     public static List<Integer> eventualSafeNodes(int[][] graph) {
+
         int N = graph.length;
 
-        int[] outDegree = new int[N];
+        int[] inDegree = new int[N];
+
+        Map<Integer, Set<Integer>> G = new HashMap<>();
+
+        for (int i = 0; i < graph.length; i++) {
+
+            for (int adj : graph[i]) {
+
+                inDegree[i]++;
+
+                G.computeIfAbsent(adj, integer -> new HashSet<>())
+                        .add(i);
+            }
+
+        }
+
+        LinkedList<Integer> queue = new LinkedList<>();
 
         for (int i = 0; i < N; i++) {
-            for (int j = 0; j < graph[i].length; j++) {
-                outDegree[j]++;
-            }
+            if (inDegree[i] == 0)
+                queue.add(i);
         }
 
+        List<Integer> ans = new ArrayList<>();
 
-        boolean[] mark = new boolean[N];
+        while (!queue.isEmpty()) {
 
-        for (int i = N - 1; i >= 0; i--) {
-            if (outDegree[i] == 0) {
-                mark[i] = true;
+            Integer item = queue.remove();
+
+            ans.add(item);
+
+            Set<Integer> adjs = G.getOrDefault(item, Collections.emptySet());
+
+            for (Integer adj : adjs) {
+                inDegree[adj]--;
+                if (inDegree[adj] == 0)
+                    queue.add(adj);
             }
+
         }
 
-        return null;
+        Collections.sort(ans);
+
+        return ans;
     }
 
 }

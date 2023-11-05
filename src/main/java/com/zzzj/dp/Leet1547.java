@@ -12,77 +12,37 @@ public class Leet1547 {
 
     public static int minCost(int n, int[] cuts) {
 
-        int N = cuts.length;
+        int M = cuts.length;
 
-        Info[][] dp = new Info[N][N];
+        int[] arr = new int[M + 2];
 
-        for (int i = 0; i < N; i++) {
-            dp[0][i] = new Info(cuts[i], cuts[i], n);
-        }
+        arr[0] = 0;
 
-        // 第[i]刀的情况
-        // 依赖dp[i - 1]
-        for (int i = 1; i < N; i++) {
+        for (int i = 1; i <= M; i++)
+            arr[i] = cuts[i - 1];
 
-            // 第[j]个元素
-            for (int j = 0; j < N; j++) {
+        arr[M + 1] = n;
 
-                dp[i][j] = new Info();
-                dp[i][j].cost = Integer.MAX_VALUE;
-
-                int cut = cuts[j];
-
-                // 其他元素[k]
-                for (int k = 0; k < N; k++) {
-
-                    if (k == j) continue;
-
-                    Info prev = dp[i - 1][k];
-
-                    int curCost;
-                    // right做左边
-                    if (cut > prev.right) {
-                        curCost = n - prev.right;
-                    } else if (cut < prev.left) {
-                        curCost = prev.left;
-                    } else {
-                        curCost = prev.right - prev.left + 1;
-                    }
-
-                    if (curCost + prev.cost < dp[i][j].cost) {
-                        dp[i][j].left = Math.min(prev.left, cut);
-                        dp[i][j].right = Math.max(prev.right, cut);
-                        dp[i][j].cost = curCost + prev.cost;
-                    }
-
-                }
-
-            }
-
-        }
-
-        int ans = Integer.MAX_VALUE;
-
-        for (int i = 0; i < N; i++) {
-            ans = Math.min(ans, dp[N - 1][i].cost);
-        }
-
-        return ans;
+        return dfs(arr, 0, arr.length - 1);
     }
 
-    private static class Info {
-        int left;
-        int right;
-        int cost;
+    public static int dfs(int[] arr, int left, int right) {
 
-        public Info(int left, int right, int cost) {
-            this.left = left;
-            this.right = right;
-            this.cost = cost;
+        if (left >= right)
+            return 0;
+
+        int cost = arr[right] - arr[left];
+
+        int min = Integer.MAX_VALUE;
+
+        for (int i = left; i < right; i++) {
+            min = Math.min(
+                    min,
+                    dfs(arr, left, i) + dfs(arr, i + 1, right)
+            );
         }
 
-        public Info() {
-        }
+        return min + cost;
     }
 
 }

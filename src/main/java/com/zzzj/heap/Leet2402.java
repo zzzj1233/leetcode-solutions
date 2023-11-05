@@ -1,9 +1,9 @@
 package com.zzzj.heap;
 
+import cn.hutool.core.lang.Pair;
 import com.zzzj.leet.LeetUtils;
 import com.zzzj.util.ArrayUtil;
 import com.zzzj.util.CopyableIterator;
-import javafx.util.Pair;
 
 import java.util.*;
 

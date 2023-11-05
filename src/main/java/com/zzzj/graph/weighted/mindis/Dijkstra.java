@@ -21,8 +21,6 @@ public class Dijkstra {
 
     private final boolean[] visited;
 
-    private final List<Integer>[] paths;
-
     public Dijkstra(WeightedGraph graph, int source) {
 
         this.graph = graph;
@@ -34,106 +32,47 @@ public class Dijkstra {
         this.visited = new boolean[graph.getN()];
 
         Arrays.fill(distance, Integer.MAX_VALUE);
-
-        // source -> source , distance = 0
-        this.distance[source] = 0;
-        this.visited[source] = true;
-
-        this.initMinDistance();
-
-        // 每个节点到每个节点的最短路径
-        paths = new List[graph.getN()];
-
-        this.initShortestPath();
     }
 
     public void initMinDistance() {
 
-        // 1. 从source节点可以达到的所有节点,最短的距离就可以确定是到这个节点的最短距离
+        distance[source] = 0;
+
         int cur = source;
-        while (true) {
-            int curDistance = Integer.MAX_VALUE;
-            int curNeighbor = -1;
 
-            for (Map.Entry<Integer, Integer> adj : graph.adj(cur)) {
-                Integer neighbor = adj.getKey();
-                Integer distance = adj.getValue();
-                if (!visited[neighbor] && distance < curDistance) {
-                    curDistance = distance;
-                    // 找到所有可达节点,距离最短的节点
-                    curNeighbor = neighbor;
-                }
-            }
+        while (cur != -1) {
+            int min = Integer.MAX_VALUE;
+            int minNeigh = -1;
+            visited[cur] = true;
 
-            // 跑完了
-            if (curNeighbor == -1) {
-                break;
-            }
+            for (Map.Entry<Integer, Integer> neigh : graph.adj(cur)) {
 
-            visited[curNeighbor] = true;
-            distance[curNeighbor] = curDistance + distance[cur];
-            cur = curNeighbor;
-        }
-    }
+                int neighNode = neigh.getKey();
 
-    public void initShortestPath() {
+                int cost = neigh.getValue();
 
-        for (int i = 0; i < graph.getN(); i++) {
+                if (visited[neighNode])
+                    continue;
 
-            // 终点就是source
-            if (i == source) {
-                paths[i] = Collections.emptyList();
-                continue;
-            }
+                distance[neighNode] = Math.min(
+                        distance[neighNode],
+                        distance[cur] + cost
+                );
 
-            LinkedList<Integer> path = new LinkedList<>();
-
-            paths[i] = path;
-
-            int cur = source;
-
-            boolean[] visited = new boolean[graph.getN()];
-
-            while (true) {
-                int curDistance = Integer.MAX_VALUE;
-                int curNeighbor = -1;
-
-                for (Map.Entry<Integer, Integer> adj : graph.adj(cur)) {
-                    Integer neighbor = adj.getKey();
-                    Integer distance = adj.getValue();
-                    if (!visited[neighbor] && distance < curDistance) {
-                        curDistance = distance;
-                        // 找到所有可达节点,距离最短的节点
-                        curNeighbor = neighbor;
-                    }
+                if (distance[neighNode] < min) {
+                    min = distance[neighNode];
+                    minNeigh = neighNode;
                 }
 
-                path.add(cur);
-                visited[curNeighbor] = true;
-
-                // 找到终点了
-                if (curNeighbor == i) {
-                    break;
-                }
-
-                cur = curNeighbor;
             }
 
-            path.add(i);
+            cur = minNeigh;
         }
 
     }
 
     public int[] getDistance() {
         return distance;
-    }
-
-
-    /**
-     * 到target的最短路径
-     */
-    public List<Integer> shortestPath(int target) {
-        return new ArrayList<>(paths[target]);
     }
 
     public int shortestDistance(int target) {
@@ -155,15 +94,18 @@ public class Dijkstra {
 
         Dijkstra dijkstra = new Dijkstra(graph, 0);
 
+        dijkstra.initMinDistance();
+
         System.out.println(Arrays.toString(dijkstra.getDistance()));
 
-        System.out.println(dijkstra.shortestPath(1));
-        System.out.println(dijkstra.shortestPath(4));
-        System.out.println(dijkstra.shortestPath(3));
-
+        // 3
         System.out.println(dijkstra.shortestDistance(1));
-        System.out.println(dijkstra.shortestDistance(4));
+        // 2
+        System.out.println(dijkstra.shortestDistance(2));
+        // 5
         System.out.println(dijkstra.shortestDistance(3));
+        // 6
+        System.out.println(dijkstra.shortestDistance(4));
     }
 
 }
