@@ -9,38 +9,17 @@ import java.util.Map;
  */
 public class Leet1553 {
 
-    public static void main(String[] args) {
+    Map<Integer, Integer> memo = new HashMap<Integer, Integer>();
 
-        System.out.println(minDays(10));
-
-//        System.out.println(minDays(2000000000));
-    }
-
-    public static int minDays(int n) {
-        return minDays(n, new HashMap<>());
-    }
-
-    public static int minDays(int n, Map<Integer, Integer> memo) {
-        if (n <= 0)
-            return 0;
-
-        if (n <= 2)
+    public int minDays(int n) {
+        if (n <= 1) {
             return n;
-
-        if (memo.containsKey(n))
+        }
+        if (memo.containsKey(n)) {
             return memo.get(n);
-
-        int mod = n % 2;
-
-        int case1 = minDays(n / 2) + (mod + 1);
-
-        mod = n % 3;
-
-        int case2 = minDays(n / 3) + (mod + 1);
-
-        int res = Math.min(case1, case2);
-        memo.put(n - mod, res);
-        return res;
+        }
+        memo.put(n, Math.min(n % 2 + 1 + minDays(n / 2), n % 3 + 1 + minDays(n / 3)));
+        return memo.get(n);
     }
 
 }
