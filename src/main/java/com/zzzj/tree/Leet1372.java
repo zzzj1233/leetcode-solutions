@@ -7,48 +7,38 @@ package com.zzzj.tree;
 public class Leet1372 {
 
     public static void main(String[] args) {
+//        System.out.println(longestZigZag(TreeNode.buildTree("[1,null,1,1,1,null,null,1,1,null,1,null,null,null,1,null,1]")));
+
         System.out.println(longestZigZag(TreeNode.buildTree("[1,1,1,null,1,null,null,1,1,null,1]")));
     }
 
+    static int ans;
 
     public static int longestZigZag(TreeNode root) {
-        int[] dfs = dfs(root);
 
-        return Math.max(dfs[0], Math.max(dfs[1], dfs[2])) - 1;
+        ans = 0;
+
+        dfs(root);
+
+        return ans;
     }
 
-    public static int[] dfs(TreeNode root) {
-        if (root.left == null && root.right == null) {
-            return new int[]{1, 1, 1};
-        }
+    private static int[] dfs(TreeNode root) {
 
-        if (root.left != null && root.right != null) {
-            int[] left = dfs(root.left);
-            int[] right = dfs(root.right);
+        if (root == null)
+            return new int[]{0, 0};
 
-            int[] result = new int[3];
+        int[] lv = dfs(root.left);
+        int[] rv = dfs(root.right);
 
-            result[0] = left[1] + 1;
-            result[1] = right[0] + 1;
-            result[2] = Math.max(left[2], Math.max(result[0], Math.max(result[1], right[2])));
-            return result;
-        } else if (root.left != null) {
-            int[] left = dfs(root.left);
-            int[] result = new int[3];
-            result[0] = left[1] + 1;
-            result[1] = 1;
-            result[2] = Math.max(result[0], left[2]);
-            return result;
-        } else {
-            int[] right = dfs(root.right);
-            int[] result = new int[3];
-            result[0] = 1;
-            result[1] = right[0] + 1;
-            result[2] = Math.max(result[1], right[2]);
-            return result;
-        }
+        int[] res = new int[2];
 
+        res[0] = lv[0] + 1;
+        res[1] = rv[1] + 1;
+
+        ans = Math.max(ans, Math.max(res[0], res[1]));
+
+        return res;
     }
-
 
 }

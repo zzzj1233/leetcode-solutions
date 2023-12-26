@@ -70,8 +70,7 @@ public class GuaHao {
         Map<String, Integer> record = new HashMap<>(16);
 
         List<LocalDate> expectDays = Arrays.asList(
-                LocalDate.of(2023, 10, 14),
-                LocalDate.of(2023, 10, 15)
+                LocalDate.of(2023, 12, 2)
         );
 
         // schedule_id
@@ -113,7 +112,7 @@ public class GuaHao {
 
                             LocalDate reserveDate = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
 
-                            if (expectDays.contains(reserveDate)){
+                            if (expectDays.contains(reserveDate)) {
                                 if (!notifyRecord.contains(date + timeType)) {
                                     try {
                                         notice(date, timeType);
@@ -151,7 +150,7 @@ public class GuaHao {
 
         log(String.format("Got : %s --- %s ", date, timeType));
 
-        if (desktop.isSupported(Desktop.Action.OPEN)) {
+        if (mp3File.exists() && desktop.isSupported(Desktop.Action.OPEN)) {
             desktop.open(mp3File);
             return;
         }
@@ -180,8 +179,7 @@ public class GuaHao {
     public static void main(String[] args) throws IOException, AWTException {
 
         List<String> urls = Arrays.asList(
-                "https://wechatgate.91160.com/guahao/v1-1/sch/union/doctor?city_id=5&cid=16&sc_distinct_id=258327649&trace_id=172148ce-9825-4e76-8b03-7afa22f82bad-1697118359853&user_key=1c8f53efd3ba6eca5b259ee808aee246zenkZrmP20231111214523&account_user_id=50001895&dep_id=200130766&doctor_id=382&all_point=1&page=1&select_date=&user_id=258327649&user_key=1c8f53efd3ba6eca5b259ee808aee246zenkZrmP20231111214523&unit_id=22",
-                "https://wechatgate.91160.com/guahao/v1-1/sch/union/doctor?city_id=5&cid=16&sc_distinct_id=258327649&trace_id=2f9694c5-2077-41b4-90b5-2f74a9e8422d-1697118577009&user_key=1c8f53efd3ba6eca5b259ee808aee246zenkZrmP20231111214523&account_user_id=400736&dep_id=200076738&doctor_id=20073&all_point=1&page=1&select_date=2023-10-14&user_id=258327649&user_key=1c8f53efd3ba6eca5b259ee808aee246zenkZrmP20231111214523&unit_id=100"
+                "https://wechatgate.91160.com/guahao/v1-1/sch/union/doctor?city_id=5&cid=23&sc_distinct_id=258327649&trace_id=bf084dc7-4fad-4113-96a6-2b8820232750-1701157382723&user_key=756080f634215a54fd8f9d264dba983dhPFoJlRW20231228154122&account_user_id=50045362&dep_id=372&doctor_id=16698&all_point=1&page=1&select_date=&user_id=258327649&user_key=756080f634215a54fd8f9d264dba983dhPFoJlRW20231228154122&unit_id=131"
         );
 
         ScheduledExecutorService pool = Executors.newScheduledThreadPool(3);

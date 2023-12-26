@@ -24,39 +24,31 @@ public class Leet1289 {
 
     public static int minFallingPathSum(int[][] grid) {
 
-        int M = grid.length;
+        int N = grid.length;
 
-        if (M == 1)
-            return Arrays.stream(grid[0]).min().orElse(0);
+        int M = grid[0].length;
 
-        int N = grid[0].length;
+        int[][] f = new int[2][M];
 
-        int[] preRow = new int[N];
-        int[] curRow = new int[N];
+        for (int i = 1; i <= N; i++) {
 
-        Arrays.fill(curRow, Integer.MAX_VALUE);
+            int[] cur = f[i % 2];
 
-        for (int i = 1; i <= M; i++) {
+            int[] prev = f[(i - 1) % 2];
 
-            int[] row = grid[i - 1];
+            cur[0] = (1 >= M ? 0 : prev[1]) + grid[i - 1][0];
 
-            for (int j = 0; j < N; j++) {
-
-                for (int k = 0; k < N; k++) {
-                    if (j == k)
-                        continue;
-                    curRow[k] = Math.min(curRow[k], preRow[j] + row[k]);
-                }
-
+            for (int j = 1; j < M - 1; j++) {
+                cur[j] = Math.min(
+                        prev[j - 1],
+                        prev[j + 1]
+                ) + grid[i - 1][j];
             }
 
-            int[] temp = curRow;
-            curRow = preRow;
-            preRow = temp;
-            Arrays.fill(curRow, Integer.MAX_VALUE);
+            cur[M - 1] = (M - 2 < 0 ? 0 : prev[M - 2]) + grid[i - 1][M - 1];
         }
 
-        return Arrays.stream(preRow).min().orElse(0);
+        return Arrays.stream(f[N % 2]).min().orElse(0);
     }
 
 }

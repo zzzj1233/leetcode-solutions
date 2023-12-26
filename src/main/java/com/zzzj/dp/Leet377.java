@@ -15,45 +15,21 @@ public class Leet377 {
     }
 
     public static int combinationSum4(int[] nums, int target) {
+
         int N = nums.length;
 
-        int[] dp = new int[target + 1];
+        int[] f = new int[target + 1];
 
-        dp[target] = 1;
+        f[0] = 1;
 
-        for (int i = target - 1; i >= 0; i--) {
-
-            for (int j = 0; j < N; j++) {
-                int num = nums[j];
-
-                if (i + num <= target) {
-                    dp[i] += dp[i + num];
-                }
+        for (int v = 0; v <= target; v++) {
+            for (int i = 0; i < N; i++) {
+                if (nums[i] <= v)
+                    f[v] += f[v - nums[i]];
             }
-
         }
 
-        return dp[0];
+        return f[target];
     }
 
-    public static int dfs(int[] nums, int target, int sum) {
-        if (sum == target) {
-            return 1;
-        }
-
-        if (sum > target) {
-            return 0;
-        }
-
-        int result = 0;
-
-        for (int i = 0; i < nums.length; i++) {
-
-            int num = nums[i];
-
-            result += dfs(nums, target, sum + num);
-        }
-
-        return result;
-    }
 }

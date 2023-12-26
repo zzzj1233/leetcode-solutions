@@ -1,48 +1,55 @@
 package com.zzzj.dp;
 
+import java.util.Arrays;
+
 public class Leet1547 {
 
     public static void main(String[] args) {
 
         System.out.println(minCost(7, new int[]{1, 3, 4, 5}));
 
-//        System.out.println(minCost(9, new int[]{5, 6, 1, 4, 2}));
+        System.out.println(minCost(9, new int[]{5, 6, 1, 4, 2}));
 
     }
 
     public static int minCost(int n, int[] cuts) {
 
-        int M = cuts.length;
+        int N = cuts.length;
 
-        int[] arr = new int[M + 2];
+        Arrays.sort(cuts);
 
-        arr[0] = 0;
+        int[] w = new int[N + 2];
 
-        for (int i = 1; i <= M; i++)
-            arr[i] = cuts[i - 1];
+        for (int i = 1; i <= N; i++)
+            w[i] = cuts[i - 1];
 
-        arr[M + 1] = n;
+        w[N + 1] = n;
 
-        return dfs(arr, 0, arr.length - 1);
-    }
+        N = w.length;
 
-    public static int dfs(int[] arr, int left, int right) {
+        int[][] f = new int[N][N];
 
-        if (left >= right)
-            return 0;
+        for (int len = 2; len < N; len++) {
 
-        int cost = arr[right] - arr[left];
+            for (int left = 0; left + len < N; left++) {
 
-        int min = Integer.MAX_VALUE;
+                int right = left + len;
 
-        for (int i = left; i < right; i++) {
-            min = Math.min(
-                    min,
-                    dfs(arr, left, i) + dfs(arr, i + 1, right)
-            );
+                f[left][right] = Integer.MAX_VALUE / 2;
+
+                for (int k = left + 1; k < right; k++) {
+                    f[left][right] = Math.min(
+                            f[left][right],
+                            f[left][k] + f[k][right] + (w[right] - w[left])
+                    );
+                }
+
+            }
+
         }
 
-        return min + cost;
+        return f[0][N - 1];
     }
+
 
 }

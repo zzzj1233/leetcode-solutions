@@ -1,5 +1,7 @@
 package com.zzzj.graph;
 
+import com.zzzj.leet.LeetUtils;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,41 +13,62 @@ import java.util.Set;
  */
 public class Leet2477 {
 
-    static long ans;
+    public static void main(String[] args) {
+
+        System.out.println(minimumFuelCost(LeetUtils.convertInts("[[0,1],[1,2],[1,3]]"), 2));
+
+        System.out.println(minimumFuelCost(LeetUtils.convertInts("[[3,1],[3,2],[1,0],[0,4],[0,5],[4,6]]"), 2));
+
+        System.out.println(minimumFuelCost(LeetUtils.convertInts("[[0,1],[0,2],[0,3]]"), 5));
+
+    }
 
     public static long minimumFuelCost(int[][] roads, int seats) {
 
-        if (roads.length == 0) return 0;
-
-        ans = 0;
+        if (roads.length == 0)
+            return 0;
 
         Map<Integer, Set<Integer>> graph = new HashMap<>();
 
         for (int[] road : roads) {
             graph.computeIfAbsent(road[0], integer -> new HashSet<>()).add(road[1]);
+            graph.computeIfAbsent(road[1], integer -> new HashSet<>()).add(road[0]);
         }
 
-        Set<Integer> adj = graph.get(0);
-
-        if (adj == null) return 0;
-
-
-        return -1;
+        return dfs(0, -1, seats, graph)[0];
     }
 
-    public static int dfs(Map<Integer, Set<Integer>> graph, int seats, int cur) {
+    private static long[] dfs(
+            int node,
+            int parent,
+            int seats,
+            Map<Integer, Set<Integer>> graph
+    ) {
 
-        Set<Integer> adj = graph.get(cur);
+        Set<Integer> adj = graph.get(node);
 
-        if (adj == null) return 1;
+        // 根节点
+        long[] w = new long[2];
 
-        int subTreeSize = 0;
+        for (Integer neigh : adj) {
 
-        for (Integer it : adj) {
-            subTreeSize += dfs(graph, seats, it);
+            if (neigh == parent)
+                continue;
+
+            long[] v = dfs(neigh, node, seats, graph);
+
+            w[0] += v[0];
+            w[1] += v[1];
         }
 
-        return -1;
+        w[1] += 1;
+
+        if (node != 0) {
+            w[0] += w[1] % seats == 0 ? w[1] / seats : (w[1] / seats + 1);
+        }
+
+        return w;
     }
+
 
 }

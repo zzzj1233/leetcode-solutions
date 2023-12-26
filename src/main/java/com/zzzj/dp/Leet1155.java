@@ -10,60 +10,35 @@ public class Leet1155 {
         System.out.println(numRollsToTarget(1, 6, 3));
         System.out.println(numRollsToTarget(2, 6, 7));
         System.out.println(numRollsToTarget(3, 8, 21));
-        System.out.println(numRollsToTarget(30, 30, 500));
+        System.out.println(numRollsToTarget(30, 30, 200));
     }
 
     public static int numRollsToTarget(int n, int k, int target) {
-        // return dfs(n, k, target, 0, n);
-        return dp(n, k, target);
-    }
 
-    public static int dp(int n, int k, int target) {
-        if (n > target) {
-            return 0;
-        }
+        long[][] f = new long[2][target + 1];
 
-        int[][] dp = new int[n + 1][target + 1];
+        f[0][0] = 1;
 
-        for (int i = 0; i <= n; i++) {
-            dp[i][target] = 1;
-        }
+        final int MOD = 1000000007;
 
-        for (int i = n - 1; i >= 0; i--) {
+        for (int i = 1; i <= n; i++) {
 
-            for (int j = target - 1; j >= 0; j--) {
+            for (int v = target; v >= 0; v--) {
 
-                for (int p = k - 1; p >= 0; p--) {
-                    if (j + p > target) {
-                        continue;
-                    }
-                    dp[i][j] += j + p == target ? 1 : dp[i + 1][j + p] % 1000000007;
-                    dp[i][j] %= 1000000007;
+                f[i & 1][v] = 0;
+
+                for (int x = k; x > 0; x--) {
+
+                    if (v - x >= 0)
+                        f[i & 1][v] = (f[i & 1][v] + f[(i - 1) & 1][v - x]) % MOD;
+
                 }
 
             }
+
         }
 
-        return dp[0][n];
-    }
-
-    public static int dfs(int n, int k, int target, int i, int sum) {
-        if (sum > target) {
-            return 0;
-        }
-        if (sum == target) {
-            return 1;
-        }
-        if (i >= n) {
-            return 0;
-        }
-        int result = 0;
-
-        for (int j = 0; j < k; j++) {
-            result += dfs(n, k, target, i + 1, sum + j) % 1000000007;
-        }
-
-        return result;
+        return (int) (f[n & 1][target] % MOD);
     }
 
 }

@@ -1,8 +1,7 @@
 package com.zzzj.dp;
 
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author zzzj
@@ -10,29 +9,51 @@ import java.util.Set;
  */
 public class Leet139 {
 
-    static HashSet<char[]>[] table;
+    public static void main(String[] args) {
 
-    public static boolean contains(char[] chars, int i, int j) {
-        HashSet<char[]> set = table[j - i + 1];
-        if (set == null) {
-            return false;
-        }
-        return false;
+        System.out.println(wordBreak("aaaaaaa", Arrays.asList("aaaa", "aaa")));
+
+        System.out.println(wordBreak("applepie", Arrays.asList("pie", "pear", "apple", "peach")));
+
+        System.out.println(wordBreak("bb", Arrays.asList("a", "b", "bbb", "bbbb")));
+
+        System.out.println(wordBreak("leetcode", Arrays.asList("leet", "code")));
+
+        System.out.println(wordBreak("applepenapple", Arrays.asList("apple", "pen")));
+
+        System.out.println(wordBreak("catsandog", Arrays.asList("cats", "dog", "sand", "and", "cat")));
+
     }
 
     public static boolean wordBreak(String s, List<String> wordDict) {
-        table = new HashSet[26];
 
-        for (String word : wordDict) {
-            Set<char[]> set = null;
-            if ((set = table[word.length()]) == null) {
-                table[word.length()] = new HashSet<>();
-                set = table[word.length()];
+        int N = s.length();
+
+        boolean[] f = new boolean[N + 1];
+
+        f[0] = true;
+
+        for (int i = 1; i <= N; i++) {
+
+            OUTER:
+            for (String w : wordDict) {
+
+                int M = w.length();
+
+                if (i - M < 0)
+                    continue;
+
+                for (int j = M - 1, k = 1; j >= 0; j--, k++) {
+                    if (w.charAt(j) != s.charAt(i - k))
+                        continue OUTER;
+                }
+
+                f[i] |= f[i - M];
             }
-            set.add(word.toCharArray());
+
         }
 
-        return false;
+        return f[N];
     }
 
 }
