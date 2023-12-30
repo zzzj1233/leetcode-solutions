@@ -9,10 +9,7 @@ import com.zzzj.util.ExecutionCallback;
 import com.zzzj.util.InvokableExp;
 import com.zzzj.util.InvokeMethodSource;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
@@ -630,17 +627,6 @@ public class LeetUtils {
             builder.append("\n");
         }
         return builder.toString();
-    }
-
-    public static InputStream checkSource(String source) {
-        InputStream inputStream;
-
-        if ("zzzj".equals(System.getenv("USERNAME")))
-            inputStream = new ByteArrayInputStream(source.getBytes(StandardCharsets.UTF_8));
-        else
-            inputStream = System.in;
-
-        return inputStream;
     }
 
 }

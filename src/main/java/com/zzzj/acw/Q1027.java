@@ -1,23 +1,12 @@
 package com.zzzj.acw;
 
-import com.zzzj.leet.LeetUtils;
-
 import java.util.Scanner;
 
 public class Q1027 {
 
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(LeetUtils.checkSource("7\n" +
-                "1 3 2\n" +
-                "1 4 3\n" +
-                "2 3 3\n" +
-                "3 3 3\n" +
-                "5 5 4\n" +
-                "6 5 4\n" +
-                "7 3 2\n" +
-                "7 5 4\n" +
-                "0 0 0"));
+        Scanner scanner = new Scanner(System.in);
 
         int n = scanner.nextInt();
 

@@ -1,6 +1,5 @@
 package com.zzzj.tree;
 
-import com.zzzj.leet.LeetUtils;
 import com.zzzj.leet.TreeNode;
 
 /**
@@ -10,34 +9,33 @@ import com.zzzj.leet.TreeNode;
 public class Leet543 {
 
     public static void main(String[] args) {
-        String tree = LeetUtils.randomTreeStr(10);
+
         System.out.println(diameterOfBinaryTree(TreeNode.buildTree("[1,2,3,4,5]")));
+
     }
 
-    private static class Info {
-        public int maxDs;
-        public int height;
-    }
 
-    private static Info dfs(TreeNode root) {
-        if (root == null) {
-            return new Info();
-        }
-
-        Info leftInfo = dfs(root.left);
-        Info rightInfo = dfs(root.right);
-
-        Info info = new Info();
-
-        info.height = Math.max(leftInfo.height, rightInfo.height) + 1;
-        info.maxDs = Math.max(leftInfo.maxDs, Math.max(rightInfo.maxDs, leftInfo.height + rightInfo.height));
-        return info;
-    }
+    static int ans;
 
     public static int diameterOfBinaryTree(TreeNode root) {
-        Info info = dfs(root);
-        return info.maxDs;
+
+        ans = Integer.MIN_VALUE;
+
+        dfs(root);
+
+        return ans;
     }
 
+    private static int dfs(TreeNode root) {
+        if (root == null)
+            return 0;
+        int lv = dfs(root.left);
+        int rv = dfs(root.right);
+        ans = Math.max(ans, lv + rv);
+        return Math.max(
+                lv + 1,
+                rv + 1
+        );
+    }
 
 }

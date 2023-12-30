@@ -1,4 +1,4 @@
-package com.zzzj.contest.week239;
+package com.zzzj.contest.dweek115.week239;
 
 /**
  * @author zzzj

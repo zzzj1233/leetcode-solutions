@@ -1,7 +1,5 @@
 package com.zzzj.acw;
 
-import com.zzzj.leet.LeetUtils;
-
 import java.util.Scanner;
 
 public class Q423 {
@@ -9,10 +7,7 @@ public class Q423 {
 
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(LeetUtils.checkSource("70 3\n" +
-                "71 100\n" +
-                "69 1\n" +
-                "1 2"));
+        Scanner scanner = new Scanner(System.in);
 
         int T = scanner.nextInt();
 

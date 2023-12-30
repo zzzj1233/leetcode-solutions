@@ -1,13 +1,11 @@
 package com.zzzj.tree;
 
 import com.zzzj.leet.TreeNode;
-import com.zzzj.util.Unresolved;
 
 /**
  * @author zzzj
  * @create 2021-11-11 14:34
  */
-@Unresolved
 public class Leet124 {
 
     public static void main(String[] args) {
@@ -15,15 +13,43 @@ public class Leet124 {
     }
 
 
+    static int ans;
+
     public static int maxPathSum(TreeNode root) {
-        if (root == null) {
-            return 0;
-        }
-        return -1;
+
+        ans = Integer.MIN_VALUE;
+
+        dfs(root);
+
+        return ans;
     }
 
-    private static void dfs(TreeNode root) {
+    private static int dfs(TreeNode node) {
+        if (node == null)
+            return 0;
 
+        int lv = dfs(node.left);
+
+        int rv = dfs(node.right);
+
+        ans = Math.max(
+                ans,
+                Math.max(
+                        Math.max(
+                                node.val + lv,
+                                node.val + rv
+                        ),
+                        node.val + lv + rv
+                )
+        );
+
+        return Math.max(
+                0,
+                Math.max(
+                        node.val,
+                        Math.max(node.val + lv, node.val + rv)
+                )
+        );
     }
 
 }
