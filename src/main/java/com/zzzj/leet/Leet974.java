@@ -2,9 +2,16 @@ package com.zzzj.leet;
 
 import com.zzzj.util.ArrayUtil;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Leet974 {
 
     public static void main(String[] args) {
+
+        System.out.println(subarraysDivByK(new int[]{7, 4, -10}, 5));
+
+//        System.exit(0);
 
         for (int i = 0; i < 10000; i++) {
             int[] arr = ArrayUtil.generateArray(100, 10, 200);
@@ -20,24 +27,24 @@ public class Leet974 {
     }
 
     public static int subarraysDivByK(int[] nums, int k) {
+
         int N = nums.length;
 
-        int[] counter = new int[5];
+        int mod = 0;
 
-        counter[0] = 1;
+        Map<Integer, Integer> rec = new HashMap<>();
 
-        int sum = 0;
+        rec.put(0, 1);
 
         int ans = 0;
 
-        for (int i = 0; i < nums.length; i++) {
-            int num = nums[i];
+        for (int i = 0; i < N; i++) {
 
-            sum += num;
+            mod = (((mod + nums[i]) % k) + k) % k;
 
-            ans += counter[sum % 5];
+            ans += rec.getOrDefault(mod, 0);
 
-            counter[sum % 5]++;
+            rec.put(mod, rec.getOrDefault(mod, 0) + 1);
         }
 
         return ans;

@@ -14,7 +14,7 @@ public class Leet525 {
 //        System.out.println(findMaxLength(new int[]{1, 0, 0, 1, 1, 1, 0, 1, 0, 1}));
 //        System.exit(0);
         for (int i = 0; i < 10000; i++) {
-            int[] ints = LeetUtils.randomBinaryArr(10);
+            int[] ints = LeetUtils.randomBinaryArr(100);
             if (findMaxLength(ints) != right(ints)) {
                 System.out.println(Arrays.toString(ints));
                 System.out.println("Error");
@@ -24,25 +24,28 @@ public class Leet525 {
     }
 
     public static int findMaxLength(int[] nums) {
+
         int N = nums.length;
-        int[] preSum = new int[N + 1];
 
-        Map<Integer, Integer> map = new HashMap<>();
+        Map<Integer, Integer> rec = new HashMap<>();
 
-        for (int i = 1; i <= N; i++) {
-            preSum[i] = (nums[i - 1] == 0 ? -1 : 1) + preSum[i - 1];
-            map.put(preSum[i], i);
-        }
+        rec.put(0, 0);
+
+        int val = 0;
 
         int ans = 0;
 
-        for (int i = 0; i <= nums.length; i++) {
-            ans = Math.max(map.getOrDefault(preSum[i], -1) - i, ans);
+        for (int i = 1; i <= N; i++) {
+
+            val += nums[i - 1] == 0 ? -1 : 1;
+
+            ans = Math.max(ans, i - rec.getOrDefault(val, i));
+
+            rec.putIfAbsent(val, i);
         }
 
         return ans;
     }
-
 
     public static int right(int[] nums) {
         int maxLength = 0;

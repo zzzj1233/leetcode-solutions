@@ -2,9 +2,7 @@ package com.zzzj.greedy;
 
 import com.zzzj.leet.LeetUtils;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * @author zzzj
@@ -15,13 +13,58 @@ public class Leet2940 {
     public static void main(String[] args) {
 
         System.out.println(Arrays.toString(leftmostBuildingQueries(
-                new int[]{6, 4, 8, 5, 2, 7},
-                LeetUtils.convertInts("[[0,1],[0,3],[2,4],[3,4],[2,2]]")
+                new int[]{5, 3, 8, 2, 6, 1, 4, 6},
+                LeetUtils.convertInts("[[0,7],[3,5],[5,2],[3,0],[1,6]]")
         )));
 
     }
 
+    public static int[] minHeap(int[] heights, int[][] queries) {
 
+        int N = heights.length;
+
+        int M = queries.length;
+
+        int[] ans = new int[M];
+
+        Arrays.fill(ans, -1);
+
+        Map<Integer, List<Integer>> f = new HashMap<>();
+
+        for (int i = 0; i < M; i++) {
+
+            int left = Math.min(queries[i][0], queries[i][1]);
+
+            int right = Math.max(queries[i][0], queries[i][1]);
+
+            if (heights[right] > heights[left] || left == right)
+                ans[i] = right;
+            else
+                f.computeIfAbsent(right, integer -> new ArrayList<>()).add(i);
+        }
+
+        PriorityQueue<Integer> queue = new PriorityQueue<>(N, Comparator.comparingInt(o -> Math.max(
+                heights[queries[o][0]],
+                heights[queries[o][1]]
+        )));
+
+        for (int i = 0; i < N; i++) {
+
+            while (!queue.isEmpty() && Math.max(
+                    heights[queries[queue.peek()][0]],
+                    heights[queries[queue.peek()][1]]
+            ) < heights[i])
+                ans[queue.remove()] = i;
+
+            if (f.containsKey(i))
+                queue.addAll(f.get(i));
+
+        }
+
+        return ans;
+    }
+
+    // 线段树 + 二分
     public static int[] leftmostBuildingQueries(int[] heights, int[][] queries) {
 
         int N = heights.length;
@@ -30,33 +73,26 @@ public class Leet2940 {
 
         int[] ans = new int[M];
 
-        Integer[] indexes = new Integer[M];
-
-        for (int i = 0; i < M; i++)
-            indexes[i] = i;
-
-        Arrays.sort(indexes, Comparator.comparingInt(index -> Math.max(queries[index][0], queries[index][1])));
-
-        PriorityQueue<Integer> queue = new PriorityQueue<>(N, Comparator.comparingInt(o -> o));
-
-        for (int i = 0; i < N; i++)
-            queue.add(i);
-
-        for (int i = 0; i < M; i++) {
-
-            int[] query = queries[indexes[i]];
-
-            int maxIndex = Math.max(query[0], query[1]);
-
-            int value = Math.max(heights[query[0]], heights[query[1]]);
-
-            while (!queue.isEmpty() && (queue.peek() < maxIndex || heights[queue.peek()] <= value))
-                queue.remove();
-
-            ans[indexes[i]] = queue.isEmpty() ? -1 : queue.peek();
-        }
-
         return ans;
     }
+
+    private static class SegmentTree {
+
+        private final int N;
+
+        private final int[] tree;
+
+        public SegmentTree(int[] data) {
+            this.N = data.length + 1;
+            this.tree = new int[this.N << 2];
+            // buildTree(1,N,);
+        }
+
+        public void buildTree(int l, int r, int rt, int[] data) {
+
+        }
+
+    }
+
 
 }

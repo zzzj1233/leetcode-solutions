@@ -14,18 +14,24 @@ public class Leet560 {
     }
 
     public static int subarraySum(int[] nums, int k) {
+
+        Map<Integer, Integer> rec = new HashMap<>();
+
+        rec.put(0, 1);
+
         int sum = 0;
 
-        Map<Integer, Integer> map = new HashMap<>();
-
-        map.put(0, 1);
+        int N = nums.length;
 
         int ans = 0;
 
-        for (int i = 0; i < nums.length; i++) {
+        for (int i = 0; i < N; i++) {
+
             sum += nums[i];
-            ans += map.getOrDefault(sum - k, 0);
-            map.put(sum, map.getOrDefault(sum, 0) + 1);
+
+            ans += rec.getOrDefault(sum - k, 0);
+
+            rec.put(sum, rec.getOrDefault(sum, 0) + 1);
         }
 
         return ans;

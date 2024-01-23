@@ -13,55 +13,84 @@ public class Leet847 {
 
     public static void main(String[] args) {
 
+//        System.out.println(shortestPathLength(LeetUtils.convertInts("[[1],[0]]")));
+
 //        System.out.println(shortestPathLength(LeetUtils.convertInts("[[1,2,3],[0],[0],[0]]")));
-//
+
 //        System.out.println(shortestPathLength(LeetUtils.convertInts("[[1],[0,2,4],[1,3,4],[2],[1,2]]")));
 
-        System.out.println(shortestPathLength(LeetUtils.convertInts("[[1],[0,2,4],[1,3],[2],[1,5],[4]]")));
+//        System.out.println(shortestPathLength(LeetUtils.convertInts("[[1],[0,2,4],[1,3],[2],[1,5],[4]]")));
+
+        System.out.println(shortestPathLength(LeetUtils.convertInts("[[2,3],[7],[0,6],[0,4,7],[3,8],[7],[2],[5,3,1],[4]]")));
 
     }
 
     public static int shortestPathLength(int[][] graph) {
 
-        if (Arrays.stream(graph)
-                .allMatch(arr -> arr.length == 0)) return 0;
-
         int N = graph.length;
+
+        if (Arrays.stream(graph).allMatch(arr -> arr.length == 0)) {
+            return 0;
+        }
+
+        int[] g = new int[N];
+
+        for (int i = 0; i < N; i++)
+            for (int adj : graph[i]) {
+                g[i] |= 1 << adj;
+                g[adj] |= 1 << i;
+            }
+
+        int ans = Integer.MAX_VALUE;
+
+        for (int i = 0; i < N; i++)
+            ans = Math.min(ans, bfs(N, i, g));
+
+        return ans;
+    }
+
+    public static int bfs(int N, int start, int[] g) {
 
         boolean[][] visited = new boolean[N][1 << N];
 
         LinkedList<int[]> queue = new LinkedList<>();
 
-        for (int i = 0; i < N; i++) queue.add(new int[]{i, 0, 0});
+        queue.add(new int[]{start, 0, 1 << start});
 
-        final int expect = (1 << N) - 1;
+        int ans = Integer.MAX_VALUE;
+
+        int expect = (1 << N) - 1;
 
         while (!queue.isEmpty()) {
 
-            int[] item = queue.removeFirst();
+            int[] rm = queue.removeFirst();
 
-            int index = item[0];
+            int node = rm[0];
 
-            int stat = item[1];
+            int step = rm[1];
 
-            int step = item[2];
+            int mask = rm[2];
 
-            stat |= (1 << index);
+            if (mask == expect) {
+                ans = Math.min(ans, step);
+                continue;
+            }
 
-            if (stat == expect) return step;
+            for (int i = 0; i < N; i++) {
 
-            for (int adj : graph[index]) {
+                if ((g[node] & (1 << i)) != 0 && !visited[i][mask | (1 << i)]) {
 
-                if (visited[index][stat | (1 << adj)]) continue;
+                    visited[i][mask | (1 << i)] = true;
 
-                visited[index][stat | (1 << adj)] = true;
+                    queue.addLast(new int[]{i, step + 1, mask | (1 << i)});
 
-                queue.add(new int[]{adj, stat, step + 1});
+                }
+
             }
 
         }
 
-        return -1;
+        return ans;
     }
 
 
