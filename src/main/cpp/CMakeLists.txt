@@ -3,7 +3,7 @@ project(cpp)
 
 set(CMAKE_CXX_STANDARD 14)
 
-include_directories(.)
+include_directories(./acw)
 
 # 查找指定目录下的所有源文件
 file(GLOB SRC_FILES acw/*.cpp)
