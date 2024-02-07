@@ -116,7 +116,13 @@ public class LeetUtils {
 
     public static String randomNumberString(int length) {
         String str = "0123456789";
-        return randomString0(str, length);
+
+        String res = randomString0(str, length);
+
+        while (res.startsWith("0"))
+            res = randomString0(str, length);
+
+        return res;
     }
 
     public static String randomUpperString(int length) {

@@ -33,68 +33,71 @@ public class Leet2646 {
         Map<Integer, Set<Integer>> graph = new HashMap<>();
 
         for (int[] edge : edges) {
-            graph.computeIfAbsent(edge[0], ignore -> new HashSet<>()).add(edge[1]);
-            graph.computeIfAbsent(edge[1], ignore -> new HashSet<>()).add(edge[0]);
+            graph.computeIfAbsent(edge[0], integer -> new HashSet<>()).add(edge[1]);
+            graph.computeIfAbsent(edge[1], integer -> new HashSet<>()).add(edge[0]);
         }
 
-        int[] pathVisitCnt = new int[n];
+        int[] visitCnt = new int[n];
 
-        for (int[] trip : trips) {
-            int start = trip[0];
-            int end = trip[1];
+        for (int[] trip : trips)
+            visit(trip[0], trip[1], -1, visitCnt, graph);
 
-            // 树: 没有环, 所以从start - end的路径一定是单一的, 使用dfs累计访问路径
-            visit(graph, pathVisitCnt, start, start, end);
-        }
+        int[] f = dfs(0, -1, visitCnt, price, graph);
 
-        int[] dfs = dfs(graph, pathVisitCnt, price, 0, 0);
-
-        return Math.min(
-                dfs[0],
-                dfs[1]
-        );
+        return Math.min(f[0], f[1]);
     }
 
-    public static int[] dfs(
-            Map<Integer, Set<Integer>> graph,
-            int[] pathVisitCnt,
+    private static int[] dfs(
+            int node,
+            int parent,
+            int[] visitCnt,
             int[] price,
-            int current,
-            int prev
+            Map<Integer, Set<Integer>> graph
     ) {
-        int[] res = new int[2];
+        // 0 = 原价
+        // 1 = 减半
 
-        int[] a = new int[2];
+        int[] f = new int[2];
 
-        for (Integer adj : graph.get(current)) {
+        f[0] = price[node] * visitCnt[node];
+        f[1] = (price[node] / 2) * visitCnt[node];
 
-            if (adj == prev) continue;
-
-            int[] dfs = dfs(graph, pathVisitCnt, price, adj, current);
-            a[0] += dfs[0];
-            a[1] += Math.min(dfs[1], dfs[0]);
+        for (Integer adj : graph.getOrDefault(node, Collections.emptySet())) {
+            if (adj == parent)
+                continue;
+            int[] w = dfs(adj, node, visitCnt, price, graph);
+            f[0] += Math.min(w[0], w[1]);
+            f[1] += w[0];
         }
 
-        res[0] = pathVisitCnt[current] * price[current] + Math.min(a[0], a[1]);
-        res[1] = pathVisitCnt[current] * (price[current] / 2) + a[0];
-
-        return res;
+        return f;
     }
 
-    public static boolean visit(Map<Integer, Set<Integer>> graph, int[] pathVisitCnt, int current, int prev, int end) {
-        if (current == end) {
-            pathVisitCnt[end]++;
+    private static boolean visit(
+            int node,
+            int end,
+            int parent,
+            int[] visitCnt,
+            Map<Integer, Set<Integer>> graph
+    ) {
+
+        if (node == end) {
+            visitCnt[node]++;
             return true;
         }
 
-        for (Integer adj : graph.getOrDefault(current, Collections.emptySet())) {
-            if (adj != prev && visit(graph, pathVisitCnt, adj, current, end)) {
-                pathVisitCnt[current]++;
+        for (Integer adj : graph.getOrDefault(node, Collections.emptySet())) {
+
+            if (adj == parent)
+                continue;
+
+            if (visit(adj, end, node, visitCnt, graph)) {
+                visitCnt[node]++;
                 return true;
             }
+
         }
 
         return false;
     }
-
 }

@@ -7,66 +7,46 @@ package com.zzzj.tree;
 public class Leet1373 {
 
     public static void main(String[] args) {
-        System.out.println(maxSumBST(TreeNode.buildTree("[1,null,10,-5,20]")));
+        System.out.println(maxSumBST(TreeNode.buildTree("[1,4,3,2,4,2,5,null,null,null,null,null,null,4,6]")));
     }
 
     public static int maxSumBST(TreeNode root) {
-        if (root == null) {
-            return 0;
-        }
-        int[] dfs = dfs(root);
-        return Math.max(dfs[0], dfs[1]);
+        ans = 0;
+
+        dfs(root);
+
+        return ans;
     }
 
-    static final int MIN = 3;
-    static final int MAX = 4;
+    // 0 - max
+    // 1 - min
+    // 2 - sum
 
-    public static int[] dfs(TreeNode root) {
-        if (root.left == null && root.right == null) {
-            // 0. 包含当前节点
-            // 1. 不包含当前节点
-            // 2. 是否是搜索二叉树
-            // 3. 最小值
-            // 4. 最大值
-            return new int[]{root.val, root.val, 1, root.val, root.val};
+    static final int[] EMPTY = {Integer.MIN_VALUE, Integer.MAX_VALUE, 0};
+
+    static int ans;
+
+    private static int[] dfs(TreeNode root) {
+
+        if (root == null)
+            return EMPTY;
+
+        int[] lv = dfs(root.left);
+
+        int[] rv = dfs(root.right);
+
+        int v = root.val;
+
+        if (v > lv[0] && v < rv[1]) {
+            ans = Math.max(ans, v + lv[2] + rv[2]);
+            return new int[]{
+                    Math.max(v, Math.max(rv[0], lv[0])),
+                    Math.min(v, Math.min(rv[1], lv[1])),
+                    v + lv[2] + rv[2]
+            };
         }
 
-        int[] result = new int[5];
-
-        if (root.left == null) {
-            int[] right = dfs(root.right);
-            if (root.right.val > root.val && right[2] == 1 && root.val < right[MIN]) {
-                result[0] = root.val + result[0] + right[0];
-                result[2] = 1;
-                result[MAX] = right[MAX];
-                result[MIN] = root.val;
-            }
-            result[1] = Math.max(result[0], right[1]);
-        } else if (root.right == null) {
-            int[] left = dfs(root.left);
-            if (root.val > root.left.val && left[2] == 1 && root.val > left[MAX]) {
-                result[0] = root.val + result[0] + left[0];
-                result[2] = 1;
-                result[MIN] = left[MIN];
-                result[MAX] = root.val;
-            }
-            result[1] = Math.max(result[0], left[1]);
-        } else {
-            int[] left = dfs(root.left);
-            int[] right = dfs(root.right);
-
-            if (root.val > root.left.val && root.val < root.right.val && left[2] == 1 && right[2] == 1
-                    && root.val > left[MAX] && root.val < right[MIN]
-            ) {
-                result[0] = root.val + left[0] + right[0];
-                result[2] = 1;
-                result[MIN] = left[MIN];
-                result[MAX] = right[MAX];
-            }
-            result[1] = Math.max(result[0], Math.max(left[1], right[1]));
-        }
-
-        return result;
+        return new int[]{Integer.MAX_VALUE, Integer.MIN_VALUE, 0};
     }
 
 }

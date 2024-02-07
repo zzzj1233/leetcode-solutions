@@ -32,12 +32,16 @@ public class WeightedGraph {
         }
     }
 
+    public WeightedGraph(Scanner scanner) {
+        readFile(scanner);
+    }
+
     public WeightedGraph(InputStream inputStream) {
-        readFile(new Scanner(inputStream));
+        this(new Scanner(inputStream));
     }
 
     public WeightedGraph(Reader reader) {
-        readFile(new Scanner(reader));
+        this(new Scanner(reader));
     }
 
     public boolean isConnected(int i, int j) {
