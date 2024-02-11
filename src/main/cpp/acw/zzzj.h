@@ -17,10 +17,11 @@ namespace Zzzj {
 
         size_t dotPos = fileName.find_last_of('.');
 
-        if (dotPos != std::string::npos)
+        if (dotPos != std::string::npos) {
             fileName.replace(dotPos, fileName.length() - dotPos, ".txt");
+            freopen(fileName.c_str(), "r", stdin);
+        }
 
-        freopen(fileName.c_str(), "r", stdin);
     }
 
 }
