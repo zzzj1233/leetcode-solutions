@@ -11,6 +11,10 @@ public class Leet686 {
 
     public static void main(String[] args) {
 
+        System.out.println(repeatedStringMatch("abcd", "cdabcdab"));
+
+        System.exit(0);
+
         int N = 10000;
 
         for (int i = 0; i < N; i++) {
@@ -31,6 +35,9 @@ public class Leet686 {
 
     public static int repeatedStringMatch(String a, String b) {
 
+        if (b.isEmpty())
+            return -1;
+
         StringBuilder builder = new StringBuilder();
 
         int cnt = 0;
@@ -40,19 +47,71 @@ public class Leet686 {
             cnt++;
         }
 
-        if (builder.toString().contains(b)) {
+        int[] next = next(b);
+
+        if (match(builder.toString(), b, next))
             return cnt;
-        }
 
         builder.append(a);
 
-        if (builder.toString().contains(b)) {
+        if (match(builder.toString(), b, next))
             return cnt + 1;
-        }
 
         return -1;
     }
 
+    public static boolean match(String source, String search, int[] next) {
+
+        if (search.isEmpty())
+            return false;
+
+        int x = 0;
+
+        int y = 0;
+
+        int N = source.length();
+
+        int M = search.length();
+
+        while (x < N && y < M) {
+            if (source.charAt(x) == search.charAt(y)) {
+                x++;
+                y++;
+            } else if (next[y] >= 0) {
+                y = next[y];
+            } else {
+                x++;
+            }
+        }
+
+        return y == M;
+    }
+
+    public static int[] next(String search) {
+
+        int N = search.length();
+
+        if (N == 1)
+            return new int[]{-1};
+
+        int[] next = new int[N];
+
+        next[0] = -1;
+
+        int index = 2;
+
+        int cc = 0;
+
+        while (index < N)
+            if (search.charAt(index - 1) == search.charAt(cc))
+                next[index++] = ++cc;
+            else if (next[cc] >= 0)
+                cc = next[cc];
+            else
+                index++;
+
+        return next;
+    }
 
     public static int right(String a, String b) {
         int first = 0;

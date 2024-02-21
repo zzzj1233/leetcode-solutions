@@ -1,35 +1,66 @@
 package com.zzzj.dp;
 
+import com.zzzj.leet.LeetUtils;
+
+import java.util.Arrays;
+
 /**
  * @author zzzj
  * @create 2023-07-06 17:16
  */
 public class Leet1494 {
 
+    public static void main(String[] args) {
+
+        System.out.println(minNumberOfSemesters(5, LeetUtils.convertInts("[[3,1]]"), 4));
+
+        System.out.println(minNumberOfSemesters(4, LeetUtils.convertInts("[[2,1],[3,1],[1,4]]"), 2));
+
+        System.out.println(minNumberOfSemesters(5, LeetUtils.convertInts("[[2,1],[3,1],[4,1],[1,5]]"), 2));
+
+        System.out.println(minNumberOfSemesters(15, LeetUtils.convertInts("[[12,11]]"), 12));
+
+    }
+
     public static int minNumberOfSemesters(int n, int[][] relations, int k) {
 
-        int[] need = new int[1 << n];
+        int[] relay = new int[n];
 
-        for (int[] edge : relations) {
-            need[1 << edge[1]] |= 1 << edge[0];
-        }
+        for (int[] relation : relations)
+            relay[relation[1] - 1] |= 1 << (relation[0] - 1);
 
-        int[] dp = new int[1 << n];
+        int limit = 1 << n;
 
-        OUTER:
-        for (int stat = 0; stat < dp.length; stat++) {
+        int[] f = new int[limit];
 
-            // 还有前置的课程没有学完
+        Arrays.fill(f, Integer.MAX_VALUE);
+
+        f[0] = 0;
+
+        for (int stat = 0; stat < limit; stat++) {
+
+            int r = 0;
+
             for (int j = 0; j < n; j++)
-                if ((stat & (1 << j)) != 0 && (need[1 << j] & stat) != need[1 << j]) continue OUTER;
+                if ((stat & (1 << j)) != 0)
+                    r |= relay[j];
 
-            // 计算这个状态需要多少个课时
+            if (f[r] == Integer.MAX_VALUE)
+                continue;
 
-            // 当前这个状态依赖的状态是什么
+            int xor = stat ^ r;
+
+            int cnt = Integer.bitCount(xor);
+
+            if (cnt <= k)
+                f[stat] = Math.min(f[stat], f[r] + 1);
+            else for (int j = xor; j > 0; j = (j - 1) & xor)
+                if (Integer.bitCount(j) == k)
+                    f[stat] = Math.min(f[stat], f[stat ^ j] + 1);
 
         }
 
-        return dp[dp.length - 1];
+        return f[limit - 1];
     }
 
 

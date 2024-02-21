@@ -11,16 +11,18 @@ import java.util.*;
 public class Leet2708 {
 
     public static void main(String[] args) {
-//        System.out.println(Arrays.deepToString(multiSearch("mississippi", new String[]{"is", "ppi", "hi", "sis", "i", "ssippi"})));
+        System.out.println(Arrays.deepToString(multiSearch("mississippi", new String[]{"is", "ppi", "hi", "sis", "i", "ssippi"})));
+
+//        System.exit(0);
 
         Solution solution = new Solution();
 
         for (int i = 0; i < 10000; i++) {
-            String big = LeetUtils.randomString(100, false);
+            String big = LeetUtils.randomString(10, false);
             int N = LeetUtils.random.nextInt(100) + 1;
             String[] smalls = new String[N];
             for (int j = 0; j < N; j++) {
-                smalls[j] = LeetUtils.randomString(20, false);
+                smalls[j] = LeetUtils.randomString(5, false);
             }
             if (!Arrays.deepEquals(multiSearch(big, smalls), solution.multiSearch(big, smalls))) {
                 System.out.println("Error");
@@ -32,85 +34,82 @@ public class Leet2708 {
 
     public static int[][] multiSearch(String big, String[] smalls) {
 
-        Trie root = new Trie();
+        int N = big.length();
 
-        for (int i = 0; i < smalls.length; i++) {
-            String word = smalls[i];
+        int M = smalls.length;
 
-            Trie node = root;
+        List<List<Integer>> ans = new ArrayList<>(M);
 
-            for (int j = 0; j < word.length(); j++) {
-                int index = word.charAt(j) - 'a';
-                if (node.next[index] == null) {
-                    node.next[index] = new Trie();
-                }
-                node = node.next[index];
-            }
+        for (int i = 0; i < M; i++) {
 
-            node.end = true;
-            node.index = i;
-            node.len = word.length();
-        }
+            List<Integer> list = new ArrayList<>();
 
-        LinkedList<Trie> list = new LinkedList<>();
+            ans.add(list);
 
-        List<List<Integer>> ansList = new ArrayList<>(smalls.length);
+            String search = smalls[i];
 
-        for (int i = 0; i < smalls.length; i++) {
-            ansList.add(new ArrayList<>(0));
-        }
+            if (search.isEmpty() || search.length() > N)
+                continue;
 
-        for (int i = 0; i < big.length(); i++) {
-            int index = big.charAt(i) - 'a';
+            int[] next = next(search);
 
-            Iterator<Trie> iterator = list.iterator();
+            int x = 0;
+            int y = 0;
 
-            LinkedList<Trie> addList = new LinkedList<>();
+            int K = search.length();
 
-            while (iterator.hasNext()) {
-                Trie next = iterator.next();
-
-                iterator.remove();
-
-                Trie nextNext = next.next[index];
-
-                if (nextNext != null) {
-                    if (nextNext.end) {
-                        ansList.get(nextNext.index).add(i - nextNext.len + 1);
+            while (x < N) {
+                if (big.charAt(x) == search.charAt(y)) {
+                    x++;
+                    y++;
+                    if (y == K) {
+                        list.add(x - K);
+                        y = Math.max(0, next[y]);
                     }
-                    addList.add(nextNext);
+                } else if (next[y] >= 0) {
+                    y = next[y];
+                } else {
+                    x++;
                 }
+
             }
 
-            list.addAll(addList);
+        }
 
-            if (root.next[index] != null) {
-                list.add(root.next[index]);
-                if (root.next[index].end) {
-                    ansList.get(root.next[index].index).add(i);
-                }
+
+        return ans.stream()
+                .map(inner -> inner.stream().mapToInt(value -> value).toArray())
+                .toArray(int[][]::new);
+    }
+
+    public static int[] next(String str) {
+
+        if (str.length() == 1)
+            return new int[]{-1, 0};
+
+        int N = str.length();
+
+        int[] next = new int[N + 1];
+
+        next[0] = -1;
+        next[1] = 0;
+
+        int index = 2;
+        int cc = 0;
+
+        while (index <= N) {
+            if (str.charAt(index - 1) == str.charAt(cc)) {
+                next[index++] = ++cc;
+            } else if (next[cc] >= 0) {
+                cc = next[cc];
+            } else {
+                index++;
             }
         }
 
-        int[][] ans = new int[smalls.length][];
-
-        for (int i = 0; i < smalls.length; i++) {
-            List<Integer> items = ansList.get(i);
-            ans[i] = new int[items.size()];
-            for (int j = 0; j < items.size(); j++) {
-                ans[i][j] = items.get(j);
-            }
-        }
-
-        return ans;
+        return next;
     }
 
-    private static class Trie {
-        Trie[] next = new Trie[26];
-        int index;
-        int len;
-        boolean end;
-    }
 
     static class Solution {
 
