@@ -523,7 +523,7 @@ public class LeetUtils {
         return "[" + list.stream().map(s -> "\"" + s + "\"").collect(Collectors.joining(",")) + "]";
     }
 
-    public static String toBinaryString(int num, int bitSize) {
+    public static String toBinaryString(long num, int bitSize) {
         StringBuilder builder = new StringBuilder(bitSize);
 
         for (int i = 0; i < bitSize; i++) {
