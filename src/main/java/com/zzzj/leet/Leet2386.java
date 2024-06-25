@@ -23,8 +23,6 @@ public class Leet2386 {
                 r += num;
         }
 
-        
-
         l--;
 
         while (l + 1 < r) {

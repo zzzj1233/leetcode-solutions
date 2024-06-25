@@ -14,7 +14,8 @@ import java.util.Stack;
 public class Leet1673 {
 
     public static void main(String[] args) {
-        for (int i = 0; i < 100000; i++) {
+
+        for (int i = 0; i < 10000; i++) {
             int M = 1000;
 
             int[] arr = new int[M];
@@ -46,20 +47,17 @@ public class Leet1673 {
         LinkedList<Integer> stack = new LinkedList<>();
 
         for (int i = 0; i < N; i++) {
-            while (!stack.isEmpty() && nums[i] < stack.peekLast()
-                    // 可以remove的情况
-                    && (N - i + (stack.size() - 1)) >= k
-            ) {
+
+            while (!stack.isEmpty() && nums[stack.peekLast()] > nums[i] && (N - i + (stack.size() - 1)) >= k)
                 stack.removeLast();
-            }
-            stack.add(nums[i]);
+
+            stack.add(i);
         }
 
         int[] ans = new int[k];
 
-        for (int i = 0; i < k; i++) {
-            ans[i] = stack.removeFirst();
-        }
+        for (int i = 0; i < k; i++)
+            ans[i] = nums[stack.removeFirst()];
 
         return ans;
     }

@@ -1,6 +1,5 @@
 package com.zzzj.stack;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -11,7 +10,9 @@ public class Leet907 {
 
     public static void main(String[] args) {
 
-        System.out.println(sumSubarrayMins(new int[]{3, 1, 2, 4, 2, 1, 2, 3}));
+        System.out.println(sumSubarrayMins(new int[]{3, 1, 2, 4}));
+
+        // System.out.println(sumSubarrayMins(new int[]{3, 1, 2, 4, 2, 1, 2, 3}));
 
     }
 
@@ -21,6 +22,10 @@ public class Leet907 {
 
         int N = arr.length;
 
+        // 左闭右闭区间
+
+        // left[i] = 当前元素作为"最小值"可以延伸到的最左边
+        // right[i] = 当前元素作为"最小值"可以延伸到的最右边
         LinkedList<Integer> stack = new LinkedList<>();
 
         int[] left = new int[N];

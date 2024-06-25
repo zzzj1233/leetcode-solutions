@@ -9,6 +9,7 @@ import com.zzzj.util.ExecutionCallback;
 import com.zzzj.util.InvokableExp;
 import com.zzzj.util.InvokeMethodSource;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -141,6 +142,11 @@ public class LeetUtils {
 
 
         return randomString0(str, length);
+    }
+
+    public static String randomLowerString(int length, int candidateLen) {
+        String candidate = "abcdefghijklmnopqrstuvwxyz".substring(0, candidateLen);
+        return randomString0(candidate, length);
     }
 
     public static String randomString(int length) {
@@ -291,6 +297,10 @@ public class LeetUtils {
         }
 
         return result;
+    }
+
+    public static List<Integer> convertLists0(String source) {
+        return convertLists("[" + source + "]").get(0);
     }
 
     public static List<List<Integer>> convertLists(String source) {
@@ -633,6 +643,33 @@ public class LeetUtils {
             builder.append("\n");
         }
         return builder.toString();
+    }
+
+    public static void printMatrix(
+            Object matrix
+    ) {
+
+        int M = Array.getLength(matrix);
+
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < M; i++) {
+
+            Object row = Array.get(matrix, i);
+
+            int N = Array.getLength(row);
+
+            for (int j = 0; j < N; j++) {
+
+                builder.append(String.format("%4s", Array.get(row, j))).append(StrUtil.SPACE);
+
+            }
+
+            builder.append(System.lineSeparator());
+
+        }
+
+        System.out.println(builder);
     }
 
 }
