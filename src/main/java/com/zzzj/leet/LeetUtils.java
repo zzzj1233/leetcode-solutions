@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author zzzj
@@ -558,14 +559,19 @@ public class LeetUtils {
             Object[] parameters = source.getParamsSupplier().get();
 
             Object result = null;
+
             try {
                 result = exp.invokeMethod(methodName, parameters);
             } catch (Exception e) {
-                e.printStackTrace();
-                return false;
+                throw e;
             }
 
-            Object expectResult = expect.invokeMethod(methodName, parameters);
+            Object expectResult = null;
+            try {
+                expectResult = expect.invokeMethod(methodName, parameters);
+            } catch (Exception e) {
+                throw e;
+            }
 
             if (result == null && expectResult == null) {
                 continue;
@@ -581,8 +587,9 @@ public class LeetUtils {
                 System.out.println("Error");
 
                 System.out.println("method = " + methodName + " , params = " + Arrays.toString(parameters));
-                System.out.println("MyResult = " + result);
-                System.out.println("ExpectResult = " + expectResult);
+
+                System.out.println("MyResult = " + arrayToString(result));
+                System.out.println("ExpectResult = " + arrayToString(expectResult));
 
                 return false;
             }
@@ -670,6 +677,65 @@ public class LeetUtils {
         }
 
         System.out.println(builder);
+    }
+
+    public static String arrayToString(Object array) {
+        // 检查是否为 null
+        if (array == null) {
+            return "null";
+        }
+
+        // 检查是否为数组
+        if (array.getClass().isArray()) {
+            // 一维数组
+            if (array instanceof int[]) {
+                return Arrays.toString((int[]) array);
+            } else if (array instanceof double[]) {
+                return Arrays.toString((double[]) array);
+            } else if (array instanceof boolean[]) {
+                return Arrays.toString((boolean[]) array);
+            } else if (array instanceof char[]) {
+                return Arrays.toString((char[]) array);
+            } else if (array instanceof byte[]) {
+                return Arrays.toString((byte[]) array);
+            } else if (array instanceof short[]) {
+                return Arrays.toString((short[]) array);
+            } else if (array instanceof long[]) {
+                return Arrays.toString((long[]) array);
+            } else {
+                // 处理对象数组
+                return Arrays.deepToString((Object[]) array);
+            }
+        } else {
+            return array.toString(); // 如果不是数组，调用原生的 toString()
+        }
+    }
+
+    public static String toStringWithIndex(Object array) {
+
+        if (array == null)
+            return "null";
+
+        if (!array.getClass().isArray())
+            return array.toString();
+
+        int length = Array.getLength(array);
+
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(
+                StrUtil.wrap(
+                        IntStream.range(0, length).mapToObj(value -> ((Integer) value).toString()).collect(Collectors.joining(", ")),
+                        "[",
+                        "]"
+                )
+        );
+
+        builder.append(System.lineSeparator());
+
+        builder.append(arrayToString(array));
+
+        return builder.toString();
     }
 
 }

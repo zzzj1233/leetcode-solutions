@@ -173,6 +173,7 @@ public class Question7Solution {
                 swap(right, index);
                 shiftDown(right);
             }
+
         }
 
         private int leftChild(int index) {

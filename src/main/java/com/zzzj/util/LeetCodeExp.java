@@ -1,6 +1,7 @@
 package com.zzzj.util;
 
 import cn.hutool.core.util.StrUtil;
+import com.zzzj.leet.LeetUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,8 +39,8 @@ public class LeetCodeExp {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
-        builder.append(StrUtil.wrap(instanceName, "\""));
-        builder.append(",");
+//        builder.append(StrUtil.wrap(instanceName, "\""));
+//        builder.append(",");
         for (String method : methods) {
             builder.append(StrUtil.wrap(method, "\""));
             builder.append(",");
@@ -47,12 +48,14 @@ public class LeetCodeExp {
         builder.setLength(builder.length() - 1);
         builder.append("]");
         builder.append("\n");
-        builder.append("[");
-        builder.append(StrUtil.wrap(instanceArgs, "[", "]"));
-        builder.append(",");
+//        builder.append("[");
+//        builder.append(StrUtil.wrap(instanceArgs, "[", "]"));
+//        builder.append(",");
 
         List<String> args = this.args.stream()
-                .map(objects -> Arrays.stream(objects).map(Object::toString).collect(Collectors.joining(",")))
+                .map(objects -> Arrays.stream(objects)
+                        .map(LeetUtils::arrayToString)
+                        .collect(Collectors.joining(",")))
                 .collect(Collectors.toList());
 
         for (String arg : args) {
