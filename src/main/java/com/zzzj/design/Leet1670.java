@@ -27,7 +27,6 @@ public class Leet1670 {
                 new InvokeMethodSource("popBack")
         };
 
-
         while (true) {
             while (LeetUtils.executeExpression(my, right, N, invokeMethodSources)) {
                 my = new InvokableExp(FrontMiddleBackQueue.class);

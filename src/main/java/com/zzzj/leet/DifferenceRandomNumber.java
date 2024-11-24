@@ -36,4 +36,12 @@ public class DifferenceRandomNumber {
         return num;
     }
 
+    public int[] nextArr(int N) {
+        int[] r = new int[N];
+
+        for (int i = 0; i < N; i++)
+            r[i] = nextNum();
+
+        return r;
+    }
 }
